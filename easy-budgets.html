@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyBudgets – Budgeting</title>
+  <meta name="description" content="Budget caps, variance vs spend, alerts." />
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+/* EasyFile Add-ons */
+:root{
+  --primary:#2563eb; --primary2:#1d4ed8; --bg:#f5f7fb; --card:#ffffff;
+  --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
+  --danger:#dc2626; --success:#16a34a;
+}
+body{background:var(--bg); color:var(--text);}
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 25px rgba(2,6,23,.05);}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.65rem 1rem; border-radius:10px; font-weight:800; transition: all .15s ease; border:1px solid transparent;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:var(--primary); color:#fff;}
+.btn-primary:hover{background:var(--primary2);}
+.btn-outline{background:#fff; border-color:var(--border); color:var(--text);}
+.btn-outline:hover{border-color:#cbd5e1; background:#f8fafc;}
+.btn-danger{background:var(--danger); color:#fff;}
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
+.responsive-table{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.toast{position:fixed; right:16px; bottom:16px; z-index:9999;}
+.toast>div{background:rgba(2,6,23,.92); color:#fff; border-radius:12px; padding:12px 14px; max-width:360px;}
+@media print{ .no-print{display:none !important;} body{background:#fff !important;} .card{box-shadow:none !important; border:none !important;} }
+
+  </style>
+</head>
+<body class="min-h-screen">
+
+<nav class="bg-blue-600 text-white py-4 no-print">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a data-safe-link href="index.html" class="font-black text-xl mr-2">Easy&nbsp;Suite</a>
+    &lt;a data-safe-link href=&quot;index.html&quot; class=&quot;hover:underline&quot;&gt;Home&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-quote.html&quot; class=&quot;hover:underline&quot;&gt;Quote&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-invoice.html&quot; class=&quot;hover:underline&quot;&gt;Invoice&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-purchase-order.html&quot; class=&quot;hover:underline&quot;&gt;Purchase Order&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-sales-order.html&quot; class=&quot;hover:underline&quot;&gt;Sales Order&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-receipt.html&quot; class=&quot;hover:underline&quot;&gt;Receipt&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-statement.html&quot; class=&quot;hover:underline&quot;&gt;Statement&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-job-card.html&quot; class=&quot;hover:underline&quot;&gt;Job Card&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-payroll.html&quot; class=&quot;hover:underline&quot;&gt;Payroll&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-inventory.html&quot; class=&quot;hover:underline&quot;&gt;Inventory&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-crm.html&quot; class=&quot;hover:underline&quot;&gt;CRM&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-bill.html&quot; class=&quot;hover:underline&quot;&gt;Billing&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-expenses.html&quot; class=&quot;hover:underline&quot;&gt;Expenses&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-cashflow.html&quot; class=&quot;hover:underline&quot;&gt;Cashflow&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-vat.html&quot; class=&quot;hover:underline&quot;&gt;VAT&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-credit-control.html&quot; class=&quot;hover:underline&quot;&gt;Credit&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-projects.html&quot; class=&quot;hover:underline&quot;&gt;Projects&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-assets-register.html&quot; class=&quot;hover:underline&quot;&gt;Assets&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-timesheets.html&quot; class=&quot;hover:underline&quot;&gt;Timesheets&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-leave.html&quot; class=&quot;hover:underline&quot;&gt;Leave&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-approvals.html&quot; class=&quot;hover:underline&quot;&gt;Approvals&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-contracts.html&quot; class=&quot;hover:underline&quot;&gt;Contracts&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-popia.html&quot; class=&quot;hover:underline&quot;&gt;POPIA&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-audit.html&quot; class=&quot;hover:underline&quot;&gt;Audit&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-budgets.html&quot; class=&quot;underline font-extrabold&quot;&gt;Budgets&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-pos.html&quot; class=&quot;hover:underline&quot;&gt;POS&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-insights.html&quot; class=&quot;hover:underline&quot;&gt;Insights&lt;/a&gt;
+  </div>
+</nav>
+
+<main class="container mx-auto px-4 py-8">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-extrabold text-slate-900">EasyBudgets – Budgeting</h1>
+      <p class="text-sm text-slate-600 mt-1">Budget caps, variance vs spend, alerts.</p>
+      <p class="text-xs text-slate-500 mt-1 mono">Store key: easy.budgets.v1</p>
+    </div>
+    <div class="flex flex-wrap gap-2 no-print">
+      <button class="btn btn-outline" id="btnSeed"><i class="fa-solid fa-seedling"></i> Seed Demo</button>
+      <button class="btn btn-outline" id="btnImport"><i class="fa-solid fa-file-import"></i> Import JSON</button>
+      <input id="fileJson" type="file" class="hidden" accept="application/json,.json" />
+      <button class="btn btn-outline" id="btnExport"><i class="fa-solid fa-file-export"></i> Export</button>
+      <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+    </div>
+  </div>
+
+
+<section class="card p-5 mb-6 no-print">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+    <div>
+      <h2 class="text-lg font-black text-slate-900">Create / Update Budgets</h2>
+      <p class="text-xs text-slate-500">Budget caps, variance tracking, and alerts.</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn btn-primary" id="btnSaveRow"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+      <button class="btn btn-outline" id="btnClear"><i class="fa-solid fa-rotate-left"></i> Clear</button>
+      <button class="btn btn-outline" id="btnExportCSV"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <input id="rowId" class="hidden" />
+    
+      <div>
+        <label class="text-xs font-black text-slate-600">Period</label>
+        <input id="period" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="2026-02" />
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Department</label>
+        <input id="department" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Ops / Sales / IT" />
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Category</label>
+        <input id="category" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Fuel / Salaries / Software" />
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Budget</label>
+        <input id="budget" type="number" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00" />
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Actual</label>
+        <input id="actual" type="number" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00" />
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Variance</label>
+        <input id="variance" type="number" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00" />
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Owner</label>
+        <input id="owner" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Responsible person" />
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Status</label>
+        <input id="status" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="ok/over/at-risk" />
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Notes</label>
+        <textarea id="notes" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Actions"></textarea>
+      </div>
+  </div>
+</section>
+
+<section class="card p-0 overflow-hidden">
+  <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-3 md:items-center md:justify-between no-print">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-table text-blue-700"></i>
+      <div class="font-black text-slate-900">Budgets Register</div>
+    </div>
+    <div class="flex items-center gap-2">
+      <input id="q" class="w-64 border border-gray-200 rounded-lg px-3 py-2" placeholder="Search..." />
+      <button class="btn btn-outline" id="btnDeleteAll"><i class="fa-solid fa-trash"></i> Clear All</button>
+    </div>
+  </div>
+
+  <div class="responsive-table">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-50 text-slate-600">
+        <tr>
+          <th class="p-3 text-left">#</th>
+          <th class="p-3 text-left">Period</th><th class="p-3 text-left">Department</th><th class="p-3 text-left">Category</th><th class="p-3 text-left">Budget</th><th class="p-3 text-left">Actual</th><th class="p-3 text-left">Variance</th><th class="p-3 text-left">Owner</th><th class="p-3 text-left">Status</th><th class="p-3 text-left">Notes</th>
+          <th class="p-3 text-center no-print">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="rows" class="divide-y divide-gray-100"></tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<div class="toast hidden" id="toast"><div id="toastMsg"></div></div>
+
+<script>
+
+const $$ = (id) => document.getElementById(id);
+
+function escapeHtml(str){
+  return String(str || "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function saveAs(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+}
+
+function toast(msg){
+  $$("toastMsg").textContent = msg;
+  $$("toast").classList.remove("hidden");
+  setTimeout(()=> $$("toast").classList.add("hidden"), 2500);
+}
+
+function nowISO(){ return new Date().toISOString(); }
+
+function csvEscape(v){
+  const s = String(v ?? "");
+  if(/[",\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function toCSV(rows, headers){
+  const head = headers.join(",");
+  const body = rows.map(r => headers.map(h => csvEscape(r[h])).join(",")).join("\n");
+  return head + "\n" + body + "\n";
+}
+function downloadJSON(data, filename){
+  saveAs(new Blob([JSON.stringify(data,null,2)], {type:"application/json"}), filename);
+}
+function downloadCSV(rows, headers, filename){
+  saveAs(new Blob([toCSV(rows, headers)], {type:"text/csv"}), filename);
+}
+function loadStore(key, fallback){
+  try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+  catch { return fallback; }
+}
+function saveStore(key, data){
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+
+const STORE_KEY = "easy.budgets.v1";
+let data = loadStore(STORE_KEY, []);
+function persist(){ saveStore(STORE_KEY, data); }
+
+function importJSONFile(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if(!Array.isArray(parsed)) throw new Error("Expected an array");
+      data = parsed;
+      persist();
+      render();
+      toast("Imported " + data.length + " rows");
+    } catch(e) {
+      console.error(e);
+      toast("Import failed");
+    }
+  };
+  reader.readAsText(file);
+}
+
+$("btnImport").addEventListener("click", ()=> $("fileJson").click());
+$("fileJson").addEventListener("change", (e)=> importJSONFile(e.target.files[0]));
+$("btnExport").addEventListener("click", ()=> exportAll());
+$("btnSeed").addEventListener("click", ()=> seed());
+
+function exportAll(){ downloadJSON(data, "easy-budgets.json"); }
+
+
+const HEADERS = ["id", "period", "department", "category", "budget", "actual", "variance", "owner", "status", "notes", "createdAt", "updatedAt"];
+
+function clearForm(){
+  $$("rowId").value = "";
+  $$("period").value = "";
+  $$("department").value = "";
+  $$("category").value = "";
+  $$("budget").value = "";
+  $$("actual").value = "";
+  $$("variance").value = "";
+  $$("owner").value = "";
+  $$("status").value = "";
+  $$("notes").value = "";
+}
+
+function getFieldMap(){
+  return {
+    "period": $$("period").value,
+    "department": $$("department").value,
+    "category": $$("category").value,
+    "budget": $$("budget").value,
+    "actual": $$("actual").value,
+    "variance": $$("variance").value,
+    "owner": $$("owner").value,
+    "status": $$("status").value,
+    "notes": $$("notes").value
+  };
+}
+
+function seed(){
+  if(data.length){ if(!confirm("Replace existing data with demo seed?")) return; }
+  const demo = [];
+  for(let i=1;i<=6;i++) {
+    const r = { id:(crypto?.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+i), createdAt:nowISO(), updatedAt:nowISO() };
+    r["period"] = "Period " + i;
+    r["department"] = "";
+    r["category"] = "";
+    r["budget"] = "";
+    r["actual"] = "";
+    r["variance"] = "";
+    r["owner"] = "";
+    r["status"] = "";
+    r["notes"] = "";
+    demo.push(r);
+  }
+  data = demo;
+  persist();
+  render();
+  toast("Seeded demo data");
+}
+
+function exportCSV(){
+  downloadCSV(data, HEADERS, "budgets.csv");
+}
+
+$$("btnExportCSV").addEventListener("click", exportCSV);
+$$("btnClear").addEventListener("click", clearForm);
+
+$$("btnSaveRow").addEventListener("click", ()=> {
+  const fields = getFieldMap();
+  const firstKey = "period";
+  if(!String(fields[firstKey]||"").trim()){ toast("Please provide: Period"); return; }
+  const id = $$("rowId").value || (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()));
+  const existing = data.find(x => x.id === id);
+  const now = nowISO();
+  if(existing) Object.assign(existing, fields, {updatedAt:now});
+  else data.unshift({id, ...fields, createdAt:now, updatedAt:now});
+  persist(); render(); toast("Saved"); clearForm();
+});
+
+$$("btnDeleteAll").addEventListener("click", ()=> {
+  if(!confirm("Clear all rows for this module?")) return;
+  data = []; persist(); render(); toast("Cleared");
+});
+
+$$("q").addEventListener("input", render);
+
+function render(){
+  const q = ($$("q").value||"").toLowerCase().trim();
+  const list = data.filter(row => !q || HEADERS.map(h=>String(row[h]||"")).join(" ").toLowerCase().includes(q));
+  const tb = $$("rows"); tb.innerHTML = "";
+  if(!list.length){ tb.innerHTML = `<tr><td colspan="12" class="p-6 text-center text-slate-500">No records.</td></tr>`; return; }
+  list.forEach((row, idx) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="p-3 mono">$${idx+1}</td>
+      <td class="p-3">$${escapeHtml(row["period"]||"")}</td>
+      <td class="p-3">$${escapeHtml(row["department"]||"")}</td>
+      <td class="p-3">$${escapeHtml(row["category"]||"")}</td>
+      <td class="p-3">$${escapeHtml(row["budget"]||"")}</td>
+      <td class="p-3">$${escapeHtml(row["actual"]||"")}</td>
+      <td class="p-3">$${escapeHtml(row["variance"]||"")}</td>
+      <td class="p-3">$${escapeHtml(row["owner"]||"")}</td>
+      <td class="p-3">$${escapeHtml(row["status"]||"")}</td>
+      <td class="p-3">$${escapeHtml(row["notes"]||"")}</td>
+      <td class="p-3 text-center no-print">
+        <div class="flex justify-center gap-2 flex-wrap">
+          <button class="btn btn-outline" data-edit="$${row.id}"><i class="fa-solid fa-pen"></i> Edit</button>
+          <button class="btn btn-danger" data-del="$${row.id}"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </td>
+    `;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll("[data-edit]").forEach(b => b.addEventListener("click", ()=> {
+    const id = b.getAttribute("data-edit");
+    const row = data.find(x => x.id === id); if(!row) return;
+    $$("rowId").value = row.id;
+    $$("period").value = row["period"] || "";
+    $$("department").value = row["department"] || "";
+    $$("category").value = row["category"] || "";
+    $$("budget").value = row["budget"] || "";
+    $$("actual").value = row["actual"] || "";
+    $$("variance").value = row["variance"] || "";
+    $$("owner").value = row["owner"] || "";
+    $$("status").value = row["status"] || "";
+    $$("notes").value = row["notes"] || "";
+    window.scrollTo({top:0, behavior:"smooth"});
+  }));
+  tb.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", ()=> {
+    const id = b.getAttribute("data-del");
+    if(!confirm("Delete this record?")) return;
+    data = data.filter(x => x.id !== id); persist(); render(); toast("Deleted");
+  }));
+}
+
+render();
+</script>
+</body>
+</html>

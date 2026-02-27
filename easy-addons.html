@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyFile Add-on Modules</title>
+  <meta name="description" content="Add-on modules for EasyFile / Easy Suite." />
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <style>/* EasyFile Add-ons */
+:root{
+  --primary:#2563eb; --primary2:#1d4ed8; --bg:#f5f7fb; --card:#ffffff;
+  --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
+  --danger:#dc2626; --success:#16a34a;
+}
+body{background:var(--bg); color:var(--text);}
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 25px rgba(2,6,23,.05);}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.65rem 1rem; border-radius:10px; font-weight:800; transition: all .15s ease; border:1px solid transparent;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:var(--primary); color:#fff;}
+.btn-primary:hover{background:var(--primary2);}
+.btn-outline{background:#fff; border-color:var(--border); color:var(--text);}
+.btn-outline:hover{border-color:#cbd5e1; background:#f8fafc;}
+.btn-danger{background:var(--danger); color:#fff;}
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
+.responsive-table{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.toast{position:fixed; right:16px; bottom:16px; z-index:9999;}
+.toast>div{background:rgba(2,6,23,.92); color:#fff; border-radius:12px; padding:12px 14px; max-width:360px;}
+@media print{ .no-print{display:none !important;} body{background:#fff !important;} .card{box-shadow:none !important; border:none !important;} }
+</style>
+</head>
+<body class="min-h-screen">
+  <nav class="bg-blue-600 text-white py-4">
+    <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+      <a data-safe-link href="index.html" class="font-black text-xl mr-2">Easy&nbsp;Suite</a>
+      <a data-safe-link href="easy-addons.html" class="underline font-extrabold">Add-ons</a>
+    </div>
+  </nav>
+  <main class="container mx-auto px-4 py-8">
+    <div class="card p-6">
+      <h1 class="text-3xl font-extrabold text-slate-900">EasyFile Add-on Modules</h1>
+      <p class="text-sm text-slate-600 mt-2">Copy these HTML files into your Easy Suite folder (same place as index.html). Offline-first + LocalStorage.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
+        
+    <a class="card p-4 hover:shadow-lg transition" href="easy-bill.html">
+      <div class="font-black text-slate-900">EasyBill – Recurring Billing</div>
+      <div class="text-sm text-slate-600 mt-1">Manage subscriptions and recurring invoices (offline-first).</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.bill.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-expenses.html">
+      <div class="font-black text-slate-900">EasyExpenses – Expense Tracker</div>
+      <div class="text-sm text-slate-600 mt-1">Track expenses with VAT splits, categories, and exports (offline-first).</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.expenses.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-cashflow.html">
+      <div class="font-black text-slate-900">EasyCashflow – Dashboard</div>
+      <div class="text-sm text-slate-600 mt-1">Cashflow overview: receivables, payables, VAT, inventory value (reads local data).</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.cashflow.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-vat.html">
+      <div class="font-black text-slate-900">EasyVAT – VAT201 Assistant</div>
+      <div class="text-sm text-slate-600 mt-1">Summarise VAT Output/Input for a period and export reports.</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.vat.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-popia.html">
+      <div class="font-black text-slate-900">EasyPOPIA – Compliance Toolkit</div>
+      <div class="text-sm text-slate-600 mt-1">Consent log, data processing register, retention schedule (offline-first).</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.popia.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-audit.html">
+      <div class="font-black text-slate-900">EasyAudit – Audit Trail</div>
+      <div class="text-sm text-slate-600 mt-1">Document change log and activity trail (local).</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.audit.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-projects.html">
+      <div class="font-black text-slate-900">EasyProjects – Project Costing</div>
+      <div class="text-sm text-slate-600 mt-1">Project register with budget vs actual, links to jobs &amp; invoices.</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.projects.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-approvals.html">
+      <div class="font-black text-slate-900">EasyApprovals – Workflow</div>
+      <div class="text-sm text-slate-600 mt-1">Approvals for quotes/POs/expenses with thresholds and sign-off.</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.approvals.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-assets-register.html">
+      <div class="font-black text-slate-900">EasyAssets – Asset Register</div>
+      <div class="text-sm text-slate-600 mt-1">Fixed asset register with depreciation and maintenance reminders.</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.assets.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-timesheets.html">
+      <div class="font-black text-slate-900">EasyTimesheets – Time Tracking</div>
+      <div class="text-sm text-slate-600 mt-1">Timesheets with billable hours and export to invoicing.</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.timesheets.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-leave.html">
+      <div class="font-black text-slate-900">EasyLeave – Leave Management</div>
+      <div class="text-sm text-slate-600 mt-1">Leave balances, requests, approvals, public holidays list.</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.leave.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-credit-control.html">
+      <div class="font-black text-slate-900">EasyCredit Control – Debtors</div>
+      <div class="text-sm text-slate-600 mt-1">Debtor ageing, reminders, interest calc, statements exports.</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.credit.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-budgets.html">
+      <div class="font-black text-slate-900">EasyBudgets – Budgeting</div>
+      <div class="text-sm text-slate-600 mt-1">Budget caps, variance vs spend, alerts.</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.budgets.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-pos.html">
+      <div class="font-black text-slate-900">EasyPOS – Point of Sale</div>
+      <div class="text-sm text-slate-600 mt-1">Simple POS: cart, totals, receipt print, stock adjust (offline).</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.pos.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-contracts.html">
+      <div class="font-black text-slate-900">EasyContracts – Agreements</div>
+      <div class="text-sm text-slate-600 mt-1">Contract templates, renewals, signature capture placeholder.</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.contracts.v1</div>
+    </a>
+    <a class="card p-4 hover:shadow-lg transition" href="easy-insights.html">
+      <div class="font-black text-slate-900">EasyInsights – Business Intelligence</div>
+      <div class="text-sm text-slate-600 mt-1">Local analytics: trends, top customers, risk flags (basic heuristics).</div>
+      <div class="text-xs text-slate-500 mt-2 mono">easy.insights.v1</div>
+    </a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

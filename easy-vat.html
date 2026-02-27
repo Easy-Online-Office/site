@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyVAT – VAT201 Assistant</title>
+  <meta name="description" content="Summarise VAT Output/Input for a period and export reports." />
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+/* EasyFile Add-ons */
+:root{
+  --primary:#2563eb; --primary2:#1d4ed8; --bg:#f5f7fb; --card:#ffffff;
+  --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
+  --danger:#dc2626; --success:#16a34a;
+}
+body{background:var(--bg); color:var(--text);}
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 25px rgba(2,6,23,.05);}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.65rem 1rem; border-radius:10px; font-weight:800; transition: all .15s ease; border:1px solid transparent;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:var(--primary); color:#fff;}
+.btn-primary:hover{background:var(--primary2);}
+.btn-outline{background:#fff; border-color:var(--border); color:var(--text);}
+.btn-outline:hover{border-color:#cbd5e1; background:#f8fafc;}
+.btn-danger{background:var(--danger); color:#fff;}
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
+.responsive-table{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.toast{position:fixed; right:16px; bottom:16px; z-index:9999;}
+.toast>div{background:rgba(2,6,23,.92); color:#fff; border-radius:12px; padding:12px 14px; max-width:360px;}
+@media print{ .no-print{display:none !important;} body{background:#fff !important;} .card{box-shadow:none !important; border:none !important;} }
+
+  </style>
+</head>
+<body class="min-h-screen">
+
+<nav class="bg-blue-600 text-white py-4 no-print">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a data-safe-link href="index.html" class="font-black text-xl mr-2">Easy&nbsp;Suite</a>
+    &lt;a data-safe-link href=&quot;index.html&quot; class=&quot;hover:underline&quot;&gt;Home&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-quote.html&quot; class=&quot;hover:underline&quot;&gt;Quote&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-invoice.html&quot; class=&quot;hover:underline&quot;&gt;Invoice&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-purchase-order.html&quot; class=&quot;hover:underline&quot;&gt;Purchase Order&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-sales-order.html&quot; class=&quot;hover:underline&quot;&gt;Sales Order&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-receipt.html&quot; class=&quot;hover:underline&quot;&gt;Receipt&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-statement.html&quot; class=&quot;hover:underline&quot;&gt;Statement&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-job-card.html&quot; class=&quot;hover:underline&quot;&gt;Job Card&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-payroll.html&quot; class=&quot;hover:underline&quot;&gt;Payroll&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-inventory.html&quot; class=&quot;hover:underline&quot;&gt;Inventory&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-crm.html&quot; class=&quot;hover:underline&quot;&gt;CRM&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-bill.html&quot; class=&quot;hover:underline&quot;&gt;Billing&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-expenses.html&quot; class=&quot;hover:underline&quot;&gt;Expenses&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-cashflow.html&quot; class=&quot;hover:underline&quot;&gt;Cashflow&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-vat.html&quot; class=&quot;underline font-extrabold&quot;&gt;VAT&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-credit-control.html&quot; class=&quot;hover:underline&quot;&gt;Credit&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-projects.html&quot; class=&quot;hover:underline&quot;&gt;Projects&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-assets-register.html&quot; class=&quot;hover:underline&quot;&gt;Assets&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-timesheets.html&quot; class=&quot;hover:underline&quot;&gt;Timesheets&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-leave.html&quot; class=&quot;hover:underline&quot;&gt;Leave&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-approvals.html&quot; class=&quot;hover:underline&quot;&gt;Approvals&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-contracts.html&quot; class=&quot;hover:underline&quot;&gt;Contracts&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-popia.html&quot; class=&quot;hover:underline&quot;&gt;POPIA&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-audit.html&quot; class=&quot;hover:underline&quot;&gt;Audit&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-budgets.html&quot; class=&quot;hover:underline&quot;&gt;Budgets&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-pos.html&quot; class=&quot;hover:underline&quot;&gt;POS&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-insights.html&quot; class=&quot;hover:underline&quot;&gt;Insights&lt;/a&gt;
+  </div>
+</nav>
+
+<main class="container mx-auto px-4 py-8">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-extrabold text-slate-900">EasyVAT – VAT201 Assistant</h1>
+      <p class="text-sm text-slate-600 mt-1">Summarise VAT Output/Input for a period and export reports.</p>
+      <p class="text-xs text-slate-500 mt-1 mono">Store key: easy.vat.v1</p>
+    </div>
+    <div class="flex flex-wrap gap-2 no-print">
+      <button class="btn btn-outline" id="btnSeed"><i class="fa-solid fa-seedling"></i> Seed Demo</button>
+      <button class="btn btn-outline" id="btnImport"><i class="fa-solid fa-file-import"></i> Import JSON</button>
+      <input id="fileJson" type="file" class="hidden" accept="application/json,.json" />
+      <button class="btn btn-outline" id="btnExport"><i class="fa-solid fa-file-export"></i> Export</button>
+      <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+    </div>
+  </div>
+
+
+<section class="card p-5 mb-6 no-print">
+  <div class="flex items-center justify-between gap-3">
+    <div>
+      <h2 class="text-lg font-black text-slate-900">VAT Period</h2>
+      <p class="text-xs text-slate-500">Auto mode reads invoices/expenses; manual mode lets you type amounts.</p>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn btn-primary" id="btnCalc"><i class="fa-solid fa-calculator"></i> Calculate</button>
+      <button class="btn btn-outline" id="btnExportReport"><i class="fa-solid fa-file-export"></i> Export</button>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+    <div><label class="text-xs font-black text-slate-600">Start</label><input id="start" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2" /></div>
+    <div><label class="text-xs font-black text-slate-600">End</label><input id="end" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2" /></div>
+    <div><label class="text-xs font-black text-slate-600">Mode</label>
+      <select id="mode" class="w-full border border-gray-200 rounded-lg px-3 py-2">
+        <option value="auto" selected>Auto</option>
+        <option value="manual">Manual</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="card p-5"><div class="text-xs text-slate-500 font-black">VAT Output</div><div id="o" class="text-2xl font-black text-blue-700 mt-1">R0.00</div></div>
+  <div class="card p-5"><div class="text-xs text-slate-500 font-black">VAT Input</div><div id="i" class="text-2xl font-black text-emerald-700 mt-1">R0.00</div></div>
+  <div class="card p-5"><div class="text-xs text-slate-500 font-black">VAT Net</div><div id="n" class="text-2xl font-black text-indigo-700 mt-1">R0.00</div></div>
+</section>
+
+<section class="card p-5">
+  <h2 class="text-lg font-black text-slate-900 mb-2">Manual Values</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div><label class="text-xs font-black text-slate-600">Output</label><input id="mOut" type="number" step="0.01" value="0.00" class="w-full border border-gray-200 rounded-lg px-3 py-2" /></div>
+    <div><label class="text-xs font-black text-slate-600">Input</label><input id="mIn" type="number" step="0.01" value="0.00" class="w-full border border-gray-200 rounded-lg px-3 py-2" /></div>
+    <div><label class="text-xs font-black text-slate-600">Adjust</label><input id="mAdj" type="number" step="0.01" value="0.00" class="w-full border border-gray-200 rounded-lg px-3 py-2" /></div>
+  </div>
+</section>
+
+</main>
+
+<div class="toast hidden" id="toast"><div id="toastMsg"></div></div>
+
+<script>
+
+const $$ = (id) => document.getElementById(id);
+
+function escapeHtml(str){
+  return String(str || "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function saveAs(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+}
+
+function toast(msg){
+  $$("toastMsg").textContent = msg;
+  $$("toast").classList.remove("hidden");
+  setTimeout(()=> $$("toast").classList.add("hidden"), 2500);
+}
+
+function nowISO(){ return new Date().toISOString(); }
+
+function csvEscape(v){
+  const s = String(v ?? "");
+  if(/[",\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function toCSV(rows, headers){
+  const head = headers.join(",");
+  const body = rows.map(r => headers.map(h => csvEscape(r[h])).join(",")).join("\n");
+  return head + "\n" + body + "\n";
+}
+function downloadJSON(data, filename){
+  saveAs(new Blob([JSON.stringify(data,null,2)], {type:"application/json"}), filename);
+}
+function downloadCSV(rows, headers, filename){
+  saveAs(new Blob([toCSV(rows, headers)], {type:"text/csv"}), filename);
+}
+function loadStore(key, fallback){
+  try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+  catch { return fallback; }
+}
+function saveStore(key, data){
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+
+const STORE_KEY = "easy.vat.v1";
+let data = loadStore(STORE_KEY, []);
+function persist(){ saveStore(STORE_KEY, data); }
+
+function importJSONFile(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if(!Array.isArray(parsed)) throw new Error("Expected an array");
+      data = parsed;
+      persist();
+      render();
+      toast("Imported " + data.length + " rows");
+    } catch(e) {
+      console.error(e);
+      toast("Import failed");
+    }
+  };
+  reader.readAsText(file);
+}
+
+$("btnImport").addEventListener("click", ()=> $("fileJson").click());
+$("fileJson").addEventListener("change", (e)=> importJSONFile(e.target.files[0]));
+$("btnExport").addEventListener("click", ()=> exportAll());
+$("btnSeed").addEventListener("click", ()=> seed());
+
+function exportAll(){ downloadJSON(data, "easy-vat.json"); }
+
+
+function money(n){ const x=Number(n||0); return "R"+x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,","); }
+function detectKey(prefixes){
+  for(const k of Object.keys(localStorage)){
+    for(const p of prefixes){ if(k===p || k.startsWith(p)) return k; }
+  }
+  return null;
+}
+function loadMaybe(key){ if(!key) return []; try{return JSON.parse(localStorage.getItem(key)||"[]");}catch{return [];} }
+function inRange(iso,s,e){ if(!iso) return false; const d=String(iso).slice(0,10); if(s&&d<s) return false; if(e&&d>e) return false; return true; }
+function sumVatInv(inv,s,e){ return (Array.isArray(inv)?inv:[]).reduce((a,r)=> inRange(r.invoiceDate||r.date||r.ts||"",s,e)? a+Number(r.vat||r.vatTotal||0):a,0); }
+function sumVatExp(exp,s,e){ return (Array.isArray(exp)?exp:[]).reduce((a,r)=> inRange(r.date||r.ts||"",s,e)? a+Number(r.vatAmt||r.vat||0):a,0); }
+
+function calc(){
+  const mode=$$("mode").value, s=$$("start").value, e=$$("end").value;
+  let out=0, inp=0, adj=Number($$("mAdj").value||0);
+  if(mode==="manual"){ out=Number($$("mOut").value||0); inp=Number($$("mIn").value||0); }
+  else{
+    const invKey=detectKey(["easy.invoice.v2","easyinv","easy.invoice"]);
+    const inv=loadMaybe(invKey);
+    const exp=loadMaybe("easy.expenses.v1");
+    out=sumVatInv(inv,s,e); inp=sumVatExp(exp,s,e);
+  }
+  $$("o").textContent=money(out);
+  $$("i").textContent=money(inp);
+  $$("n").textContent=money(out-inp+adj);
+}
+function seed(){ toast("Seed VAT via Invoices/Expenses, or use Manual mode."); }
+function exportAll(){
+  const report={generatedAt:nowISO(), start:$$("start").value, end:$$("end").value, mode:$$("mode").value, vatOut:$$("o").textContent, vatIn:$$("i").textContent, vatNet:$$("n").textContent};
+  downloadJSON(report,"easy-vat-report.json");
+}
+$$("btnCalc").addEventListener("click", ()=>{calc(); toast("Calculated");});
+$$("btnExportReport").addEventListener("click", exportAll);
+function render(){ calc(); }
+
+render();
+</script>
+</body>
+</html>

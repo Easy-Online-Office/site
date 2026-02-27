@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyPOS – Point of Sale</title>
+  <meta name="description" content="Simple POS: cart, totals, receipt print, stock adjust (offline)." />
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+/* EasyFile Add-ons */
+:root{
+  --primary:#2563eb; --primary2:#1d4ed8; --bg:#f5f7fb; --card:#ffffff;
+  --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
+  --danger:#dc2626; --success:#16a34a;
+}
+body{background:var(--bg); color:var(--text);}
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 25px rgba(2,6,23,.05);}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.65rem 1rem; border-radius:10px; font-weight:800; transition: all .15s ease; border:1px solid transparent;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:var(--primary); color:#fff;}
+.btn-primary:hover{background:var(--primary2);}
+.btn-outline{background:#fff; border-color:var(--border); color:var(--text);}
+.btn-outline:hover{border-color:#cbd5e1; background:#f8fafc;}
+.btn-danger{background:var(--danger); color:#fff;}
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
+.responsive-table{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.toast{position:fixed; right:16px; bottom:16px; z-index:9999;}
+.toast>div{background:rgba(2,6,23,.92); color:#fff; border-radius:12px; padding:12px 14px; max-width:360px;}
+@media print{ .no-print{display:none !important;} body{background:#fff !important;} .card{box-shadow:none !important; border:none !important;} }
+
+  </style>
+</head>
+<body class="min-h-screen">
+
+<nav class="bg-blue-600 text-white py-4 no-print">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a data-safe-link href="index.html" class="font-black text-xl mr-2">Easy&nbsp;Suite</a>
+    &lt;a data-safe-link href=&quot;index.html&quot; class=&quot;hover:underline&quot;&gt;Home&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-quote.html&quot; class=&quot;hover:underline&quot;&gt;Quote&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-invoice.html&quot; class=&quot;hover:underline&quot;&gt;Invoice&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-purchase-order.html&quot; class=&quot;hover:underline&quot;&gt;Purchase Order&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-sales-order.html&quot; class=&quot;hover:underline&quot;&gt;Sales Order&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-receipt.html&quot; class=&quot;hover:underline&quot;&gt;Receipt&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-statement.html&quot; class=&quot;hover:underline&quot;&gt;Statement&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-job-card.html&quot; class=&quot;hover:underline&quot;&gt;Job Card&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-payroll.html&quot; class=&quot;hover:underline&quot;&gt;Payroll&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-inventory.html&quot; class=&quot;hover:underline&quot;&gt;Inventory&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-crm.html&quot; class=&quot;hover:underline&quot;&gt;CRM&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-bill.html&quot; class=&quot;hover:underline&quot;&gt;Billing&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-expenses.html&quot; class=&quot;hover:underline&quot;&gt;Expenses&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-cashflow.html&quot; class=&quot;hover:underline&quot;&gt;Cashflow&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-vat.html&quot; class=&quot;hover:underline&quot;&gt;VAT&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-credit-control.html&quot; class=&quot;hover:underline&quot;&gt;Credit&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-projects.html&quot; class=&quot;hover:underline&quot;&gt;Projects&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-assets-register.html&quot; class=&quot;hover:underline&quot;&gt;Assets&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-timesheets.html&quot; class=&quot;hover:underline&quot;&gt;Timesheets&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-leave.html&quot; class=&quot;hover:underline&quot;&gt;Leave&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-approvals.html&quot; class=&quot;hover:underline&quot;&gt;Approvals&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-contracts.html&quot; class=&quot;hover:underline&quot;&gt;Contracts&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-popia.html&quot; class=&quot;hover:underline&quot;&gt;POPIA&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-audit.html&quot; class=&quot;hover:underline&quot;&gt;Audit&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-budgets.html&quot; class=&quot;hover:underline&quot;&gt;Budgets&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-pos.html&quot; class=&quot;underline font-extrabold&quot;&gt;POS&lt;/a&gt;
+      &lt;a data-safe-link href=&quot;easy-insights.html&quot; class=&quot;hover:underline&quot;&gt;Insights&lt;/a&gt;
+  </div>
+</nav>
+
+<main class="container mx-auto px-4 py-8">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-extrabold text-slate-900">EasyPOS – Point of Sale</h1>
+      <p class="text-sm text-slate-600 mt-1">Simple POS: cart, totals, receipt print, stock adjust (offline).</p>
+      <p class="text-xs text-slate-500 mt-1 mono">Store key: easy.pos.v1</p>
+    </div>
+    <div class="flex flex-wrap gap-2 no-print">
+      <button class="btn btn-outline" id="btnSeed"><i class="fa-solid fa-seedling"></i> Seed Demo</button>
+      <button class="btn btn-outline" id="btnImport"><i class="fa-solid fa-file-import"></i> Import JSON</button>
+      <input id="fileJson" type="file" class="hidden" accept="application/json,.json" />
+      <button class="btn btn-outline" id="btnExport"><i class="fa-solid fa-file-export"></i> Export</button>
+      <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
+    </div>
+  </div>
+
+
+<section class="card p-5">
+  <div class="flex items-center justify-between gap-3">
+    <div>
+      <h2 class="text-lg font-black text-slate-900">EasyPOS</h2>
+      <p class="text-xs text-slate-500">Offline POS: products from Inventory (easy.inventory.v2) or seed demo, cart totals, sales log.</p>
+    </div>
+    <div class="flex gap-2 no-print">
+      <button class="btn btn-outline" id="btnLoadInv"><i class="fa-solid fa-rotate"></i> Load Inventory</button>
+      <button class="btn btn-outline" id="btnClearSales"><i class="fa-solid fa-trash"></i> Clear Sales</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+    <div>
+      <div class="font-black text-slate-800 mb-2">Products</div>
+      <input id="pSearch" class="w-full border border-gray-200 rounded-lg px-3 py-2 mb-2" placeholder="Search..." />
+      <div class="responsive-table">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-50 text-slate-600"><tr><th class="p-3">SKU</th><th class="p-3">Name</th><th class="p-3 text-right">Price</th><th class="p-3 text-center no-print">Add</th></tr></thead>
+          <tbody id="prodRows" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="font-black text-slate-800 mb-2">Cart</div>
+      <div id="cartLines" class="space-y-2"></div>
+      <div class="border-t border-gray-100 mt-3 pt-3 text-sm">
+        <div class="flex justify-between"><span class="font-bold">Subtotal</span><span class="mono" id="cSub">R0.00</span></div>
+        <div class="flex justify-between"><span class="font-bold">VAT %</span><input id="vatPct" type="number" value="15" class="w-20 border border-gray-200 rounded px-2 py-1 text-right mono" /></div>
+        <div class="flex justify-between"><span class="font-bold">VAT</span><span class="mono" id="cVat">R0.00</span></div>
+        <div class="flex justify-between text-base"><span class="font-black">TOTAL</span><span class="mono font-black" id="cTot">R0.00</span></div>
+      </div>
+      <div class="flex gap-2 mt-3 no-print">
+        <button class="btn btn-primary" id="btnCheckout"><i class="fa-solid fa-cash-register"></i> Checkout</button>
+        <button class="btn btn-outline" id="btnExportSale"><i class="fa-solid fa-file-export"></i> Export Sales</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6">
+    <div class="font-black text-slate-800 mb-2">Sales Log</div>
+    <div class="responsive-table">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50 text-slate-600"><tr><th class="p-3">Time</th><th class="p-3">Items</th><th class="p-3 text-right">Total</th></tr></thead>
+        <tbody id="salesRows" class="divide-y divide-gray-100"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="toast hidden" id="toast"><div id="toastMsg"></div></div>
+
+<script>
+
+const $$ = (id) => document.getElementById(id);
+
+function escapeHtml(str){
+  return String(str || "").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function saveAs(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+}
+
+function toast(msg){
+  $$("toastMsg").textContent = msg;
+  $$("toast").classList.remove("hidden");
+  setTimeout(()=> $$("toast").classList.add("hidden"), 2500);
+}
+
+function nowISO(){ return new Date().toISOString(); }
+
+function csvEscape(v){
+  const s = String(v ?? "");
+  if(/[",\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function toCSV(rows, headers){
+  const head = headers.join(",");
+  const body = rows.map(r => headers.map(h => csvEscape(r[h])).join(",")).join("\n");
+  return head + "\n" + body + "\n";
+}
+function downloadJSON(data, filename){
+  saveAs(new Blob([JSON.stringify(data,null,2)], {type:"application/json"}), filename);
+}
+function downloadCSV(rows, headers, filename){
+  saveAs(new Blob([toCSV(rows, headers)], {type:"text/csv"}), filename);
+}
+function loadStore(key, fallback){
+  try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
+  catch { return fallback; }
+}
+function saveStore(key, data){
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+
+const STORE_KEY = "easy.pos.v1";
+let data = loadStore(STORE_KEY, []);
+function persist(){ saveStore(STORE_KEY, data); }
+
+function importJSONFile(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if(!Array.isArray(parsed)) throw new Error("Expected an array");
+      data = parsed;
+      persist();
+      render();
+      toast("Imported " + data.length + " rows");
+    } catch(e) {
+      console.error(e);
+      toast("Import failed");
+    }
+  };
+  reader.readAsText(file);
+}
+
+$("btnImport").addEventListener("click", ()=> $("fileJson").click());
+$("fileJson").addEventListener("change", (e)=> importJSONFile(e.target.files[0]));
+$("btnExport").addEventListener("click", ()=> exportAll());
+$("btnSeed").addEventListener("click", ()=> seed());
+
+function exportAll(){ downloadJSON(data, "easy-pos.json"); }
+
+
+const INV_KEY="easy.inventory.v2";
+const SALES_KEY="easy.pos.sales.v1";
+let products=[];
+let cart=[];
+
+function money(n){ const x=Number(n||0); return "R"+x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,","); }
+function loadInv(){ const inv=loadStore(INV_KEY,[]); products=Array.isArray(inv)?inv:[]; renderProducts(); toast("Loaded "+products.length+" products"); }
+function seed(){ products=[{sku:"SKU001",name:"Demo Item 1",price:100},{sku:"SKU002",name:"Demo Item 2",price:50}]; renderProducts(); toast("Seeded demo products"); }
+
+function renderProducts(){
+  const q=($$("pSearch").value||"").toLowerCase().trim();
+  const tb=$$("prodRows"); tb.innerHTML="";
+  const list=products.filter(p=>{const hay=(String(p.sku||"")+" "+String(p.name||"")).toLowerCase(); return !q||hay.includes(q);});
+  if(!list.length){ tb.innerHTML=`<tr><td colspan="4" class="p-6 text-center text-slate-500">No products.</td></tr>`; return; }
+  list.slice(0,200).forEach(p=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td class="p-3 mono">$${escapeHtml(p.sku||"")}</td>
+      <td class="p-3">$${escapeHtml(p.name||"")}</td>
+      <td class="p-3 text-right mono">$${money(p.price||0)}</td>
+      <td class="p-3 text-center no-print"><button class="btn btn-outline" data-add="$${escapeHtml(p.sku||"")}"><i class="fa-solid fa-plus"></i></button></td>
+    `;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>addToCart(b.getAttribute("data-add"))));
+}
+
+function addToCart(sku){
+  const p=products.find(x=>String(x.sku).toUpperCase()===String(sku).toUpperCase());
+  if(!p){ toast("Not found"); return; }
+  const line=cart.find(x=>x.sku===p.sku);
+  if(line) line.qty+=1;
+  else cart.push({sku:p.sku,name:p.name,price:Number(p.price||0),qty:1});
+  renderCart();
+}
+
+function renderCart(){
+  const wrap=$$("cartLines"); wrap.innerHTML="";
+  if(!cart.length){ wrap.innerHTML=`<div class="text-sm text-slate-500">Cart is empty.</div>`; calcTotals(); return; }
+  cart.forEach((l,idx)=>{
+    const div=document.createElement("div");
+    div.className="border border-gray-200 rounded-xl p-3";
+    div.innerHTML=`
+      <div class="flex justify-between gap-2">
+        <div>
+          <div class="font-black text-slate-900">$${escapeHtml(l.name)}</div>
+          <div class="text-xs text-slate-500 mono">$${escapeHtml(l.sku)} • $${money(l.price)}</div>
+        </div>
+        <button class="btn btn-danger no-print" data-rm="$${idx}"><i class="fa-solid fa-trash"></i></button>
+      </div>
+      <div class="flex items-center justify-between mt-2">
+        <div class="text-xs text-slate-500 font-black">QTY</div>
+        <input class="w-24 border border-gray-200 rounded px-2 py-1 text-right mono" type="number" min="1" value="$${l.qty}" data-qty="$${idx}" />
+      </div>
+    `;
+    wrap.appendChild(div);
+  });
+  wrap.querySelectorAll("[data-rm]").forEach(b=>b.addEventListener("click",()=>{cart.splice(Number(b.getAttribute("data-rm")),1); renderCart();}));
+  wrap.querySelectorAll("[data-qty]").forEach(inp=>inp.addEventListener("input",()=>{const idx=Number(inp.getAttribute("data-qty")); cart[idx].qty=Math.max(1,Number(inp.value||1)); calcTotals();}));
+  calcTotals();
+}
+
+function calcTotals(){
+  const sub=cart.reduce((a,l)=>a+Number(l.qty||0)*Number(l.price||0),0);
+  const vp=Number($$("vatPct").value||0)/100;
+  const vat=sub*vp;
+  const tot=sub+vat;
+  $$("cSub").textContent=money(sub);
+  $$("cVat").textContent=money(vat);
+  $$("cTot").textContent=money(tot);
+  return {sub,vat,tot};
+}
+
+function loadSales(){ return loadStore(SALES_KEY,[]); }
+function saveSales(s){ saveStore(SALES_KEY,s.slice(0,50)); }
+
+function checkout(){
+  if(!cart.length){ toast("Cart empty"); return; }
+  const totals=calcTotals();
+  const sale={ts:nowISO(), lines:cart.map(x=>({...x})), totals};
+  const sales=loadSales(); sales.unshift(sale); saveSales(sales);
+  cart=[]; renderCart(); renderSales(); toast("Sale saved");
+}
+
+function renderSales(){
+  const tb=$$("salesRows"); const sales=loadSales(); tb.innerHTML="";
+  if(!sales.length){ tb.innerHTML=`<tr><td colspan="3" class="p-6 text-center text-slate-500">No sales.</td></tr>`; return; }
+  sales.forEach(s=>{
+    const items=s.lines.reduce((a,l)=>a+Number(l.qty||0),0);
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td class="p-3 mono">$${escapeHtml(new Date(s.ts).toLocaleString())}</td><td class="p-3">$${items} items</td><td class="p-3 text-right mono">$${money(s.totals?.tot||0)}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function exportAll(){ downloadJSON(loadSales(),"easy-pos-sales.json"); }
+
+$$("btnLoadInv").addEventListener("click", loadInv);
+$$("btnClearSales").addEventListener("click", ()=>{ if(confirm("Clear sales log?")){ saveSales([]); renderSales(); toast("Cleared"); }});
+$$("btnCheckout").addEventListener("click", checkout);
+$$("btnExportSale").addEventListener("click", exportAll);
+$$("pSearch").addEventListener("input", renderProducts);
+$$("vatPct").addEventListener("input", calcTotals);
+
+function render(){ renderProducts(); renderCart(); renderSales(); }
+
+render();
+</script>
+</body>
+</html>
