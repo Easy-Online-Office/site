@@ -1,0 +1,41 @@
+name: Sync Nav Across HTML (Auto)
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "*.html"
+      - "**/*.html"
+      - "partials/nav.html"
+      - "scripts/sync-nav.js"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync-nav:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Generate + sync nav
+        run: node scripts/sync-nav.js
+
+      - name: Commit changes (if any)
+        run: |
+          if git status --porcelain | grep -q .; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "chore: auto-sync nav across html pages"
+            git push
+          else
+            echo "No changes to commit."
+          fi
