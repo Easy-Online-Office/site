@@ -1,0 +1,8 @@
+
+# Easy Suite backups
+*.html.bak
+
+
+# Easy Suite normalization backups
+*.html.bak
+
