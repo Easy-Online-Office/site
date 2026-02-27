@@ -50,8 +50,23 @@
 
   <!-- Easy Suite mounts (injected) -->
   <div id="easyNavMount" class="no-print"></div>
-  <div id="easyHeaderMount" class="no-print"></div>
-<!-- HEADER:START --><!-- HEADER:END --><!-- NAV -->
+<header class="bg-white border-b border-gray-200 no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">IV</div>
+      <div>
+        <h1 class="text-2xl font-extrabold text-blue-700">EasyINVTR</h1>
+        <p class="text-sm text-gray-500">Feature-Rich Inventory Manager</p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
+        <i class="fa-solid fa-gauge"></i> Dashboard
+      </a>
+    </div>
+  </div>
+</header><!-- HEADER:START --><!-- HEADER:END --><!-- NAV -->
 <!-- NAV:START --></div>
   </div>
 </div>
@@ -183,7 +198,7 @@
           <h3 id="modalTitle" class="text-xl font-black text-slate-900">Add Product</h3>
           <p class="text-xs text-slate-500">SKU must be unique.</p>
         </div>
-        <button id="btnClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">Ãƒ-</button>
+        <button id="btnClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">ÃƒÆ’Ã†â€™-</button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
@@ -236,7 +251,7 @@
           <h3 class="text-xl font-black text-slate-900">Adjust Stock</h3>
           <p id="adjSku" class="text-xs text-slate-500 mono"></p>
         </div>
-        <button id="adjClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">Ãƒ-</button>
+        <button id="adjClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">ÃƒÆ’Ã†â€™-</button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
@@ -523,7 +538,7 @@ function openAdjust(sku){
   if(!item){ toast("Product not found: " + s); return; }
 
   adjTargetSku = s;
-  $("adjSku").textContent = s + " Ã¢â‚¬Â¢ Current stock: " + Number(item.stock||0);
+  $("adjSku").textContent = s + " ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ Current stock: " + Number(item.stock||0);
   $("adjType").value = "IN";
   $("adjQty").value = "1";
   $("adjNote").value = "";

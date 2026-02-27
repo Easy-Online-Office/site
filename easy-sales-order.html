@@ -36,8 +36,23 @@
 
   <!-- Easy Suite mounts (injected) -->
   <div id="easyNavMount" class="no-print"></div>
-  <div id="easyHeaderMount" class="no-print"></div>
-<!-- HEADER:START --><!-- HEADER:END --><!-- NAV -->
+<header class="bg-white border-b border-gray-200 no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">SO</div>
+      <div>
+        <h1 class="text-2xl font-extrabold text-blue-700">EasySO</h1>
+        <p class="text-sm text-gray-500">Feature-Rich Sales Order Generator</p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
+        <i class="fa-solid fa-gauge"></i> Dashboard
+      </a>
+    </div>
+  </div>
+</header><!-- HEADER:START --><!-- HEADER:END --><!-- NAV -->
 <!-- NAV:START --></div>
   </div>
 </div>
@@ -149,7 +164,7 @@
       </td>
       <td class="border px-3 py-2 total">R0.00</td>
       <td class="border px-3 py-2 no-print">
-        <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600">Ã¢Å“*</button>
+        <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600">ÃƒÆ’Ã‚Â¢Ãƒâ€¦Ã¢â‚¬Å“*</button>
       </td>
     `;
 

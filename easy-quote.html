@@ -37,8 +37,23 @@
 
   <!-- Easy Suite mounts (injected) -->
   <div id="easyNavMount" class="no-print"></div>
-  <div id="easyHeaderMount" class="no-print"></div>
-<!-- HEADER:START --><!-- HEADER:END --><!-- NAVIGATION -->
+<header class="bg-white border-b border-gray-200 no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">Q</div>
+      <div>
+        <h1 class="text-2xl font-extrabold text-blue-700">EasyQUOTE</h1>
+        <p class="text-sm text-gray-500">Feature-Rich Quote Generator</p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
+        <i class="fa-solid fa-gauge"></i> Dashboard
+      </a>
+    </div>
+  </div>
+</header><!-- HEADER:START --><!-- HEADER:END --><!-- NAVIGATION -->
 <!-- NAV:START --></div>
   </div>
 </div>
@@ -69,7 +84,7 @@
     <select id="currency" onchange="calculate()" class="border px-2 py-1 rounded">
       <option value="R">ZAR (R)</option>
       <option value="$">USD ($)</option>
-      <option value="Ã¢â€šÂ¬">EUR (Ã¢â€šÂ¬)</option>
+      <option value="ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬">EUR (ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬)</option>
     </select>
   </div>
 </div>
@@ -191,7 +206,7 @@ function addRow(description="", qty=1, unit=0, disc=0) {
     </td>
     <td class="border p-1 text-right total">0.00</td>
     <td class="border p-1 text-center no-print">
-      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">Ãƒ-</button>
+      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">ÃƒÆ’Ã†â€™-</button>
     </td>
   `;
 
