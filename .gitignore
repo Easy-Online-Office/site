@@ -6,3 +6,7 @@
 # Easy Suite normalization backups
 *.html.bak
 
+
+# backups
+*.html.bak
+
