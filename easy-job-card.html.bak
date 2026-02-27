@@ -1,24 +1,29 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-ZA">
 <head>
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyINV â€“ Feature-Rich Invoice Generator</title>
-  
+  <title>EasyJC â€“ Job Card Manager</title>
+  <meta name="description" content="Create and manage job cards for service and repair work. Track labour, parts and costs; preview and export summaries to PDF, Word, Excel or CSV." />
 
-  <!-- Favicon -->
+  <!-- Favicon (optional: put your icon file in the same folder or adjust path) -->
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="apple-touch-icon" href="icon.png">
-<meta name="description" content="Create professional invoices in seconds. Preview, print, export PDF/Word/Excel/CSV, and save templates locally." />
-  
-  <!-- Favicon --><link rel="alternate icon" href="favicon.ico" type="image/x-icon"><!-- Tailwind CSS -->
+
+  <!-- Tailwind CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 
-  <!-- Libraries removed -->
-  <!-- External PDF/Excel/Word libraries have been removed to ensure the page functions offline.  -->
+  <!-- External Libraries -->
+  <!-- PDF generation library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Excel and file saver libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <!-- Word export library (docx.js) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.8.2/docx.js"></script>
 
-  <!-- Font Awesome -->
+  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -38,21 +43,21 @@
 
     .card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 25px rgba(2,6,23,.05);}
     .btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.7rem 1rem; border-radius:10px; font-weight:700; transition: all .2s ease; border:1px solid transparent;}
-    .btn:hover{transform:translateY(-1px);}
+    .btn:hover{transform:translateY(-1px);} 
     .btn-primary{background:var(--primary); color:#fff;}
-    .btn-primary:hover{background:var(--primary2);}
-    .btn-outline{background:#fff; border-color:var(--border); color:var(--text);}
-    .btn-outline:hover{border-color:#cbd5e1; background:#f8fafc;}
-    .btn-danger{background:var(--danger); color:#fff;}
-    .btn-danger:hover{filter:brightness(.95);}
-    .btn-success{background:var(--success); color:#fff;}
-    .btn-success:hover{filter:brightness(.95);}
-    .badge{display:inline-flex; align-items:center; gap:.4rem; padding:.25rem .6rem; border-radius:999px; font-weight:800; font-size:.75rem;}
-    .badge-draft{background:#eef2ff; color:#3730a3;}
-    .badge-sent{background:#ecfeff; color:#155e75;}
-    .badge-paid{background:#dcfce7; color:#166534;}
-    .badge-overdue{background:#fee2e2; color:#991b1b;}
-    .badge-partial{background:#ffedd5; color:#9a3412;}
+    .btn-primary:hover{background:var(--primary2);} 
+    .btn-outline{background:#fff; border-color:var(--border); color:var(--text);} 
+    .btn-outline:hover{border-color:#cbd5e1; background:#f8fafc;} 
+    .btn-danger{background:var(--danger); color:#fff;} 
+    .btn-danger:hover{filter:brightness(.95);} 
+    .btn-success{background:var(--success); color:#fff;} 
+    .btn-success:hover{filter:brightness(.95);} 
+    .badge{display:inline-flex; align-items:center; gap:.4rem; padding:.25rem .6rem; border-radius:999px; font-weight:800; font-size:.75rem;} 
+    .badge-draft{background:#eef2ff; color:#3730a3;} 
+    .badge-open{background:#ecfdf5; color:#065f46;} 
+    .badge-progress{background:#fff7ed; color:#92400e;} 
+    .badge-completed{background:#dcfce7; color:#166534;} 
+    .badge-cancelled{background:#fee2e2; color:#991b1b;} 
 
     input:focus, textarea:focus, select:focus{
       outline:none!important;
@@ -63,7 +68,6 @@
     .responsive-table {overflow-x:auto; -webkit-overflow-scrolling:touch;}
     .mono {font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
 
-    /* Print-friendly manual style */
     @media print {
       .no-print { display:none !important; }
       .print-only { display:block !important; }
@@ -76,38 +80,39 @@
       tfoot { display:table-footer-group; }
     }
   </style>
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
-  <script defer src="assets/js/easy-suite-core.js"></script>
 </head>
 
 <body class="min-h-screen flex flex-col">
-
-  <!-- Easy Suite mounts (injected) -->
-  <div id="easyNavMount" class="no-print"></div>
-  <div id="easyHeaderMount" class="no-print"></div>
-<!-- HEADER:START --><!-- HEADER:END --><!-- Navigation -->
-  <!-- NAV:START --><div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasyJC</h1>
-        <p class="text-sm text-gray-500">Job Card Manager</p>
-      </div>
-    </div>
+<!-- HEADER:START --><!-- HEADER:END --><!-- NAV:START -->
+<nav class="bg-blue-600 text-white py-4 no-print">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a href="index.html" class="font-bold text-xl mr-4">Easy&nbsp;Suite</a>
+    <a href="easy-quote.html" class="hover:underline">Quote</a>
+    <a href="easy-invoice.html" class="hover:underline">Invoice</a>
+    <a href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
+    <a href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
+    <a href="easy-receipt.html" class="hover:underline">Receipt</a>
+    <a href="easy-statement.html" class="hover:underline">Statement</a>
+    <a href="easy-job-card.html" class="underline font-semibold">Job&nbsp;Card</a>
+    <a href="easy-payroll.html" class="hover:underline">Payroll</a>
+    <a href="easy-inventory.html" class="hover:underline">Inventory</a>
+    <a href="easy-crm.html" class="hover:underline">CRM</a>
   </div>
-</div>
+</nav>
 <!-- NAV:END -->
-
-<!-- Header -->
+  <!-- Header -->
   <header class="bg-white border-b border-gray-200 no-print">
     <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">EI</div>
+        <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">JC</div>
         <div>
-          <h1 class="text-2xl font-extrabold text-blue-700">EasyINV</h1>
-          <p class="text-sm text-gray-500">Feature-Rich Invoice Generator</p>
+          <h1 class="text-2xl font-extrabold text-blue-700">EasyJC</h1>
+          <p class="text-sm text-gray-500">Job Card Manager</p>
         </div>
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <button class="btn btn-outline" id="btnSaveTemplate" title="Save current invoice as a template">
+        <button class="btn btn-outline" id="btnSaveTemplate" title="Save current job card as a template">
           <i class="fa-solid fa-floppy-disk"></i> Save
         </button>
         <button class="btn btn-outline" id="btnLoadTemplate" title="Load a saved template">
@@ -133,27 +138,26 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Add your company + client details â†’ 2) Add line items â†’ 3) Preview â†’ 4) Export PDF/Word/Excel/CSV â†’ 5) Save as a template.
+            1) Fill company + customer details â†’ 2) Describe job + assign staff â†’ 3) Add labour & parts â†’ 4) Preview â†’ 5) Export PDF/Word/Excel/CSV â†’ 6) Save as template.
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Top Grid: Parties + Invoice Meta -->
+    <!-- Top Grid: Parties + Job Meta -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-      <!-- Company -->
+      <!-- Company (Issuer) -->
       <section class="card p-5">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-extrabold"><i class="fa-solid fa-building text-blue-600 mr-2"></i>Company</h2>
-          <span class="text-xs text-slate-500">Sender</span>
+          <span class="text-xs text-slate-500">Issuer</span>
         </div>
 
         <div class="space-y-3">
           <div>
             <label class="block text-sm font-bold text-slate-700 mb-1">Company Logo</label>
             <input type="file" id="companyLogo" accept="image/*"
-              class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
+              class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             <div id="companyLogoPreview" class="mt-2 h-14 flex items-center">
               <p class="text-sm text-slate-400">No logo uploaded</p>
             </div>
@@ -198,31 +202,31 @@
 
           <div class="border-t border-gray-100 pt-3">
             <label class="block text-sm font-bold text-slate-700 mb-1">Bank Details (optional)</label>
-            <textarea id="companyBank" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Bank: ...&#10;Account: ...&#10;Branch: ...&#10;Reference: Invoice #"></textarea>
+            <textarea id="companyBank" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Bank: ...&#10;Account: ...&#10;Branch: ...&#10;Reference: Job #"></textarea>
           </div>
         </div>
       </section>
 
-      <!-- Client -->
+      <!-- Customer / Client -->
       <section class="card p-5">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-extrabold"><i class="fa-solid fa-user-tie text-blue-600 mr-2"></i>Client</h2>
-          <span class="text-xs text-slate-500">Bill To</span>
+          <h2 class="text-lg font-extrabold"><i class="fa-solid fa-user-tie text-blue-600 mr-2"></i>Customer</h2>
+          <span class="text-xs text-slate-500">For whom</span>
         </div>
 
         <div class="space-y-3">
           <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Client Name</label>
-            <input id="clientName" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Client Company / Person">
+            <label class="block text-sm font-bold text-slate-700 mb-1">Customer Name</label>
+            <input id="clientName" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Customer Company / Person">
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Client VAT</label>
+              <label class="block text-sm font-bold text-slate-700 mb-1">Customer VAT</label>
               <input id="clientVat" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Optional">
             </div>
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Client Reg/ID</label>
+              <label class="block text-sm font-bold text-slate-700 mb-1">Customer Reg/ID</label>
               <input id="clientReg" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Optional">
             </div>
           </div>
@@ -244,29 +248,29 @@
         </div>
       </section>
 
-      <!-- Invoice Meta -->
+      <!-- Job Meta -->
       <section class="card p-5">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-extrabold"><i class="fa-solid fa-file-invoice text-blue-600 mr-2"></i>Invoice</h2>
+          <h2 class="text-lg font-extrabold"><i class="fa-solid fa-clipboard-list text-blue-600 mr-2"></i>Job</h2>
           <span id="statusBadge" class="badge badge-draft"><i class="fa-solid fa-pen"></i> DRAFT</span>
         </div>
 
         <div class="space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Invoice #</label>
-              <input id="invoiceNumber" class="w-full border border-gray-200 rounded-lg px-3 py-2 mono" placeholder="INV0000001">
+              <label class="block text-sm font-bold text-slate-700 mb-1">Job Card #</label>
+              <input id="jobNumber" class="w-full border border-gray-200 rounded-lg px-3 py-2 mono" placeholder="JOB0000001">
             </div>
             <div>
               <label class="block text-sm font-bold text-slate-700 mb-1">Reference</label>
-              <input id="invoiceReference" class="w-full border border-gray-200 rounded-lg px-3 py-2 mono" placeholder="PO / SO / Job ref">
+              <input id="jobReference" class="w-full border border-gray-200 rounded-lg px-3 py-2 mono" placeholder="Work order / Ticket ref">
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Issue Date</label>
-              <input id="invoiceDate" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2">
+              <label class="block text-sm font-bold text-slate-700 mb-1">Start Date</label>
+              <input id="jobDate" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2">
             </div>
             <div>
               <label class="block text-sm font-bold text-slate-700 mb-1">Due Date</label>
@@ -287,30 +291,27 @@
             </div>
             <div>
               <label class="block text-sm font-bold text-slate-700 mb-1">Status</label>
-              <select id="invoiceStatus" class="w-full border border-gray-200 rounded-lg px-3 py-2">
+              <select id="jobStatus" class="w-full border border-gray-200 rounded-lg px-3 py-2">
                 <option value="draft" selected>Draft</option>
-                <option value="sent">Sent</option>
-                <option value="partial">Partially Paid</option>
-                <option value="paid">Paid</option>
-                <option value="overdue">Overdue</option>
+                <option value="open">Open</option>
+                <option value="progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
               </select>
             </div>
           </div>
 
-          <div class="border-t border-gray-100 pt-3 space-y-3">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">Overall Discount %</label>
-                <input id="overallDiscount" type="number" min="0" max="100" step="0.01" value="0.00"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2">
-              </div>
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">Shipping / Delivery</label>
-                <input id="shipping" type="number" min="0" step="0.01" value="0.00"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2">
-              </div>
-            </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Job Description</label>
+            <textarea id="jobDescription" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Describe the work to be done..."></textarea>
+          </div>
 
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">Assigned To</label>
+            <input id="jobAssigned" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Technician / Staff name">
+          </div>
+
+          <div class="border-t border-gray-100 pt-3 space-y-3">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block text-sm font-bold text-slate-700 mb-1">Amount Paid</label>
@@ -318,18 +319,18 @@
                   class="w-full border border-gray-200 rounded-lg px-3 py-2">
               </div>
               <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">Default VAT % (new lines)</label>
-                <input id="defaultVat" type="number" min="0" max="100" step="0.01" value="15.00"
+                <label class="block text-sm font-bold text-slate-700 mb-1">Job Deposit</label>
+                <input id="jobDeposit" type="number" min="0" step="0.01" value="0.00"
                   class="w-full border border-gray-200 rounded-lg px-3 py-2">
               </div>
             </div>
 
             <div class="flex items-center justify-between gap-3">
               <button class="btn btn-outline w-full" id="btnNewNumber">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> New Invoice #
+                <i class="fa-solid fa-wand-magic-sparkles"></i> New Job #
               </button>
-              <button class="btn btn-outline w-full" id="btnMarkPaid">
-                <i class="fa-solid fa-check"></i> Mark Paid
+              <button class="btn btn-outline w-full" id="btnMarkCompleted">
+                <i class="fa-solid fa-check"></i> Mark Completed
               </button>
             </div>
           </div>
@@ -337,12 +338,12 @@
       </section>
     </div>
 
-    <!-- Line Items -->
+    <!-- Line Items (Labour & Parts) -->
     <section class="card p-5 mb-6">
       <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-4">
-        <h2 class="text-lg font-extrabold"><i class="fa-solid fa-list-check text-blue-600 mr-2"></i>Line Items</h2>
+        <h2 class="text-lg font-extrabold"><i class="fa-solid fa-list-check text-blue-600 mr-2"></i>Labour &amp; Parts</h2>
         <div class="flex flex-wrap gap-2 no-print">
-          <button class="btn btn-outline" id="btnImportCSV" title="Import line items from CSV (Description,Qty,Rate,Disc%,VAT%)">
+          <button class="btn btn-outline" id="btnImportCSV" title="Import lines from CSV (Description,Hours,Rate,Parts)">
             <i class="fa-solid fa-file-import"></i> Import CSV
           </button>
           <input type="file" id="csvFile" accept=".csv" class="hidden">
@@ -357,12 +358,10 @@
           <thead>
             <tr class="bg-gray-50 text-gray-600">
               <th class="border border-gray-200 p-2 text-left">Description</th>
-              <th class="border border-gray-200 p-2 text-center">Qty</th>
-              <th class="border border-gray-200 p-2 text-center">Rate (Excl.)</th>
-              <th class="border border-gray-200 p-2 text-center">Disc %</th>
-              <th class="border border-gray-200 p-2 text-center">VAT %</th>
-              <th class="border border-gray-200 p-2 text-right">Total Excl.</th>
-              <th class="border border-gray-200 p-2 text-right">Total Incl.</th>
+              <th class="border border-gray-200 p-2 text-center">Hours</th>
+              <th class="border border-gray-200 p-2 text-center">Rate</th>
+              <th class="border border-gray-200 p-2 text-center">Parts</th>
+              <th class="border border-gray-200 p-2 text-right">Total</th>
               <th class="border border-gray-200 p-2 text-center no-print">Action</th>
             </tr>
           </thead>
@@ -376,13 +375,13 @@
       <section class="card p-5">
         <h2 class="text-lg font-extrabold mb-3"><i class="fa-solid fa-note-sticky text-blue-600 mr-2"></i>Notes</h2>
         <textarea id="notes" rows="6" class="w-full border border-gray-200 rounded-lg px-3 py-2"
-          placeholder="Optional notes to client (delivery details, contact person, etc.)"></textarea>
+          placeholder="Additional notes or instructions..."></textarea>
       </section>
 
       <section class="card p-5">
         <h2 class="text-lg font-extrabold mb-3"><i class="fa-solid fa-file-contract text-blue-600 mr-2"></i>Terms</h2>
         <textarea id="terms" rows="6" class="w-full border border-gray-200 rounded-lg px-3 py-2"
-          placeholder="Payment terms, late fees, warranty conditions, etc."></textarea>
+          placeholder="Payment terms, warranty conditions, etc."></textarea>
       </section>
     </div>
 
@@ -391,43 +390,28 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div class="lg:col-span-2">
           <h2 class="text-lg font-extrabold mb-2"><i class="fa-solid fa-calculator text-blue-600 mr-2"></i>Totals</h2>
-          <p class="text-sm text-slate-500">Totals update automatically. Discount logic: line discount first, then overall discount on subtotal.</p>
+          <p class="text-sm text-slate-500">Sum of labour and parts cost. Balance due equals subtotal minus amount paid.</p>
         </div>
 
         <div class="lg:col-span-1">
           <div class="space-y-2 text-sm">
             <div class="flex justify-between border-t border-gray-100 pt-2">
-              <span class="font-bold text-slate-700">Subtotal (Excl.)</span>
+              <span class="font-bold text-slate-700">Subtotal</span>
               <span id="tSubtotal" class="font-extrabold mono">R0.00</span>
             </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Line Discounts</span>
-              <span id="tLineDiscount" class="font-extrabold mono">R0.00</span>
+            <div class="flex justify-between border-t border-gray-100 pt-2">
+              <span class="font-bold text-slate-700">Job Deposit</span>
+              <span id="tDeposit" class="font-extrabold mono">R0.00</span>
             </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Overall Discount</span>
-              <span id="tOverallDiscount" class="font-extrabold mono">R0.00</span>
+            <div class="flex justify-between border-t border-gray-100 pt-2">
+              <span class="font-bold text-slate-700">AMOUNT PAID</span>
+              <span id="tPaid" class="font-extrabold mono">R0.00</span>
             </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">VAT Total</span>
-              <span id="tVat" class="font-extrabold mono">R0.00</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Shipping</span>
-              <span id="tShipping" class="font-extrabold mono">R0.00</span>
-            </div>
-
-            <div class="flex justify-between border-t border-b border-gray-100 py-2 text-base">
+            <div class="flex justify-between border-t border-gray-200 pt-2 text-base">
               <span class="font-black text-slate-900">GRAND TOTAL</span>
               <span id="tGrand" class="font-black mono">R0.00</span>
             </div>
-
-            <div class="flex justify-between mt-3 text-base">
-              <span class="font-black text-slate-900">AMOUNT PAID</span>
-              <span id="tPaid" class="font-black mono">R0.00</span>
-            </div>
-
-            <div class="flex justify-between border-t border-gray-200 pt-3 text-lg">
+            <div class="flex justify-between border-t border-gray-200 pt-2 text-lg">
               <span class="font-black text-slate-900">BALANCE DUE</span>
               <span id="tBalance" class="font-black mono">R0.00</span>
             </div>
@@ -462,7 +446,7 @@
       <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-screen overflow-y-auto">
         <div class="p-4 flex justify-between items-center border-b border-gray-200">
           <div>
-            <h2 class="text-xl font-black text-slate-900">Invoice Preview</h2>
+            <h2 class="text-xl font-black text-slate-900">Job Card Preview</h2>
             <p class="text-xs text-slate-500">This is the export/print layout.</p>
           </div>
           <button id="btnClosePreview" class="text-slate-500 hover:text-slate-800">
@@ -482,7 +466,7 @@
     </div>
 
     <!-- Hidden Export Template -->
-    <div id="invoiceTemplate" class="hidden">
+    <div id="jobTemplate" class="hidden">
       <div class="manual-print max-w-4xl mx-auto bg-white p-6">
         <div class="flex items-start justify-between gap-6 mb-6">
           <div class="flex-1">
@@ -499,21 +483,22 @@
           </div>
 
           <div class="w-72 text-right">
-            <div class="text-3xl font-black tracking-tight">INVOICE</div>
+            <div class="text-3xl font-black tracking-tight">JOB CARD</div>
             <div class="mt-2 grid grid-cols-2 gap-x-2 text-sm">
-              <span class="text-right font-bold">NUMBER:</span><span class="text-left mono" id="tplInvNumber"></span>
-              <span class="text-right font-bold">REF:</span><span class="text-left mono" id="tplInvRef"></span>
-              <span class="text-right font-bold">DATE:</span><span class="text-left" id="tplInvDate"></span>
-              <span class="text-right font-bold">DUE:</span><span class="text-left" id="tplInvDue"></span>
-              <span class="text-right font-bold">STATUS:</span><span class="text-left" id="tplInvStatus"></span>
-              <span class="text-right font-bold">CURRENCY:</span><span class="text-left mono" id="tplInvCurrency"></span>
+              <span class="text-right font-bold">NUMBER:</span><span class="text-left mono" id="tplCardNumber"></span>
+              <span class="text-right font-bold">REF:</span><span class="text-left mono" id="tplCardRef"></span>
+              <span class="text-right font-bold">DATE:</span><span class="text-left" id="tplCardDate"></span>
+              <span class="text-right font-bold">DUE:</span><span class="text-left" id="tplCardDue"></span>
+              <span class="text-right font-bold">STATUS:</span><span class="text-left" id="tplCardStatus"></span>
+              <span class="text-right font-bold">CURRENCY:</span><span class="text-left mono" id="tplCardCurrency"></span>
+              <span class="text-right font-bold">ASSIGNED:</span><span class="text-left" id="tplAssigned"></span>
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
           <div class="border border-gray-200 rounded-lg p-4">
-            <div class="text-xs text-slate-500 font-black mb-2">BILL TO</div>
+            <div class="text-xs text-slate-500 font-black mb-2">CUSTOMER</div>
             <div class="text-base font-black" id="tplClientName"></div>
             <div class="text-sm text-slate-600 mt-1 whitespace-pre-line" id="tplClientAddress"></div>
             <div class="text-sm text-slate-600 mt-2">
@@ -530,17 +515,20 @@
           </div>
         </div>
 
+        <div class="text-sm text-slate-700 mb-6">
+          <div class="font-bold mb-1">Job Description:</div>
+          <div id="tplJobDesc" class="whitespace-pre-line"></div>
+        </div>
+
         <div class="responsive-table mb-5">
           <table class="w-full border-collapse text-sm">
             <thead>
               <tr class="bg-gray-50">
                 <th class="border border-gray-200 p-2 text-left">Description</th>
-                <th class="border border-gray-200 p-2 text-center">Qty</th>
-                <th class="border border-gray-200 p-2 text-right">Rate</th>
-                <th class="border border-gray-200 p-2 text-center">Disc</th>
-                <th class="border border-gray-200 p-2 text-center">VAT</th>
-                <th class="border border-gray-200 p-2 text-right">Excl</th>
-                <th class="border border-gray-200 p-2 text-right">Incl</th>
+                <th class="border border-gray-200 p-2 text-center">Hours</th>
+                <th class="border border-gray-200 p-2 text-center">Rate</th>
+                <th class="border border-gray-200 p-2 text-center">Parts</th>
+                <th class="border border-gray-200 p-2 text-right">Total</th>
               </tr>
             </thead>
             <tbody id="tplItems"></tbody>
@@ -554,28 +542,16 @@
               <span class="mono" id="tplSubtotal"></span>
             </div>
             <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Line Discounts</span>
-              <span class="mono" id="tplLineDisc"></span>
+              <span class="font-bold text-slate-700">Deposit</span>
+              <span class="mono" id="tplDeposit"></span>
             </div>
             <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Overall Discount</span>
-              <span class="mono" id="tplOverallDisc"></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">VAT</span>
-              <span class="mono" id="tplVat"></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Shipping</span>
-              <span class="mono" id="tplShipping"></span>
+              <span class="font-bold text-slate-700">Paid</span>
+              <span class="mono" id="tplPaid"></span>
             </div>
             <div class="flex justify-between border-t border-b border-gray-200 py-2 font-black text-base">
               <span>GRAND TOTAL</span>
               <span class="mono" id="tplGrand"></span>
-            </div>
-            <div class="flex justify-between mt-2">
-              <span class="font-black text-slate-900">PAID</span>
-              <span class="mono font-black" id="tplPaid"></span>
             </div>
             <div class="flex justify-between mt-2 text-lg font-black">
               <span>BALANCE DUE</span>
@@ -596,7 +572,7 @@
         </div>
 
         <div class="mt-6 text-xs text-slate-500 text-center">
-          Generated with EasyINV â€¢ Print-friendly output
+          Generated with EasyJC â€¢ Print-friendly output
         </div>
       </div>
     </div>
@@ -607,20 +583,10 @@
   // ===========================
   // Helpers
   // ===========================
-  // In production, avoid global alert handlers. Errors will be logged via
-  // console.error instead of interrupting the user with popâ€‘up messages.
-  // window.onerror is intentionally left undefined here.
   const $ = (id) => document.getElementById(id);
 
   function escapeHtml(str){
-    // Convert the input to a string before replacing to avoid errors when
-    // nonâ€‘string values (e.g. numbers) are passed.  Using String() ensures
-    // that truthy nonâ€‘string values like numbers or booleans are coerced to
-    // strings, and that undefined/null becomes an empty string.  Without this
-    // conversion, calling `.replace` on a number would throw an error.
-    return String(str || "").replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-    }[m]));
+    return String(str || "").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
   }
 
   function symbolForCurrency(cur){
@@ -633,35 +599,10 @@
     }
   }
 
-  // Simple file saver helper.  Replaces the external FileSaver.js dependency.
-  // Creates a download link for the provided blob and triggers a click so the
-  // browser prompts the user to save the file.  Afterwards the link and
-  // object URL are cleaned up.  This keeps downloads working offline.
-  function saveAs(blob, filename){
-    try {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      // Give the browser a tick to register the click before cleanup
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 0);
-    } catch (err) {
-      console.error(err);
-      alert('Download failed. Your browser may not support programmatic downloads.');
-    }
-  }
-
   function fmt(amount){
     const cur = $("currency").value || "ZAR";
     const sym = symbolForCurrency(cur);
     const n = Number(amount || 0);
-    // Keep simple formatting consistent across browsers
     const fixed = n.toFixed(2);
     const withSep = fixed.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return sym + withSep;
@@ -674,24 +615,23 @@
   }
 
   function setStatusBadge(){
-    const s = $("invoiceStatus").value;
+    const s = $("jobStatus").value;
     const badge = $("statusBadge");
-
     const map = {
       draft: {cls:"badge badge-draft", icon:"fa-pen", text:"DRAFT"},
-      sent: {cls:"badge badge-sent", icon:"fa-paper-plane", text:"SENT"},
-      partial: {cls:"badge badge-partial", icon:"fa-circle-half-stroke", text:"PARTIAL"},
-      paid: {cls:"badge badge-paid", icon:"fa-check", text:"PAID"},
-      overdue: {cls:"badge badge-overdue", icon:"fa-triangle-exclamation", text:"OVERDUE"},
+      open: {cls:"badge badge-open", icon:"fa-folder-open", text:"OPEN"},
+      progress: {cls:"badge badge-progress", icon:"fa-spinner", text:"IN PROGRESS"},
+      completed: {cls:"badge badge-completed", icon:"fa-check", text:"COMPLETED"},
+      cancelled: {cls:"badge badge-cancelled", icon:"fa-xmark", text:"CANCELLED"},
     };
     const v = map[s] || map.draft;
     badge.className = v.cls;
     badge.innerHTML = `<i class="fa-solid ${v.icon}"></i> ${v.text}`;
   }
 
-  function generateInvoiceNumber(){
+  function generateJobNumber(){
     const n = Math.floor(Math.random()*10000000).toString().padStart(7,"0");
-    $("invoiceNumber").value = "INV" + n;
+    $("jobNumber").value = "JOB" + n;
   }
 
   // ===========================
@@ -702,60 +642,39 @@
   function addLineItem(prefill={}){
     const tbody = $("itemsBody");
     const rowId = "li-" + (lineCounter++);
-
-    const defaultVat = Number($("defaultVat").value || 0).toFixed(2);
-
     const tr = document.createElement("tr");
     tr.id = rowId;
     tr.className = "line-item";
-
     tr.innerHTML = `
       <td class="border border-gray-200 p-2">
-        <input type="text" class="w-full border border-gray-200 rounded-md px-2 py-1 item-desc"
-          placeholder="Description" value="${escapeHtml(prefill.desc || "")}">
+        <input type="text" class="w-full border border-gray-200 rounded-md px-2 py-1 item-desc" placeholder="Task or part description" value="${escapeHtml(prefill.desc || '')}">
       </td>
       <td class="border border-gray-200 p-2">
-        <input type="number" min="0" step="1" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-qty"
-          value="${escapeHtml(prefill.qty ?? 1)}">
+        <input type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-hours" value="${escapeHtml(prefill.hours ?? 1)}">
       </td>
       <td class="border border-gray-200 p-2">
-        <input type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-rate"
-          value="${escapeHtml(prefill.rate ?? "0.00")}">
+        <input type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-rate" value="${escapeHtml(prefill.rate ?? '0.00')}">
       </td>
       <td class="border border-gray-200 p-2">
-        <input type="number" min="0" max="100" step="0.01" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-disc"
-          value="${escapeHtml(prefill.disc ?? "0.00")}">
+        <input type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-parts" value="${escapeHtml(prefill.parts ?? '0.00')}">
       </td>
-      <td class="border border-gray-200 p-2">
-        <input type="number" min="0" max="100" step="0.01" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-vat"
-          value="${escapeHtml(prefill.vat ?? defaultVat)}">
-      </td>
-      <td class="border border-gray-200 p-2 text-right mono item-excl">${fmt(0)}</td>
-      <td class="border border-gray-200 p-2 text-right mono item-incl">${fmt(0)}</td>
+      <td class="border border-gray-200 p-2 text-right mono item-total">${fmt(0)}</td>
       <td class="border border-gray-200 p-2 text-center no-print">
         <button class="text-red-600 hover:text-red-800" title="Delete line">
           <i class="fa-solid fa-trash-can"></i>
         </button>
       </td>
     `;
-
     tbody.appendChild(tr);
 
-    // delete
     tr.querySelector("button").addEventListener("click", () => {
       tr.remove();
       calculateTotals();
       autosave();
     });
-
-    // recalc on changes
     tr.querySelectorAll("input").forEach(inp=>{
-      inp.addEventListener("input", () => {
-        calculateTotals();
-        autosave();
-      });
+      inp.addEventListener("input", () => { calculateTotals(); autosave(); });
     });
-
     calculateTotals();
   }
 
@@ -764,10 +683,9 @@
     document.querySelectorAll(".line-item").forEach(tr=>{
       items.push({
         desc: tr.querySelector(".item-desc").value || "",
-        qty: Number(tr.querySelector(".item-qty").value || 0),
+        hours: Number(tr.querySelector(".item-hours").value || 0),
         rate: Number(tr.querySelector(".item-rate").value || 0),
-        disc: Number(tr.querySelector(".item-disc").value || 0),
-        vat: Number(tr.querySelector(".item-vat").value || 0),
+        parts: Number(tr.querySelector(".item-parts").value || 0)
       });
     });
     return items;
@@ -778,71 +696,31 @@
   // ===========================
   function calculateTotals(){
     setStatusBadge();
-
-    const overallDiscPct = Number($("overallDiscount").value || 0) / 100;
-    const shipping = Number($("shipping").value || 0);
+    const deposit = Number($("jobDeposit").value || 0);
     const paid = Number($("amountPaid").value || 0);
-
-    let subtotalExcl = 0;
-    let lineDiscountTotal = 0;
-    let vatTotal = 0;
-
+    let subtotal = 0;
     document.querySelectorAll(".line-item").forEach(tr=>{
-      const qty = Number(tr.querySelector(".item-qty").value || 0);
+      const hours = Number(tr.querySelector(".item-hours").value || 0);
       const rate = Number(tr.querySelector(".item-rate").value || 0);
-      const discPct = Number(tr.querySelector(".item-disc").value || 0) / 100;
-      const vatPct = Number(tr.querySelector(".item-vat").value || 0) / 100;
-
-      const base = qty * rate;
-      const discAmt = base * discPct;
-      const excl = Math.max(0, base - discAmt);
-      const vatAmt = excl * vatPct;
-      const incl = excl + vatAmt;
-
-      subtotalExcl += excl;
-      lineDiscountTotal += discAmt;
-      vatTotal += vatAmt;
-
-      tr.querySelector(".item-excl").textContent = fmt(excl);
-      tr.querySelector(".item-incl").textContent = fmt(incl);
+      const parts = Number(tr.querySelector(".item-parts").value || 0);
+      const total = (hours * rate) + parts;
+      subtotal += total;
+      tr.querySelector(".item-total").textContent = fmt(total);
     });
-
-    const overallDiscountAmt = subtotalExcl * overallDiscPct;
-    const discountedSubtotal = Math.max(0, subtotalExcl - overallDiscountAmt);
-
-    // VAT already computed per line based on line-excl after line discount.
-    // Overall discount usually reduces taxable base; we apply proportional reduction to VAT:
-    const vatAfterOverallDisc = Math.max(0, vatTotal - (vatTotal * overallDiscPct));
-
-    const grand = discountedSubtotal + vatAfterOverallDisc + shipping;
-    const balance = Math.max(0, grand - paid);
-
-    $("tSubtotal").textContent = fmt(subtotalExcl);
-    $("tLineDiscount").textContent = fmt(lineDiscountTotal);
-    $("tOverallDiscount").textContent = fmt(overallDiscountAmt);
-    $("tVat").textContent = fmt(vatAfterOverallDisc);
-    $("tShipping").textContent = fmt(shipping);
-    $("tGrand").textContent = fmt(grand);
+    const grand = subtotal;
+    const balance = Math.max(0, grand - deposit - paid);
+    $("tSubtotal").textContent = fmt(subtotal);
+    $("tDeposit").textContent = fmt(deposit);
     $("tPaid").textContent = fmt(paid);
+    $("tGrand").textContent = fmt(grand);
     $("tBalance").textContent = fmt(balance);
-
-    return {
-      subtotalExcl,
-      lineDiscountTotal,
-      overallDiscountAmt,
-      vat: vatAfterOverallDisc,
-      shipping,
-      grand,
-      paid,
-      balance
-    };
+    return { subtotal, deposit, paid, grand, balance };
   }
 
   // ===========================
-  // Logo handling (embed as DataURL)
+  // Logo handling
   // ===========================
   let companyLogoDataUrl = null;
-
   function handleLogoUpload(file){
     if(!file) return;
     const reader = new FileReader();
@@ -863,8 +741,7 @@
   // Preview / Template fill
   // ===========================
   function buildTemplateDom(){
-    const tpl = $("invoiceTemplate").firstElementChild.cloneNode(true);
-
+    const tpl = $("jobTemplate").firstElementChild.cloneNode(true);
     // logo
     const logoWrap = tpl.querySelector("#tplLogo");
     logoWrap.innerHTML = "";
@@ -875,7 +752,6 @@
       img.style.objectFit = "contain";
       logoWrap.appendChild(img);
     }
-
     // company
     tpl.querySelector("#tplCompanyName").textContent = $("companyName").value || "Company";
     tpl.querySelector("#tplCompanyAddress").textContent = $("companyAddress").value || "";
@@ -884,66 +760,51 @@
     tpl.querySelector("#tplCompanyEmail").textContent = $("companyEmail").value || "";
     tpl.querySelector("#tplCompanyPhone").textContent = $("companyPhone").value || "";
     tpl.querySelector("#tplCompanyWebsite").textContent = $("companyWebsite").value || "";
-
-    // invoice meta
-    tpl.querySelector("#tplInvNumber").textContent = $("invoiceNumber").value || "";
-    tpl.querySelector("#tplInvRef").textContent = $("invoiceReference").value || "";
-    tpl.querySelector("#tplInvDate").textContent = formatDateISO($("invoiceDate").value) || "";
-    tpl.querySelector("#tplInvDue").textContent = formatDateISO($("dueDate").value) || "";
-    tpl.querySelector("#tplInvStatus").textContent = ($("invoiceStatus").value || "draft").toUpperCase();
-    tpl.querySelector("#tplInvCurrency").textContent = $("currency").value || "ZAR";
-
-    // client
-    tpl.querySelector("#tplClientName").textContent = $("clientName").value || "Client";
+    // job meta
+    tpl.querySelector("#tplCardNumber").textContent = $("jobNumber").value || "";
+    tpl.querySelector("#tplCardRef").textContent = $("jobReference").value || "";
+    tpl.querySelector("#tplCardDate").textContent = formatDateISO($("jobDate").value) || "";
+    tpl.querySelector("#tplCardDue").textContent = formatDateISO($("dueDate").value) || "";
+    tpl.querySelector("#tplCardStatus").textContent = ($("jobStatus").value || "draft").toUpperCase();
+    tpl.querySelector("#tplCardCurrency").textContent = $("currency").value || "ZAR";
+    tpl.querySelector("#tplAssigned").textContent = $("jobAssigned").value || "";
+    // customer
+    tpl.querySelector("#tplClientName").textContent = $("clientName").value || "Customer";
     tpl.querySelector("#tplClientAddress").textContent = $("clientAddress").value || "";
     tpl.querySelector("#tplClientVat").textContent = $("clientVat").value || "";
     tpl.querySelector("#tplClientReg").textContent = $("clientReg").value || "";
     tpl.querySelector("#tplClientEmail").textContent = $("clientEmail").value || "";
     tpl.querySelector("#tplClientPhone").textContent = $("clientPhone").value || "";
-
-    // bank / payment
+    // bank
     tpl.querySelector("#tplBank").textContent = $("companyBank").value || "";
-
+    // job desc
+    tpl.querySelector("#tplJobDesc").textContent = $("jobDescription").value || "";
     // items
     const items = readLineItems();
     const tbody = tpl.querySelector("#tplItems");
     tbody.innerHTML = "";
-
-    items.forEach(i=>{
-      const base = i.qty * i.rate;
-      const discAmt = base * (i.disc/100);
-      const excl = Math.max(0, base - discAmt);
-      const vatAmt = excl * (i.vat/100);
-      const incl = excl + vatAmt;
-
+    items.forEach(i => {
+      const total = (i.hours * i.rate) + i.parts;
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td class="border border-gray-200 p-2">${escapeHtml(i.desc || "Item")}</td>
-        <td class="border border-gray-200 p-2 text-center">${i.qty}</td>
-        <td class="border border-gray-200 p-2 text-right mono">${fmt(i.rate)}</td>
-        <td class="border border-gray-200 p-2 text-center">${Number(i.disc||0).toFixed(2)}%</td>
-        <td class="border border-gray-200 p-2 text-center">${Number(i.vat||0).toFixed(2)}%</td>
-        <td class="border border-gray-200 p-2 text-right mono">${fmt(excl)}</td>
-        <td class="border border-gray-200 p-2 text-right mono">${fmt(incl)}</td>
+        <td class="border border-gray-200 p-2">${escapeHtml(i.desc || "")}</td>
+        <td class="border border-gray-200 p-2 text-center">${i.hours}</td>
+        <td class="border border-gray-200 p-2 text-center">${fmt(i.rate)}</td>
+        <td class="border border-gray-200 p-2 text-center">${fmt(i.parts)}</td>
+        <td class="border border-gray-200 p-2 text-right mono">${fmt(total)}</td>
       `;
       tbody.appendChild(tr);
     });
-
     // totals
     const t = calculateTotals();
-    tpl.querySelector("#tplSubtotal").textContent = fmt(t.subtotalExcl);
-    tpl.querySelector("#tplLineDisc").textContent = fmt(t.lineDiscountTotal);
-    tpl.querySelector("#tplOverallDisc").textContent = fmt(t.overallDiscountAmt);
-    tpl.querySelector("#tplVat").textContent = fmt(t.vat);
-    tpl.querySelector("#tplShipping").textContent = fmt(t.shipping);
-    tpl.querySelector("#tplGrand").textContent = fmt(t.grand);
+    tpl.querySelector("#tplSubtotal").textContent = fmt(t.subtotal);
+    tpl.querySelector("#tplDeposit").textContent = fmt(t.deposit);
     tpl.querySelector("#tplPaid").textContent = fmt(t.paid);
+    tpl.querySelector("#tplGrand").textContent = fmt(t.grand);
     tpl.querySelector("#tplBalance").textContent = fmt(t.balance);
-
     // notes/terms
     tpl.querySelector("#tplNotes").textContent = $("notes").value || "";
     tpl.querySelector("#tplTerms").textContent = $("terms").value || "";
-
     return tpl;
   }
 
@@ -963,115 +824,163 @@
   }
 
   // ===========================
-  // Exports
+  // Export functions
   // ===========================
   function exportPDF(){
-    // PDF export fallback: open the print dialog on the preview.  We
-    // generate the preview (which already lays out the invoice in a
-    // printâ€‘friendly format) and then invoke the browser's native print
-    // function.  Users can select "Save as PDF" in the print dialog to
-    // generate a PDF.  This approach avoids reliance on external
-    // libraries and works offline across modern browsers.
-    openPreview();
-    // Give the modal a moment to render before printing
-    setTimeout(() => {
-      window.print();
-    }, 100);
+    // ensure preview is built
+    const dom = buildTemplateDom();
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "absolute";
+    wrapper.style.left = "-9999px";
+    wrapper.style.top = "0";
+    wrapper.style.width = "210mm";
+    wrapper.appendChild(dom);
+    document.body.appendChild(wrapper);
+    const filename = ($("jobNumber").value || "jobcard") + ".pdf";
+    const opt = {
+      margin: [10,10,10,10],
+      filename,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, letterRendering: true, allowTaint: true, foreignObjectRendering: true },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait", compress: true }
+    };
+    const loading = document.createElement("div");
+    loading.textContent = "Generating PDF...";
+    loading.style.position = "fixed";
+    loading.style.left = "50%";
+    loading.style.top = "50%";
+    loading.style.transform = "translate(-50%, -50%)";
+    loading.style.background = "rgba(0,0,0,.75)";
+    loading.style.color = "white";
+    loading.style.padding = "14px 18px";
+    loading.style.borderRadius = "10px";
+    loading.style.zIndex = "9999";
+    document.body.appendChild(loading);
+    html2pdf().set(opt).from(wrapper).save()
+      .then(()=>{ document.body.removeChild(wrapper); document.body.removeChild(loading); })
+      .catch(err=>{ console.error(err); alert("PDF export failed. Check console for details."); document.body.removeChild(wrapper); document.body.removeChild(loading); });
   }
 
   function exportCSV(){
     const items = readLineItems();
-    const headers = ["Description","Qty","Rate","Disc%","VAT%"];
+    const headers = ["Description","Hours","Rate","Parts"];
     const rows = items.map(i => [
       (i.desc || "").replaceAll('"','""'),
-      i.qty,
+      i.hours,
       i.rate,
-      i.disc,
-      i.vat
+      i.parts
     ]);
-
-    const csv = [headers, ...rows]
-      .map(r => r.map(v => `"${String(v ?? "")}"`).join(","))
-      .join("\n");
-
-    const filename = ($("invoiceNumber").value || "invoice") + ".csv";
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v ?? "")}"`).join(",")).join("\n");
+    const filename = ($("jobNumber").value || "jobcard") + ".csv";
     const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
     saveAs(blob, filename);
   }
 
-  // Excel export rewritten to avoid external dependencies.  This version
-  // generates a simple HTML table wrapped in an Excel-compatible file
-  // structure and saves it with a .xls extension.  Modern versions of
-  // Excel will open this file without issues.  Note: this is a basic
-  // representation and may not support all Excel features.
   function exportExcel(){
-    try {
-      const templateDom = buildTemplateDom();
-      // Clone the template DOM so we can tweak it without affecting the preview
-      const clone = templateDom.cloneNode(true);
-      // Build a wrapper table containing the invoice content.  We'll
-      // surround the entire invoice in a single table cell to preserve
-      // layout.  Excel interprets HTML tables directly.
-      const wrapperTable = document.createElement('table');
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      td.appendChild(clone);
-      tr.appendChild(td);
-      wrapperTable.appendChild(tr);
-      // Serialize to HTML
-      const html = `<!DOCTYPE html><html><head>
-  <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="UTF-8"></head><body>
-<!-- HEADER:START --><!-- HEADER:END -->${wrapperTable.outerHTML}</body></html>`;
-      const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-      const filename = ($("invoiceNumber").value || 'invoice') + '.xls';
-      saveAs(blob, filename);
-    } catch (err) {
-      console.error(err);
-      alert('Excel export failed.');
-    }
+    const wb = XLSX.utils.book_new();
+    const meta = [
+      ["JOB CARD"],
+      [""],
+      ["Job #", $("jobNumber").value || ""],
+      ["Reference", $("jobReference").value || ""],
+      ["Start Date", formatDateISO($("jobDate").value)],
+      ["Due Date", formatDateISO($("dueDate").value)],
+      ["Status", ($("jobStatus").value || "").toUpperCase()],
+      ["Currency", $("currency").value || "ZAR"],
+      ["Assigned", $("jobAssigned").value || ""],
+      [""],
+      ["Company", $("companyName").value || ""],
+      ["Company VAT", $("companyVat").value || ""],
+      ["Company Address", $("companyAddress").value || ""],
+      ["Company Email", $("companyEmail").value || ""],
+      ["Company Phone", $("companyPhone").value || ""],
+      [""],
+      ["Customer", $("clientName").value || ""],
+      ["Customer VAT", $("clientVat").value || ""],
+      ["Customer Address", $("clientAddress").value || ""],
+      ["Customer Email", $("clientEmail").value || ""],
+      ["Customer Phone", $("clientPhone").value || ""],
+      [""],
+      ["Job Description", $("jobDescription").value || ""]
+    ];
+    const items = readLineItems();
+    const itemsHeader = [["Description","Hours","Rate","Parts","Total"]];
+    const itemsRows = items.map(i => {
+      const total = (i.hours * i.rate) + i.parts;
+      return [i.desc || "", i.hours, i.rate, i.parts, total];
+    });
+    const t = calculateTotals();
+    const totals = [
+      [""],
+      ["Subtotal", t.subtotal],
+      ["Deposit", t.deposit],
+      ["Paid", t.paid],
+      ["Grand Total", t.grand],
+      ["Balance Due", t.balance]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet([...meta, ...itemsHeader, ...itemsRows, ...totals]);
+    XLSX.utils.book_append_sheet(wb, ws, "Job Card");
+    XLSX.writeFile(wb, ($("jobNumber").value || "jobcard") + ".xlsx");
   }
 
-  function _exportWordOld(){
-    // This legacy Word export relied on the external `docx` library. It's deprecated to
-    // ensure offline functionality. Return early and advise the user to use the new
-    // `Export Word` button which uses the offline HTML-to-Doc fallback.
-    alert("This legacy Word export is deprecated. Please use the Export Word button instead.");
-    return;
-
+  function exportWord(){
+    // Use docx library if available, fallback to simple HTML doc otherwise
+    if (typeof docx === "undefined") {
+      // fallback: create simple HTML document and save as .doc
+      const dom = buildTemplateDom();
+      const htmlString = `<!DOCTYPE html><html><head>
+  <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="utf-8"></head><body>
+<!-- HEADER:START --><!-- HEADER:END -->${dom.outerHTML}</body></html>`;
+      const blob = new Blob([htmlString], { type: "application/msword" });
+      saveAs(blob, ($("jobNumber").value || "jobcard") + ".doc");
+      return;
+    }
     const { Document, Paragraph, HeadingLevel, Table, TableRow, TableCell, WidthType, AlignmentType, BorderStyle } = docx;
-
     const t = calculateTotals();
     const items = readLineItems();
-
     const doc = new Document({
       sections: [{
         properties: {},
         children: [
-          new Paragraph({ text: "INVOICE", heading: HeadingLevel.HEADING_1, alignment: AlignmentType.CENTER }),
+          new Paragraph({ text: "JOB CARD", heading: HeadingLevel.HEADING_1, alignment: AlignmentType.CENTER }),
           new Paragraph({ text: " " }),
-
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: [
               new TableRow({
                 children: [
-                  new TableCell({ children: [new Paragraph("Invoice #")]}),
-                  new TableCell({ children: [new Paragraph($("invoiceNumber").value || "")]}),
-                  new TableCell({ children: [new Paragraph("Issue Date")]}),
-                  new TableCell({ children: [new Paragraph(formatDateISO($("invoiceDate").value))]}),
+                  new TableCell({ children: [new Paragraph("Job #")] }),
+                  new TableCell({ children: [new Paragraph($("jobNumber").value || "")] }),
+                  new TableCell({ children: [new Paragraph("Start Date")] }),
+                  new TableCell({ children: [new Paragraph(formatDateISO($("jobDate").value))] }),
                 ]
               }),
               new TableRow({
                 children: [
-                  new TableCell({ children: [new Paragraph("Reference")]}),
-                  new TableCell({ children: [new Paragraph($("invoiceReference").value || "")]}),
-                  new TableCell({ children: [new Paragraph("Due Date")]}),
-                  new TableCell({ children: [new Paragraph(formatDateISO($("dueDate").value))]}),
+                  new TableCell({ children: [new Paragraph("Reference")] }),
+                  new TableCell({ children: [new Paragraph($("jobReference").value || "")] }),
+                  new TableCell({ children: [new Paragraph("Due Date")] }),
+                  new TableCell({ children: [new Paragraph(formatDateISO($("dueDate").value))] }),
+                ]
+              }),
+              new TableRow({
+                children: [
+                  new TableCell({ children: [new Paragraph("Status")] }),
+                  new TableCell({ children: [new Paragraph(($("jobStatus").value || "").toUpperCase())] }),
+                  new TableCell({ children: [new Paragraph("Currency")] }),
+                  new TableCell({ children: [new Paragraph($("currency").value || "ZAR")] }),
+                ]
+              }),
+              new TableRow({
+                children: [
+                  new TableCell({ children: [new Paragraph("Assigned")] }),
+                  new TableCell({ children: [new Paragraph($("jobAssigned").value || "")] }),
+                  new TableCell({ children: [new Paragraph("Deposit")] }),
+                  new TableCell({ children: [new Paragraph(fmt($("jobDeposit").value))] }),
                 ]
               }),
             ]
           }),
-
           new Paragraph({ text: " " }),
           new Paragraph({ text: "FROM:", heading: HeadingLevel.HEADING_3 }),
           new Paragraph($("companyName").value || ""),
@@ -1079,135 +988,67 @@
           new Paragraph($("companyAddress").value || ""),
           new Paragraph(`Email: ${$("companyEmail").value || ""}`),
           new Paragraph(`Phone: ${$("companyPhone").value || ""}`),
-
           new Paragraph({ text: " " }),
-          new Paragraph({ text: "BILL TO:", heading: HeadingLevel.HEADING_3 }),
+          new Paragraph({ text: "TO:", heading: HeadingLevel.HEADING_3 }),
           new Paragraph($("clientName").value || ""),
           new Paragraph(`VAT: ${$("clientVat").value || ""}`),
           new Paragraph($("clientAddress").value || ""),
           new Paragraph(`Email: ${$("clientEmail").value || ""}`),
           new Paragraph(`Phone: ${$("clientPhone").value || ""}`),
-
           new Paragraph({ text: " " }),
-
+          new Paragraph({ text: "Job Description:", heading: HeadingLevel.HEADING_3 }),
+          new Paragraph($("jobDescription").value || ""),
+          new Paragraph({ text: " " }),
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: [
-              new TableRow({
-                tableHeader: true,
-                children: ["Description","Qty","Rate","Disc%","VAT%","Excl","Incl"].map(h =>
-                  new TableCell({
-                    children:[new Paragraph({text:h, bold:true})],
-                    borders: {
-                      top: { style: BorderStyle.SINGLE, size: 1 },
-                      bottom: { style: BorderStyle.SINGLE, size: 1 },
-                      left: { style: BorderStyle.SINGLE, size: 1 },
-                      right: { style: BorderStyle.SINGLE, size: 1 },
-                    }
-                  })
-                )
-              }),
-              ...items.map(i=>{
-                const base = i.qty*i.rate;
-                const discAmt = base*(i.disc/100);
-                const excl = Math.max(0, base-discAmt);
-                const vatAmt = excl*(i.vat/100);
-                const incl = excl+vatAmt;
-
-                const cells = [
-                  i.desc || "",
-                  String(i.qty),
-                  fmt(i.rate),
-                  `${Number(i.disc||0).toFixed(2)}%`,
-                  `${Number(i.vat||0).toFixed(2)}%`,
-                  fmt(excl),
-                  fmt(incl),
-                ];
-
+              new TableRow({ tableHeader: true, children: ["Description","Hours","Rate","Parts","Total"].map(h => new TableCell({
+                children:[new Paragraph({text:h, bold:true})],
+                borders:{ top:{style: BorderStyle.SINGLE, size: 1}, bottom:{style: BorderStyle.SINGLE, size: 1}, left:{style: BorderStyle.SINGLE, size: 1}, right:{style: BorderStyle.SINGLE, size: 1} }
+              })) }),
+              ...items.map(i => {
+                const total = (i.hours * i.rate) + i.parts;
+                const cells = [i.desc || "", String(i.hours), fmt(i.rate), fmt(i.parts), fmt(total)];
                 return new TableRow({
                   children: cells.map(v => new TableCell({
                     children:[new Paragraph(String(v))],
-                    borders: {
-                      top: { style: BorderStyle.SINGLE, size: 1 },
-                      bottom: { style: BorderStyle.SINGLE, size: 1 },
-                      left: { style: BorderStyle.SINGLE, size: 1 },
-                      right: { style: BorderStyle.SINGLE, size: 1 },
-                    }
+                    borders:{ top:{style: BorderStyle.SINGLE, size: 1}, bottom:{style: BorderStyle.SINGLE, size: 1}, left:{style: BorderStyle.SINGLE, size: 1}, right:{style: BorderStyle.SINGLE, size: 1} }
                   }))
                 });
               })
             ]
           }),
-
           new Paragraph({ text: " " }),
-          new Paragraph({ text: `Subtotal: ${fmt(t.subtotalExcl)}` }),
-          new Paragraph({ text: `Line Discounts: ${fmt(t.lineDiscountTotal)}` }),
-          new Paragraph({ text: `Overall Discount: ${fmt(t.overallDiscountAmt)}` }),
-          new Paragraph({ text: `VAT: ${fmt(t.vat)}` }),
-          new Paragraph({ text: `Shipping: ${fmt(t.shipping)}` }),
-          new Paragraph({ text: `Grand Total: ${fmt(t.grand)}`, bold: true }),
+          new Paragraph({ text: `Subtotal: ${fmt(t.subtotal)}` }),
+          new Paragraph({ text: `Deposit: ${fmt(t.deposit)}` }),
           new Paragraph({ text: `Paid: ${fmt(t.paid)}` }),
+          new Paragraph({ text: `Grand Total: ${fmt(t.grand)}`, bold: true }),
           new Paragraph({ text: `Balance Due: ${fmt(t.balance)}`, bold: true }),
-
           new Paragraph({ text: " " }),
           new Paragraph({ text: "NOTES:", heading: HeadingLevel.HEADING_3 }),
           new Paragraph($("notes").value || ""),
-
           new Paragraph({ text: " " }),
           new Paragraph({ text: "TERMS:", heading: HeadingLevel.HEADING_3 }),
           new Paragraph($("terms").value || ""),
-
           new Paragraph({ text: " " }),
           new Paragraph({ text: "BANK DETAILS:", heading: HeadingLevel.HEADING_3 }),
           new Paragraph($("companyBank").value || ""),
         ]
       }]
     });
-
     docx.Packer.toBlob(doc)
-      .then(blob => saveAs(blob, ($("invoiceNumber").value || "invoice") + ".docx"))
-      .catch(err=>{
-        console.error(err);
-        alert("Word export failed. Check console for details.");
-      });
-  }
-
-  // New Word export using HTML to doc fallback. This implementation works offline without external
-  // dependencies by serializing the invoice HTML into a simple .doc file. Modern versions of
-  // Microsoft Word can open HTML content saved with a .doc extension.
-  function exportWord(){
-    try {
-      // Build the invoice template DOM
-      const dom = buildTemplateDom();
-      const wrapper = document.createElement('div');
-      wrapper.appendChild(dom);
-      // Serialize the DOM into a complete HTML document string
-      const htmlContent = `<!DOCTYPE html><html lang="en-ZA"><head>
-  <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="UTF-8"><title>Invoice</title></head><body>
-<!-- HEADER:START --><!-- HEADER:END -->${wrapper.innerHTML}</body></html>`;
-      // Create a Word document blob from the HTML content
-      const blob = new Blob([htmlContent], { type: 'application/msword' });
-      const filename = ($("invoiceNumber").value || 'invoice') + '.doc';
-      // Trigger the download
-      saveAs(blob, filename);
-    } catch (err) {
-      console.error(err);
-      alert('Word export failed.');
-    }
+      .then(blob => saveAs(blob, ($("jobNumber").value || "jobcard") + ".docx"))
+      .catch(err=>{ console.error(err); alert("Word export failed. Check console for details."); });
   }
 
   // ===========================
   // CSV Import
   // ===========================
   function parseCSV(text){
-    // Minimal CSV parser for: Description,Qty,Rate,Disc%,VAT%
-    // Handles quotes and commas in quotes.
     const rows = [];
     let i=0, field="", row=[], inQuotes=false;
-
     const pushField = () => { row.push(field); field=""; };
     const pushRow = () => { if(row.length) rows.push(row); row=[]; };
-
     while(i<text.length){
       const c = text[i];
       if(inQuotes){
@@ -1226,26 +1067,21 @@
     pushField(); pushRow();
     return rows;
   }
-
   function importCSV(file){
     if(!file) return;
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target.result || "";
-      const rows = parseCSV(text).filter(r => r.join("").trim().length);
-
-      // If header row present, skip if first cell is Description
+      const rows = parseCSV(text).filter(r => r.join(" ").trim().length);
       let startIdx = 0;
       if(rows[0] && rows[0][0] && rows[0][0].toLowerCase().includes("description")) startIdx = 1;
-
       for(let r=startIdx; r<rows.length; r++){
-        const [desc, qty, rate, disc, vat] = rows[r];
+        const [desc, hours, rate, parts] = rows[r];
         addLineItem({
           desc: (desc||"").trim(),
-          qty: Number((qty||"1").trim()),
+          hours: Number((hours||"1").trim()),
           rate: Number((rate||"0").trim()),
-          disc: Number((disc||"0").toString().replace("%","").trim()),
-          vat: Number((vat||$("defaultVat").value||"0").toString().replace("%","").trim()),
+          parts: Number((parts||"0").trim()),
         });
       }
       calculateTotals();
@@ -1257,9 +1093,8 @@
   // ===========================
   // Save/Load templates (localStorage)
   // ===========================
-  const AUTOSAVE_KEY = "easyinv.autosave.v1";
-  const TEMPLATES_KEY = "easyinv.templates.v1";
-
+  const AUTOSAVE_KEY = "easyjc.autosave.v1";
+  const TEMPLATES_KEY = "easyjc.templates.v1";
   function serializeState(){
     return {
       version: 1,
@@ -1274,38 +1109,32 @@
         companyWebsite: $("companyWebsite").value,
         companyAddress: $("companyAddress").value,
         companyBank: $("companyBank").value,
-
         clientName: $("clientName").value,
         clientVat: $("clientVat").value,
         clientReg: $("clientReg").value,
         clientEmail: $("clientEmail").value,
         clientPhone: $("clientPhone").value,
         clientAddress: $("clientAddress").value,
-
-        invoiceNumber: $("invoiceNumber").value,
-        invoiceReference: $("invoiceReference").value,
-        invoiceDate: $("invoiceDate").value,
+        jobNumber: $("jobNumber").value,
+        jobReference: $("jobReference").value,
+        jobDate: $("jobDate").value,
         dueDate: $("dueDate").value,
         currency: $("currency").value,
-        invoiceStatus: $("invoiceStatus").value,
-
-        overallDiscount: $("overallDiscount").value,
-        shipping: $("shipping").value,
+        jobStatus: $("jobStatus").value,
+        jobDescription: $("jobDescription").value,
+        jobAssigned: $("jobAssigned").value,
         amountPaid: $("amountPaid").value,
-        defaultVat: $("defaultVat").value,
-
+        jobDeposit: $("jobDeposit").value,
         notes: $("notes").value,
         terms: $("terms").value,
       },
       items: readLineItems()
     };
   }
-
   function applyState(state){
     if(!state) return;
     companyLogoDataUrl = state.companyLogoDataUrl || null;
-
-    // Logo preview
+    // logo preview
     const preview = $("companyLogoPreview");
     preview.innerHTML = "";
     if(companyLogoDataUrl){
@@ -1316,114 +1145,57 @@
     } else {
       preview.innerHTML = `<p class="text-sm text-slate-400">No logo uploaded</p>`;
     }
-
     const f = state.fields || {};
-
-    Object.keys(f).forEach(k=>{
-      if($(k)) $(k).value = f[k] ?? "";
-    });
-
+    Object.keys(f).forEach(k=>{ if($(k)) $(k).value = f[k] ?? ""; });
     // items
     $("itemsBody").innerHTML = "";
     (state.items || []).forEach(it => addLineItem(it));
     if(!(state.items || []).length) addLineItem();
-
     calculateTotals();
     setStatusBadge();
   }
-
   function autosave(){
-    try{
-      localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(serializeState()));
-    } catch(e){
-      console.warn("Autosave failed:", e);
-    }
+    try{ localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(serializeState())); } catch(e){ console.warn("Autosave failed:", e); }
   }
-
   function loadAutosave(){
-    try{
-      const raw = localStorage.getItem(AUTOSAVE_KEY);
-      if(!raw) return false;
-      applyState(JSON.parse(raw));
-      return true;
-    } catch(e){
-      console.warn("Autosave load failed:", e);
-      return false;
-    }
+    try{ const raw = localStorage.getItem(AUTOSAVE_KEY); if(!raw) return false; applyState(JSON.parse(raw)); return true; } catch(e){ console.warn("Autosave load failed:", e); return false; }
   }
-
   function saveTemplate(){
-    const name = prompt("Template name (e.g., 'Skunkworks Default'):");
-    if(!name) return;
-    const state = serializeState();
-    state.templateName = name;
-
-    const templates = loadTemplates();
-    templates.push(state);
-
-    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
-    alert("Template saved: " + name);
+    const name = prompt("Template name (e.g., 'Standard Job'):"); if(!name) return; const state = serializeState(); state.templateName = name;
+    const templates = loadTemplates(); templates.push(state);
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates)); alert("Template saved: " + name);
   }
-
   function loadTemplates(){
-    try{
-      return JSON.parse(localStorage.getItem(TEMPLATES_KEY) || "[]");
-    } catch {
-      return [];
-    }
+    try{ return JSON.parse(localStorage.getItem(TEMPLATES_KEY) || "[]"); } catch { return []; }
   }
-
   function pickAndLoadTemplate(){
-    const templates = loadTemplates();
-    if(!templates.length){
-      alert("No templates saved yet.");
-      return;
-    }
+    const templates = loadTemplates(); if(!templates.length){ alert("No templates saved yet."); return; }
     const names = templates.map((t,i)=> `${i+1}) ${t.templateName || ("Template " + (i+1))}`).join("\n");
-    const choice = prompt("Choose a template number:\n\n" + names);
-    if(!choice) return;
-    const idx = Number(choice) - 1;
-    if(idx < 0 || idx >= templates.length){
-      alert("Invalid choice.");
-      return;
-    }
-    applyState(templates[idx]);
-    autosave();
+    const choice = prompt("Choose a template number:\n\n" + names); if(!choice) return; const idx = Number(choice) - 1; if(idx < 0 || idx >= templates.length){ alert("Invalid choice."); return; }
+    applyState(templates[idx]); autosave();
   }
-
   function resetForm(){
-    if(!confirm("Reset the invoice form? (Templates remain saved)")) return;
-
+    if(!confirm("Reset the job card form? (Templates remain saved)")) return;
     companyLogoDataUrl = null;
     $("companyLogo").value = "";
     $("companyLogoPreview").innerHTML = `<p class="text-sm text-slate-400">No logo uploaded</p>`;
-
-    // Clear fields
     [
       "companyName","companyVat","companyReg","companyEmail","companyPhone","companyWebsite","companyAddress","companyBank",
       "clientName","clientVat","clientReg","clientEmail","clientPhone","clientAddress",
-      "invoiceReference","notes","terms"
+      "jobReference","jobDescription","jobAssigned","notes","terms"
     ].forEach(id => { if($(id)) $(id).value = ""; });
-
     $("currency").value = "ZAR";
-    $("invoiceStatus").value = "draft";
-    $("overallDiscount").value = "0.00";
-    $("shipping").value = "0.00";
+    $("jobStatus").value = "draft";
     $("amountPaid").value = "0.00";
-    $("defaultVat").value = "15.00";
-
-    // Dates + new number
+    $("jobDeposit").value = "0.00";
+    // Dates default
     const today = new Date();
-    $("invoiceDate").value = today.toISOString().split("T")[0];
-    const due = new Date();
-    due.setDate(due.getDate()+10);
+    $("jobDate").value = today.toISOString().split("T")[0];
+    const due = new Date(); due.setDate(due.getDate()+7);
     $("dueDate").value = due.toISOString().split("T")[0];
-    generateInvoiceNumber();
-
-    // Items
+    generateJobNumber();
     $("itemsBody").innerHTML = "";
     addLineItem();
-
     calculateTotals();
     autosave();
   }
@@ -1432,14 +1204,8 @@
   // Print (manual)
   // ===========================
   function printManual(){
-    // Build an isolated printable window to avoid UI/controls
     const dom = buildTemplateDom();
-    const w = window.open("", "_blank");
-    if(!w){
-      alert("Pop-up blocked. Allow popups to print.");
-      return;
-    }
-
+    const w = window.open("", "_blank"); if(!w){ alert("Pop-up blocked. Allow popups to print."); return; }
     const style = `
       <style>
         body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif; margin:0; padding:20px; background:#fff;}
@@ -1449,16 +1215,12 @@
         th{background:#f9fafb;}
       </style>
     `;
-
-    w.document.write(`
-      <html><head>
-  <!-- NAV_SYNC: scripts/sync-nav.js --><title>Print Invoice</title>${style}</head><body>
-<!-- HEADER:START --><!-- HEADER:END --></body></html>
-    `);
+    w.document.write(`<html><head>
+  <!-- NAV_SYNC: scripts/sync-nav.js --><title>Print Job Card</title>${style}</head><body>
+<!-- HEADER:START --><!-- HEADER:END --></body></html>`);
     w.document.body.appendChild(dom);
     w.document.close();
-    w.focus();
-    w.print();
+    w.focus(); w.print();
   }
 
   // ===========================
@@ -1466,93 +1228,71 @@
   // ===========================
   function bind(){
     // meta changes recalc
-    ["overallDiscount","shipping","amountPaid","defaultVat","currency","invoiceStatus"].forEach(id=>{
+    ["jobDeposit","amountPaid","currency","jobStatus"].forEach(id=>{
       $(id).addEventListener("input", () => { calculateTotals(); autosave(); });
       $(id).addEventListener("change", () => { calculateTotals(); autosave(); });
     });
-
     // general fields autosave
     [
       "companyName","companyVat","companyReg","companyEmail","companyPhone","companyWebsite","companyAddress","companyBank",
       "clientName","clientVat","clientReg","clientEmail","clientPhone","clientAddress",
-      "invoiceNumber","invoiceReference","invoiceDate","dueDate","notes","terms"
+      "jobNumber","jobReference","jobDate","dueDate","jobDescription","jobAssigned","notes","terms"
     ].forEach(id=>{
       $(id).addEventListener("input", autosave);
       $(id).addEventListener("change", autosave);
     });
-
     // logo
     $("companyLogo").addEventListener("change", (e)=> handleLogoUpload(e.target.files[0]));
-
     // buttons
     $("btnAddLine").addEventListener("click", ()=> { addLineItem(); autosave(); });
     $("btnPreview").addEventListener("click", openPreview);
     $("btnClosePreview").addEventListener("click", closePreview);
     $("btnClosePreviewBottom").addEventListener("click", closePreview);
     $("previewModal").addEventListener("click", (e)=>{ if(e.target === $("previewModal")) closePreview(); });
-
     $("btnPDF").addEventListener("click", exportPDF);
     $("btnPDF2").addEventListener("click", exportPDF);
     $("btnWord").addEventListener("click", exportWord);
     $("btnExcel").addEventListener("click", exportExcel);
     $("btnCSV").addEventListener("click", exportCSV);
     $("btnPrint").addEventListener("click", printManual);
-
     $("btnSaveTemplate").addEventListener("click", saveTemplate);
     $("btnLoadTemplate").addEventListener("click", pickAndLoadTemplate);
     $("btnReset").addEventListener("click", resetForm);
-
-    $("btnNewNumber").addEventListener("click", ()=> { generateInvoiceNumber(); autosave(); });
-    $("btnMarkPaid").addEventListener("click", ()=>{
-      $("invoiceStatus").value = "paid";
-      $("amountPaid").value = (calculateTotals().grand).toFixed(2);
-      calculateTotals();
-      autosave();
+    $("btnNewNumber").addEventListener("click", ()=> { generateJobNumber(); autosave(); });
+    $("btnMarkCompleted").addEventListener("click", ()=> {
+      $("jobStatus").value = "completed";
+      // When marking completed, set paid equal to grand total for clarity
+      const t = calculateTotals();
+      $("amountPaid").value = t.grand.toFixed(2);
+      calculateTotals(); autosave();
     });
-
     // CSV import
     $("btnImportCSV").addEventListener("click", ()=> $("csvFile").click());
     $("csvFile").addEventListener("change", (e)=>{
       importCSV(e.target.files[0]);
       e.target.value = "";
     });
-
-    // initial line item
-    if(document.querySelectorAll(".line-item").length === 0){
-      addLineItem();
-    }
+    // initial line
+    if(document.querySelectorAll(".line-item").length === 0){ addLineItem(); }
   }
-
   function init(){
     // Dates default
     const today = new Date();
-    $("invoiceDate").value = today.toISOString().split("T")[0];
-    const due = new Date();
-    due.setDate(due.getDate()+10);
+    $("jobDate").value = today.toISOString().split("T")[0];
+    const due = new Date(); due.setDate(due.getDate()+7);
     $("dueDate").value = due.toISOString().split("T")[0];
-
-    // Number
-    generateInvoiceNumber();
-
-    // Load autosave if present
+    generateJobNumber();
     const loaded = loadAutosave();
     if(!loaded){
-      // ensure at least one row
       addLineItem();
       calculateTotals();
       autosave();
     } else {
       calculateTotals();
     }
-
-    // Status
     setStatusBadge();
   }
-
-  document.addEventListener("DOMContentLoaded", ()=>{
-    bind();
-    init();
-  });
+  document.addEventListener("DOMContentLoaded", ()=>{ bind(); init(); });
 </script>
 
 </body>

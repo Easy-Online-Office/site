@@ -1,18 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-ZA">
 <head>
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EasySTAT â€“ Statement Generator</title>
-  
+  <meta name="description" content="Generate professional customer account statements with transactions, running balance, ageing, and offline-friendly exports." />
 
   <!-- Favicon -->
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="apple-touch-icon" href="icon.png">
-<meta name="description" content="Generate professional customer account statements with transactions, running balance, ageing, and offline-friendly exports." />
 
-  <!-- Favicon --><!-- Tailwind CSS -->
+  <!-- Tailwind CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 
   <!-- Font Awesome -->
@@ -71,17 +70,41 @@
       tfoot { display:table-footer-group; }
     }
   </style>
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
-  <script defer src="assets/js/easy-suite-core.js"></script>
 </head>
 
 <body class="min-h-screen flex flex-col">
-
-  <!-- Easy Suite mounts (injected) -->
-  <div id="easyNavMount" class="no-print"></div>
-  <div id="easyHeaderMount" class="no-print"></div>
 <!-- HEADER:START --><!-- HEADER:END --><!-- NAV -->
-  <!-- NAV:START --><div>
+  <!-- NAV:START -->
+<nav class="bg-blue-600 text-white py-4 no-print">
+    <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+      <a data-safe-link href="index.html" class="font-black text-xl mr-4">Easy&nbsp;Suite</a>
+      <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
+      <a data-safe-link href="easy-invoice.html" class="hover:underline">Invoice</a>
+      <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
+      <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
+      <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
+      <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
+      <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
+      <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
+      <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
+      <a data-safe-link href="easy-crm.html" class="underline font-extrabold">CRM</a>
+
+      <div class="ml-auto flex items-center gap-2">
+        <button id="btnDark" class="btn btn-outline" title="Toggle dark mode (D)">
+          <span class="mono">D</span> Dark
+        </button>
+        <button id="btnPrint" class="btn btn-outline" title="Print (manual style)">
+          Print
+        </button>
+      </div>
+    </div>
+  </nav>
+
+<div class="bg-white border-b border-gray-200 no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">JC</div>
+      <div>
         <h1 class="text-2xl font-extrabold text-blue-700">EasyJC</h1>
         <p class="text-sm text-gray-500">Job Card Manager</p>
       </div>

@@ -1,18 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-ZA">
 <head>
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Easy Suite â€” Dashboard</title>
-  
+  <meta name="description" content="Easy Suite dashboard â€” Quotes, Invoices, Purchase Orders, Sales Orders, Receipts, Statements, Job Cards, Payroll, Inventory, CRM, Asset Management, Site Inspections." />
 
-  <!-- Favicon -->
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
-<meta name="description" content="Easy Suite dashboard â€” Quotes, Invoices, Purchase Orders, Sales Orders, Receipts, Statements, Job Cards, Payroll, Inventory, CRM, Asset Management, Site Inspections." />
+  <!-- Favicon (local) -->
+  <link rel="icon" href="icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="icon.png" />
 
-  <!-- Favicon (local) --><!-- TailwindCSS -->
+  <!-- TailwindCSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -252,17 +251,49 @@
       });
     });
   </script>
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
-  <script defer src="assets/js/easy-suite-core.js"></script>
 </head>
 
 <body class="bg-gray-100 min-h-screen">
-  
-  <!-- Easy Suite mounts (injected) -->
-  <div id="easyNavMount" class="no-print"></div>
-  <div id="easyHeaderMount" class="no-print"></div>
-<!-- Navigation Bar -->
-  <!-- NAV:START --><div>
+  <!-- Navigation Bar -->
+  <!-- NAV:START -->
+<nav class="bg-blue-600 text-white py-4">
+    <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+      <a href="index.htm" class="font-black text-xl mr-2">Easy&nbsp;Suite</a>
+
+      <a href="easy-quote.html" class="hover:underline" onclick="addRecent('quote')">Quote</a>
+      <a href="easy-invoice.html" class="hover:underline" onclick="addRecent('invoice')">Invoice</a>
+      <a href="easy-purchase-order.html" class="hover:underline" onclick="addRecent('po')">Purchase&nbsp;Order</a>
+      <a href="easy-sales-order.html" class="hover:underline" onclick="addRecent('so')">Sales&nbsp;Order</a>
+      <a href="easy-receipt.html" class="hover:underline" onclick="addRecent('receipt')">Receipt</a>
+      <a href="easy-statement.html" class="hover:underline" onclick="addRecent('statement')">Statement</a>
+      <a href="easy-job-card.html" class="hover:underline" onclick="addRecent('job')">Job&nbsp;Card</a>
+      <a href="easy-payroll.html" class="hover:underline" onclick="addRecent('payroll')">Payroll</a>
+      <a href="easy-inventory.html" class="hover:underline" onclick="addRecent('inventory')">Inventory</a>
+      <a href="easy-crm.html" class="hover:underline" onclick="addRecent('crm')">CRM</a>
+      <a href="easy-asset-management.html" class="hover:underline" onclick="addRecent('assets')">Assets</a>
+      <a href="easy-site-inspection.html" class="hover:underline" onclick="addRecent('inspection')">Site&nbsp;Inspection</a>
+
+      <span class="ml-auto flex items-center gap-2">
+        <span id="onlineBadge" class="badge bg-gray-100 text-gray-700"><i class="fa-solid fa-wifi"></i> Online</span>
+
+        <button id="themeBtn"
+                class="px-3 py-2 rounded-lg bg-white text-blue-700 font-extrabold hover:bg-blue-50"
+                onclick="toggleTheme()" title="Toggle theme">
+          <i class="fa-solid fa-moon"></i><span class="hidden sm:inline">Dark</span>
+        </button>
+
+        <input id="search" type="text" placeholder="Search modulesâ€¦  ( / or Ctrl+K )"
+               oninput="filterCards()"
+               class="px-3 py-2 rounded-lg text-gray-800 border border-gray-200 w-64 max-w-full" />
+      </span>
+    </div>
+  </nav>
+
+<div class="bg-white border-b border-gray-200 no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">JC</div>
+      <div>
         <h1 class="text-2xl font-extrabold text-blue-700">EasyJC</h1>
         <p class="text-sm text-gray-500">Job Card Manager</p>
       </div>

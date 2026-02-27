@@ -1,17 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-ZA">
 <head>
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EasyJC â€“ Job Card Manager</title>
-  <meta name="description" content="Create and manage job cards for service and repair work. Track labour, parts and costs; preview and export summaries to PDF, Word, Excel or CSV." />
+  
 
-  <!-- Favicon (optional: put your icon file in the same folder or adjust path) -->
+  <!-- Favicon -->
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="apple-touch-icon" href="icon.png">
+<meta name="description" content="Create and manage job cards for service and repair work. Track labour, parts and costs; preview and export summaries to PDF, Word, Excel or CSV." />
 
-  <!-- Tailwind CSS -->
+  <!-- Favicon (optional: put your icon file in the same folder or adjust path) --><!-- Tailwind CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 
   <!-- External Libraries -->
@@ -80,54 +81,16 @@
       tfoot { display:table-footer-group; }
     }
   </style>
+  <link rel="stylesheet" href="assets/css/easy-print.css" />
+  <script defer src="assets/js/easy-suite-core.js"></script>
 </head>
 
 <body class="min-h-screen flex flex-col">
-<!-- HEADER:START -->
-<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
-  <div>
-    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
-    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
-  </div>
 
-  <div class="flex items-center gap-3">
-    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
-  </div>
-</div>
-<!-- HEADER:END -->
-<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
-  <div>
-    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
-    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
-  </div>
-
-  <div class="flex items-center gap-3">
-    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
-  </div>
-</div>
-  <!-- NAV:START -->
-<nav class="bg-blue-600 text-white py-4 no-print">
-  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
-    <a href="index.html" class="font-bold text-xl mr-4">Easy&nbsp;Suite</a>
-    <a href="easy-quote.html" class="hover:underline">Quote</a>
-    <a href="easy-invoice.html" class="hover:underline">Invoice</a>
-    <a href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
-    <a href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
-    <a href="easy-receipt.html" class="hover:underline">Receipt</a>
-    <a href="easy-statement.html" class="hover:underline">Statement</a>
-    <a href="easy-job-card.html" class="underline font-semibold">Job&nbsp;Card</a>
-    <a href="easy-payroll.html" class="hover:underline">Payroll</a>
-    <a href="easy-inventory.html" class="hover:underline">Inventory</a>
-    <a href="easy-crm.html" class="hover:underline">CRM</a>
-  </div>
-</nav>
-<!-- NAV:END -->
+  <!-- Easy Suite mounts (injected) -->
+  <div id="easyNavMount" class="no-print"></div>
+  <div id="easyHeaderMount" class="no-print"></div>
+<!-- HEADER:START --><!-- HEADER:END --><!-- NAV:START --><!-- NAV:END -->
   <!-- Header -->
   <header class="bg-white border-b border-gray-200 no-print">
     <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
@@ -958,34 +921,7 @@
       const dom = buildTemplateDom();
       const htmlString = `<!DOCTYPE html><html><head>
   <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="utf-8"></head><body>
-<!-- HEADER:START -->
-<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
-  <div>
-    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
-    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
-  </div>
-
-  <div class="flex items-center gap-3">
-    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
-  </div>
-</div>
-<!-- HEADER:END -->
-<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
-  <div>
-    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
-    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
-  </div>
-
-  <div class="flex items-center gap-3">
-    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
-  </div>
-</div>${dom.outerHTML}</body></html>`;
+<!-- HEADER:START --><!-- HEADER:END -->${dom.outerHTML}</body></html>`;
       const blob = new Blob([htmlString], { type: "application/msword" });
       saveAs(blob, ($("jobNumber").value || "jobcard") + ".doc");
       return;
@@ -1272,34 +1208,7 @@
     `;
     w.document.write(`<html><head>
   <!-- NAV_SYNC: scripts/sync-nav.js --><title>Print Job Card</title>${style}</head><body>
-<!-- HEADER:START -->
-<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
-  <div>
-    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
-    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
-  </div>
-
-  <div class="flex items-center gap-3">
-    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
-  </div>
-</div>
-<!-- HEADER:END -->
-<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
-  <div>
-    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
-    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
-  </div>
-
-  <div class="flex items-center gap-3">
-    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
-    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
-  </div>
-</div></body></html>`);
+<!-- HEADER:START --><!-- HEADER:END --></body></html>`);
     w.document.body.appendChild(dom);
     w.document.close();
     w.focus(); w.print();
@@ -1379,6 +1288,7 @@
 
 </body>
 </html>
+
 
 
 
