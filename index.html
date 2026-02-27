@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Easy Suite — Dashboard</title>
-  <meta name="description" content="Easy Suite dashboard — Quotes, Invoices, Purchase Orders, Sales Orders, Receipts, Statements, Job Cards, Payroll, Inventory, CRM." />
+  <meta name="description" content="Easy Suite dashboard — Quotes, Invoices, Purchase Orders, Sales Orders, Receipts, Statements, Job Cards, Payroll, Inventory, CRM, Asset Management, Site Inspections." />
 
-  <!-- Favicon (STANDARDIZED: local icon.png) -->
+  <!-- Favicon (local) -->
   <link rel="icon" href="icon.png" type="image/png" />
   <link rel="apple-touch-icon" href="icon.png" />
 
@@ -18,10 +18,8 @@
   <style>
     .module-card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
     .module-card:hover { transform: translateY(-3px); }
-    .glass { backdrop-filter: blur(10px); background: rgba(255,255,255,.75); }
-    .dark .glass { background: rgba(15,23,42,.7); }
     .dark body { background:#0b1220; color:#e5e7eb; }
-    .dark .card { background:#0f172a !important; border-color: rgba(148,163,184,.18) !important; }
+    .dark .card { background:#0f172a !important; border-color: rgba(148,163,184,.18) !important; box-shadow:none !important; }
     .dark .text-gray-800 { color:#e5e7eb !important; }
     .dark .text-gray-600 { color:#94a3b8 !important; }
     .dark .bg-white { background:#0f172a !important; }
@@ -43,13 +41,17 @@
       { id:"invoice", name:"Easy Invoice", href:"easy-invoice.html", icon:"fa-file-invoice-dollar", color:"bg-green-100 text-green-600", tags:["billing","tax","vat"], desc:"Generate professional invoices with tax, discounts and export options." },
       { id:"po", name:"Easy Purchase Order", href:"easy-purchase-order.html", icon:"fa-shopping-cart", color:"bg-purple-100 text-purple-600", tags:["procurement","supplier"], desc:"Create purchase orders for suppliers and track purchasing activity." },
       { id:"so", name:"Easy Sales Order", href:"easy-sales-order.html", icon:"fa-shopping-bag", color:"bg-yellow-100 text-yellow-700", tags:["orders","fulfillment"], desc:"Record customer orders and manage fulfilment from a single module." },
-      // ✅ FIXED LINK: easy-receipt.html (not easy-reciept.html)
+      // ✅ correct spelling
       { id:"receipt", name:"Easy Receipt", href:"easy-receipt.html", icon:"fa-receipt", color:"bg-teal-100 text-teal-700", tags:["payments","proof"], desc:"Issue receipts and maintain a record of payments received." },
       { id:"statement", name:"Easy Statement", href:"easy-statement.html", icon:"fa-file-contract", color:"bg-red-100 text-red-600", tags:["accounts","aging"], desc:"Generate account statements summarising transactions over a period." },
       { id:"job", name:"Easy Job Card", href:"easy-job-card.html", icon:"fa-briefcase", color:"bg-orange-100 text-orange-700", tags:["service","workshop"], desc:"Manage service jobs with tasks, materials and labour logs." },
       { id:"payroll", name:"Easy Payroll", href:"easy-payroll.html", icon:"fa-money-bill-wave", color:"bg-indigo-100 text-indigo-700", tags:["hr","payslip"], desc:"Prepare payroll summaries including earnings, deductions and net pay." },
       { id:"inventory", name:"Easy Inventory", href:"easy-inventory.html", icon:"fa-boxes-stacked", color:"bg-pink-100 text-pink-700", tags:["stock","warehouse"], desc:"Track stock levels and product information to stay organised." },
-      { id:"crm", name:"Easy CRM", href:"easy-crm.html", icon:"fa-users", color:"bg-gray-100 text-gray-700", tags:["customers","pipeline"], desc:"Maintain customer relationships, contacts and follow-ups." }
+      { id:"crm", name:"Easy CRM", href:"easy-crm.html", icon:"fa-users", color:"bg-gray-100 text-gray-700", tags:["customers","pipeline"], desc:"Maintain customer relationships, contacts and follow-ups." },
+
+      // ✅ added
+      { id:"assets", name:"Easy Asset Management", href:"easy-asset-management.html", icon:"fa-screwdriver-wrench", color:"bg-slate-100 text-slate-700", tags:["assets","tracking","register"], desc:"Track company assets, assignments, service history and depreciation-ready records." },
+      { id:"inspection", name:"Easy Site Inspection", href:"easy-site-inspection.html", icon:"fa-clipboard-check", color:"bg-cyan-100 text-cyan-700", tags:["inspection","checklist","compliance"], desc:"Run site inspections with checklists, findings, actions, and printable reports." }
     ];
 
     // ====== THEME ======
@@ -126,7 +128,7 @@
             <button class="px-3 py-2 rounded-lg border border-gray-200 text-sm font-extrabold hover:bg-gray-50"
                     title="${isPinned ? "Unpin" : "Pin"}"
                     onclick="togglePinned('${m.id}')">
-              <i class="fa-solid ${isPinned ? "fa-thumbtack" : "fa-thumbtack"} ${isPinned ? "" : "opacity-40"}"></i>
+              <i class="fa-solid fa-thumbtack ${isPinned ? "" : "opacity-40"}"></i>
             </button>
           </div>
 
@@ -153,10 +155,7 @@
       const wrap = document.getElementById("pinnedWrap");
       if (!el || !wrap) return;
 
-      if (!list.length) {
-        wrap.classList.add("hidden");
-        return;
-      }
+      if (!list.length) { wrap.classList.add("hidden"); return; }
       wrap.classList.remove("hidden");
       el.innerHTML = list.map(moduleCard).join("");
     }
@@ -168,10 +167,7 @@
       const wrap = document.getElementById("recentWrap");
       if (!el || !wrap) return;
 
-      if (!list.length) {
-        wrap.classList.add("hidden");
-        return;
-      }
+      if (!list.length) { wrap.classList.add("hidden"); return; }
       wrap.classList.remove("hidden");
       el.innerHTML = list.map(m => `
         <a href="${m.href}" onclick="addRecent('${m.id}')"
@@ -217,6 +213,7 @@
       renderTags();
       renderAllModules();
       filterCards();
+      updateOnlineBadge();
     }
 
     // ====== ONLINE/OFFLINE INDICATOR ======
@@ -234,15 +231,13 @@
 
     // ====== INIT ======
     window.addEventListener("DOMContentLoaded", () => {
-      const theme = localStorage.getItem(LS_THEME) || "light";
-      applyTheme(theme);
+      applyTheme(localStorage.getItem(LS_THEME) || "light");
 
       renderAll();
-      updateOnlineBadge();
       window.addEventListener("online", updateOnlineBadge);
       window.addEventListener("offline", updateOnlineBadge);
 
-      // Keyboard shortcuts
+      // Keyboard shortcuts: "/" and Ctrl/Cmd+K focus search
       document.addEventListener("keydown", (e) => {
         if (e.key === "/" && !e.ctrlKey && !e.metaKey) {
           e.preventDefault();
@@ -261,7 +256,7 @@
   <!-- Navigation Bar -->
   <nav class="bg-blue-600 text-white py-4">
     <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
-      <a href="index.html" class="font-black text-xl mr-2">Easy&nbsp;Suite</a>
+      <a href="index.htm" class="font-black text-xl mr-2">Easy&nbsp;Suite</a>
 
       <a href="easy-quote.html" class="hover:underline" onclick="addRecent('quote')">Quote</a>
       <a href="easy-invoice.html" class="hover:underline" onclick="addRecent('invoice')">Invoice</a>
@@ -273,11 +268,14 @@
       <a href="easy-payroll.html" class="hover:underline" onclick="addRecent('payroll')">Payroll</a>
       <a href="easy-inventory.html" class="hover:underline" onclick="addRecent('inventory')">Inventory</a>
       <a href="easy-crm.html" class="hover:underline" onclick="addRecent('crm')">CRM</a>
+      <a href="easy-asset-management.html" class="hover:underline" onclick="addRecent('assets')">Assets</a>
+      <a href="easy-site-inspection.html" class="hover:underline" onclick="addRecent('inspection')">Site&nbsp;Inspection</a>
 
       <span class="ml-auto flex items-center gap-2">
         <span id="onlineBadge" class="badge bg-gray-100 text-gray-700"><i class="fa-solid fa-wifi"></i> Online</span>
 
-        <button id="themeBtn" class="px-3 py-2 rounded-lg bg-white text-blue-700 font-extrabold hover:bg-blue-50"
+        <button id="themeBtn"
+                class="px-3 py-2 rounded-lg bg-white text-blue-700 font-extrabold hover:bg-blue-50"
                 onclick="toggleTheme()" title="Toggle theme">
           <i class="fa-solid fa-moon"></i><span class="hidden sm:inline">Dark</span>
         </button>
@@ -291,7 +289,7 @@
 
   <!-- Hero -->
   <header class="container mx-auto px-4 py-10">
-    <div class="rounded-2xl border border-gray-200 shadow bg-white p-8 relative overflow-hidden">
+    <div class="card rounded-2xl border border-gray-200 shadow bg-white p-8 relative overflow-hidden">
       <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-blue-100 opacity-70"></div>
       <div class="absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-indigo-100 opacity-70"></div>
 
@@ -309,14 +307,25 @@
         </p>
 
         <div class="mt-6 flex flex-wrap gap-3">
-          <a href="easy-quote.html" onclick="addRecent('quote')" class="px-5 py-3 rounded-xl bg-blue-600 text-white font-black hover:bg-blue-700">
+          <a href="easy-quote.html" onclick="addRecent('quote')"
+             class="px-5 py-3 rounded-xl bg-blue-600 text-white font-black hover:bg-blue-700">
             <i class="fa-solid fa-plus"></i> New Quote
           </a>
-          <a href="easy-invoice.html" onclick="addRecent('invoice')" class="px-5 py-3 rounded-xl bg-green-600 text-white font-black hover:bg-green-700">
+          <a href="easy-invoice.html" onclick="addRecent('invoice')"
+             class="px-5 py-3 rounded-xl bg-green-600 text-white font-black hover:bg-green-700">
             <i class="fa-solid fa-plus"></i> New Invoice
           </a>
-          <a href="easy-receipt.html" onclick="addRecent('receipt')" class="px-5 py-3 rounded-xl bg-teal-600 text-white font-black hover:bg-teal-700">
+          <a href="easy-receipt.html" onclick="addRecent('receipt')"
+             class="px-5 py-3 rounded-xl bg-teal-600 text-white font-black hover:bg-teal-700">
             <i class="fa-solid fa-plus"></i> New Receipt
+          </a>
+          <a href="easy-asset-management.html" onclick="addRecent('assets')"
+             class="px-5 py-3 rounded-xl bg-gray-800 text-white font-black hover:bg-gray-900">
+            <i class="fa-solid fa-plus"></i> New Asset
+          </a>
+          <a href="easy-site-inspection.html" onclick="addRecent('inspection')"
+             class="px-5 py-3 rounded-xl bg-cyan-600 text-white font-black hover:bg-cyan-700">
+            <i class="fa-solid fa-plus"></i> New Inspection
           </a>
 
           <span class="ml-auto inline-flex items-center gap-2 text-gray-600 font-extrabold">
