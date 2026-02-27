@@ -1,0 +1,48 @@
+const fs = require("fs");
+const path = require("path");
+const glob = require("glob");
+
+const root = process.cwd();
+const exclude = ["**/node_modules/**", "**/.git/**", "**/tools/**", "**/*.bak", "**/*.bak.html"];
+const files = glob.sync("**/*.html", { cwd: root, ignore: exclude });
+
+const CARBON_CLASS_RE = /\b(cds--|bx--)[a-z0-9\-]*/i;
+const CARBON_CSS_RE = /(unpkg\.com\/@carbon\/|carbon-components|@carbon\/styles|cds\.carbon)/i;
+
+// Set strict mode via env if you want to force Carbon for all pages
+const STRICT = (process.env.CARBON_STRICT || "").toLowerCase() === "true";
+
+let failed = false;
+
+for (const f of files) {
+  const fp = path.join(root, f);
+  const html = fs.readFileSync(fp, "utf8");
+
+  const usesCarbonClasses = CARBON_CLASS_RE.test(html);
+  const hasCarbonCss = CARBON_CSS_RE.test(html);
+
+  const issues = [];
+
+  if (STRICT && !hasCarbonCss) {
+    issues.push("CARBON_STRICT=true but Carbon CSS not detected");
+  }
+
+  if (usesCarbonClasses && !hasCarbonCss) {
+    issues.push("Carbon classes detected (cds-- / bx--) but Carbon CSS not detected");
+  }
+
+  // Optional “style hygiene”
+  const inlineStyleCount = (html.match(/\sstyle="/gi) || []).length;
+  if (inlineStyleCount > 20) {
+    issues.push(`Excessive inline styles (${inlineStyleCount}) — consider CSS classes/tokens`);
+  }
+
+  if (issues.length) {
+    failed = true;
+    console.error(`\n❌ Carbon compliance failed: ${f}`);
+    issues.forEach((i) => console.error(`  - ${i}`));
+  }
+}
+
+if (failed) process.exit(1);
+console.log(`✅ Carbon compliance passed (${files.length} files). STRICT=${STRICT}`);
