@@ -84,7 +84,7 @@
     <select id="currency" onchange="calculate()" class="border px-2 py-1 rounded">
       <option value="R">ZAR (R)</option>
       <option value="$">USD ($)</option>
-      <option value="ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬">EUR (ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬)</option>
+      <option value="â‚¬">EUR (â‚¬)</option>
     </select>
   </div>
 </div>
@@ -206,7 +206,7 @@ function addRow(description="", qty=1, unit=0, disc=0) {
     </td>
     <td class="border p-1 text-right total">0.00</td>
     <td class="border p-1 text-center no-print">
-      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">ÃƒÆ’Ã†â€™-</button>
+      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">Ã-</button>
     </td>
   `;
 

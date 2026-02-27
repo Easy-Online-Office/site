@@ -10,7 +10,7 @@
   <!-- Favicon -->
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="apple-touch-icon" href="icon.png">
-<meta name="description" content="Easy CRM ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬" manage contacts, pipeline, follow-ups, and activity. Offline-first with CSV/JSON import/export." />
+<meta name="description" content="Easy CRM â€" manage contacts, pipeline, follow-ups, and activity. Offline-first with CSV/JSON import/export." />
 
   <!-- Favicons (remote + optional local fallback) --><!-- Optional local icons if you have them in the same folder --><!-- Tailwind (CDN) -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
@@ -179,7 +179,7 @@
             <option value="name">Name</option>
             <option value="company">Company</option>
             <option value="status">Status</option>
-            <option value="revenueDesc">Revenue (High ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ' Low)</option>
+            <option value="revenueDesc">Revenue (High â†' Low)</option>
             <option value="followupAsc">Follow-up (Soonest)</option>
             <option value="updatedDesc">Recently Updated</option>
           </select>
@@ -266,7 +266,7 @@
           <h3 id="modalTitle" class="text-xl font-black text-slate-900">Add Contact</h3>
           <p class="text-xs text-slate-500">Required: name. Pipeline is your expected value (ZAR).</p>
         </div>
-        <button id="btnClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">ÃƒÆ’Ã†â€™-</button>
+        <button id="btnClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">Ã-</button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
@@ -336,9 +336,9 @@
       <div class="flex items-start justify-between gap-3">
         <div>
           <h3 class="text-xl font-black text-slate-900">Contact Profile</h3>
-          <p class="text-xs text-slate-500" id="viewSub">ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"</p>
+          <p class="text-xs text-slate-500" id="viewSub">â€"</p>
         </div>
-        <button id="btnViewClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">ÃƒÆ’Ã†â€™-</button>
+        <button id="btnViewClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">Ã-</button>
       </div>
 
       <div id="viewBody" class="mt-4"></div>
@@ -356,7 +356,7 @@
 
 <script>
 /* ============================
-   Easy CRM ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬" Offline First
+   Easy CRM â€" Offline First
    ============================ */
 
 const STORE_KEY = "easy.crm.v2";
@@ -537,11 +537,11 @@ function openView(id){
   const c = state.contacts.find(x => x.id === id);
   if(!c) { toast("Contact not found."); return; }
 
-  $("viewSub").textContent = c.company ? c.company : "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"";
+  $("viewSub").textContent = c.company ? c.company : "â€"";
 
   const overdue = isOverdueDate(c.followup);
   const follow = c.followup ? escapeHtml(c.followup) : "-";
-  const tags = (c.tags||[]).map(t => `<span class="pill pill-inactive mr-1 mb-1">${escapeHtml(t)}</span>`).join(" ") || `<span class="text-slate-500">ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"</span>`;
+  const tags = (c.tags||[]).map(t => `<span class="pill pill-inactive mr-1 mb-1">${escapeHtml(t)}</span>`).join(" ") || `<span class="text-slate-500">â€"</span>`;
 
   $("viewBody").innerHTML = `
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -550,8 +550,8 @@ function openView(id){
         <div class="text-lg font-black">${escapeHtml(c.name)}</div>
         <div class="text-sm text-slate-600 mt-1">${escapeHtml(c.company || "")}</div>
         <div class="mt-3 text-sm">
-          <div><span class="font-black">Email:</span> ${c.email ? `<a class="text-blue-600 hover:underline" href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a>` : "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬""}</div>
-          <div><span class="font-black">Phone:</span> ${c.phone ? `<a class="text-blue-600 hover:underline" href="tel:${escapeHtml(c.phone)}">${escapeHtml(c.phone)}</a>` : "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬""}</div>
+          <div><span class="font-black">Email:</span> ${c.email ? `<a class="text-blue-600 hover:underline" href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a>` : "â€""}</div>
+          <div><span class="font-black">Phone:</span> ${c.phone ? `<a class="text-blue-600 hover:underline" href="tel:${escapeHtml(c.phone)}">${escapeHtml(c.phone)}</a>` : "â€""}</div>
         </div>
       </div>
 
@@ -578,14 +578,14 @@ function openView(id){
 
       <div class="card p-4 md:col-span-2">
         <div class="text-xs text-slate-500 font-black mb-2">NOTES</div>
-        <div class="text-sm whitespace-pre-line">${escapeHtml(c.notes || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</div>
+        <div class="text-sm whitespace-pre-line">${escapeHtml(c.notes || "â€"")}</div>
       </div>
 
       <div class="card p-4 md:col-span-2">
         <div class="text-xs text-slate-500 font-black mb-2">METADATA</div>
         <div class="text-xs text-slate-500">
           Created: <span class="mono">${escapeHtml(new Date(c.createdAt).toLocaleString())}</span>
-          ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ Updated: <span class="mono">${escapeHtml(new Date(c.updatedAt).toLocaleString())}</span>
+          â€¢ Updated: <span class="mono">${escapeHtml(new Date(c.updatedAt).toLocaleString())}</span>
         </div>
       </div>
     </div>
@@ -667,7 +667,7 @@ function render(){
   const slice = list.slice(start, start + pageSize);
 
   $("pageMeta").textContent = `${state.page} / ${totalPages}`;
-  $("tableMeta").textContent = `${list.length} records ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ showing ${slice.length} ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ page size ${pageSize}`;
+  $("tableMeta").textContent = `${list.length} records â€¢ showing ${slice.length} â€¢ page size ${pageSize}`;
 
   const rows = $("rows");
   rows.innerHTML = "";
@@ -725,8 +725,8 @@ function renderActivity(){
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td class="p-3 mono">${escapeHtml(new Date(a.ts).toLocaleString())}</td>
-      <td class="p-3 font-black">${escapeHtml(a.contactName || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
-      <td class="p-3">${escapeHtml(a.event || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
+      <td class="p-3 font-black">${escapeHtml(a.contactName || "â€"")}</td>
+      <td class="p-3">${escapeHtml(a.event || "â€"")}</td>
       <td class="p-3">${escapeHtml(a.note || "")}</td>
     `;
     tb.appendChild(tr);

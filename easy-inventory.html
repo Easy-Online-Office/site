@@ -198,7 +198,7 @@
           <h3 id="modalTitle" class="text-xl font-black text-slate-900">Add Product</h3>
           <p class="text-xs text-slate-500">SKU must be unique.</p>
         </div>
-        <button id="btnClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">ÃƒÆ’Ã†â€™-</button>
+        <button id="btnClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">Ã-</button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
@@ -251,7 +251,7 @@
           <h3 class="text-xl font-black text-slate-900">Adjust Stock</h3>
           <p id="adjSku" class="text-xs text-slate-500 mono"></p>
         </div>
-        <button id="adjClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">ÃƒÆ’Ã†â€™-</button>
+        <button id="adjClose" class="text-slate-500 hover:text-slate-900 text-xl font-black">Ã-</button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
@@ -538,7 +538,7 @@ function openAdjust(sku){
   if(!item){ toast("Product not found: " + s); return; }
 
   adjTargetSku = s;
-  $("adjSku").textContent = s + " ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ Current stock: " + Number(item.stock||0);
+  $("adjSku").textContent = s + " â€¢ Current stock: " + Number(item.stock||0);
   $("adjType").value = "IN";
   $("adjQty").value = "1";
   $("adjNote").value = "";

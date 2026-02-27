@@ -4,7 +4,7 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyASM ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬" Asset Management | Easy Suite</title>
+  <title>EasyASM â€" Asset Management | Easy Suite</title>
   
 
   <!-- Favicon -->
@@ -145,7 +145,7 @@
   <!-- Header --><main class="container mx-auto px-4 py-6 print-wrap">
     <!-- Print title (only visible in print) -->
     <div class="print-title hidden">
-      <h1 class="text-2xl font-black">EasyASM ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬" Asset Register</h1>
+      <h1 class="text-2xl font-black">EasyASM â€" Asset Register</h1>
       <p class="text-sm">Audit-ready register export (manual style).</p>
       <div class="hr"></div>
     </div>
@@ -157,8 +157,8 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Company + asset owner ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ' 2) Add assets (category, serial, value, location) ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ' 3) Assign to users/branches ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â '
-            4) Track warranty/service + status ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ' 5) Export/print asset register & audit list.
+            1) Company + asset owner â†' 2) Add assets (category, serial, value, location) â†' 3) Assign to users/branches â†'
+            4) Track warranty/service + status â†' 5) Export/print asset register & audit list.
           </div>
         </div>
       </div>
@@ -239,11 +239,11 @@
           </div>
           <div class="flex items-center justify-between">
             <div class="help">Total Cost</div>
-            <div class="font-black text-xl" id="statTotalCost">ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"</div>
+            <div class="font-black text-xl" id="statTotalCost">â€"</div>
           </div>
           <div class="flex items-center justify-between">
             <div class="help">Book Value (est.)</div>
-            <div class="font-black text-xl" id="statBookValue">ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"</div>
+            <div class="font-black text-xl" id="statBookValue">â€"</div>
           </div>
           <div class="hr"></div>
           <div class="flex flex-wrap gap-2 no-print">
@@ -402,7 +402,7 @@
 
           <div class="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="help">
-              Tip: click an assetÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢s <b>Tag</b> to copy it. Use <span class="kbd">/</span> to jump to search.
+              Tip: click an assetâ€™s <b>Tag</b> to copy it. Use <span class="kbd">/</span> to jump to search.
             </div>
             <div class="flex flex-wrap gap-2 no-print">
               <button class="btn btn-outline" id="btnAuditList"><i class="fa-solid fa-clipboard-check"></i> Audit List</button>
@@ -623,7 +623,7 @@
 
     <footer class="mt-10 mb-6 text-center text-xs text-gray-500 no-print">
       <div class="font-bold">EasyASM</div>
-      <div>Offline-first asset register ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ Templates ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ CSV/JSON import/export ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ Print-friendly manual mode</div>
+      <div>Offline-first asset register â€¢ Templates â€¢ CSV/JSON import/export â€¢ Print-friendly manual mode</div>
     </footer>
   </main>
 
@@ -764,9 +764,9 @@
         }
       };
       const fmtShort = (iso)=>{
-        if(!iso) return "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"";
+        if(!iso) return "â€"";
         const d = new Date(iso);
-        if(Number.isNaN(d.getTime())) return "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"";
+        if(Number.isNaN(d.getTime())) return "â€"";
         return d.toLocaleDateString("en-ZA", { year:"numeric", month:"short", day:"2-digit" });
       };
       const daysUntil = (iso)=>{
@@ -901,13 +901,13 @@
         if(status === "In Repair") return `<span class="badge warn"><i class="fa-solid fa-screwdriver-wrench"></i> ${escapeHtml(status)}</span>`;
         if(status === "Retired" || status === "Disposed") return `<span class="badge"><i class="fa-solid fa-box-archive"></i> ${escapeHtml(status)}</span>`;
         if(status === "Lost/Stolen") return `<span class="badge bad"><i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(status)}</span>`;
-        return `<span class="badge">${escapeHtml(status||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</span>`;
+        return `<span class="badge">${escapeHtml(status||"â€"")}</span>`;
       }
 
       function warrantyBadge(warrantyIso){
-        if(!warrantyIso) return `<span class="badge">ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"</span>`;
+        if(!warrantyIso) return `<span class="badge">â€"</span>`;
         const d = daysUntil(warrantyIso);
-        if(d === null) return `<span class="badge">ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"</span>`;
+        if(d === null) return `<span class="badge">â€"</span>`;
         if(d < 0) return `<span class="badge bad"><i class="fa-solid fa-xmark"></i> Expired</span>`;
         if(d <= 30) return `<span class="badge warn"><i class="fa-solid fa-clock"></i> ${d}d</span>`;
         return `<span class="badge ok"><i class="fa-solid fa-shield"></i> ${d}d</span>`;
@@ -936,22 +936,22 @@
         const ccy = state.meta.currency || "ZAR";
         const rows = getFilteredAssets().map(a=>{
           const assignedTo = (a.assignment && (a.assignment.user || a.assignment.userId))
-            ? `${escapeHtml(a.assignment.user || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}<div class="help">${escapeHtml(a.assignment.userId || "")}</div>`
+            ? `${escapeHtml(a.assignment.user || "â€"")}<div class="help">${escapeHtml(a.assignment.userId || "")}</div>`
             : `<span class="help">Unassigned</span>`;
 
           const book = computeBookValue(a);
-          const tagCell = `<button class="btn btn-outline" data-act="copyTag" data-id="${a.id}" title="Copy tag">${escapeHtml(a.tag||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</button>`;
+          const tagCell = `<button class="btn btn-outline" data-act="copyTag" data-id="${a.id}" title="Copy tag">${escapeHtml(a.tag||"â€"")}</button>`;
 
           return `
             <tr>
               <td>
-                <div class="font-extrabold">${escapeHtml(a.name||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</div>
+                <div class="font-extrabold">${escapeHtml(a.name||"â€"")}</div>
                 <div class="help">${escapeHtml(a.dept||"")}</div>
               </td>
               <td>${tagCell}</td>
-              <td class="mono">${escapeHtml(a.serial||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
-              <td>${escapeHtml(a.category||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
-              <td>${escapeHtml(a.location||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
+              <td class="mono">${escapeHtml(a.serial||"â€"")}</td>
+              <td>${escapeHtml(a.category||"â€"")}</td>
+              <td>${escapeHtml(a.location||"â€"")}</td>
               <td>${assignedTo}</td>
               <td>${statusBadge(a.status)}</td>
               <td>${warrantyBadge(a.warranty)}</td>
@@ -1174,8 +1174,8 @@
         a.history.unshift({
           at: nowISO(),
           action: "ASSIGN",
-          from: prev ? (prev.user || prev.userId || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"") : "Unassigned",
-          to: newAsn.user || newAsn.userId || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬""
+          from: prev ? (prev.user || prev.userId || "â€"") : "Unassigned",
+          to: newAsn.user || newAsn.userId || "â€""
         });
 
         a.updatedAt = nowISO();
@@ -1195,7 +1195,7 @@
         a.history.unshift({
           at: nowISO(),
           action: "UNASSIGN",
-          from: prev.user || prev.userId || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"",
+          from: prev.user || prev.userId || "â€"",
           to: "Unassigned"
         });
         a.updatedAt = nowISO();
@@ -1220,8 +1220,8 @@
           return `
             <tr>
               <td>${fmtShort(e.date)}</td>
-              <td>${escapeHtml(e.type||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
-              <td>${escapeHtml(e.vendor||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
+              <td>${escapeHtml(e.type||"â€"")}</td>
+              <td>${escapeHtml(e.vendor||"â€"")}</td>
               <td class="font-extrabold">${fmtMoney(e.cost||0, ccy)}</td>
               <td>${escapeHtml(e.notes||"")}</td>
               <td class="no-print">
@@ -1515,7 +1515,7 @@
             <tr>
               <td>
                 <div class="font-extrabold">${escapeHtml(t.name)}</div>
-                <div class="help">${escapeHtml(t.app||"EasyASM")} ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ${escapeHtml(t.version||"")}</div>
+                <div class="help">${escapeHtml(t.app||"EasyASM")} â€¢ ${escapeHtml(t.version||"")}</div>
               </td>
               <td>${fmtShort(t.updatedAt)}</td>
               <td class="no-print">
@@ -1624,15 +1624,15 @@
       }
       function renderAuditTable(){
         const rows = getFilteredAssets().map(a=>{
-          const assigned = a.assignment ? (a.assignment.user || a.assignment.userId || "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"") : "Unassigned";
+          const assigned = a.assignment ? (a.assignment.user || a.assignment.userId || "â€"") : "Unassigned";
           return `
             <tr>
-              <td><div class="font-extrabold">${escapeHtml(a.name||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</div><div class="help">${escapeHtml(a.category||"")}</div></td>
-              <td class="mono">${escapeHtml(a.tag||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
-              <td class="mono">${escapeHtml(a.serial||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
-              <td>${escapeHtml(a.location||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
+              <td><div class="font-extrabold">${escapeHtml(a.name||"â€"")}</div><div class="help">${escapeHtml(a.category||"")}</div></td>
+              <td class="mono">${escapeHtml(a.tag||"â€"")}</td>
+              <td class="mono">${escapeHtml(a.serial||"â€"")}</td>
+              <td>${escapeHtml(a.location||"â€"")}</td>
               <td>${escapeHtml(assigned)}</td>
-              <td>${escapeHtml(a.status||"ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬"")}</td>
+              <td>${escapeHtml(a.status||"â€"")}</td>
             </tr>
           `;
         }).join("");
