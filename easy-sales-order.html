@@ -1,6 +1,7 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-ZA">
 <head>
+  <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Easy Sales Order</title>
@@ -29,8 +30,37 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen">
+<!-- HEADER:START -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
+  </div>
+</div>
+<!-- HEADER:END -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
+  </div>
+</div>
 
 <!-- NAV -->
+<!-- NAV:START -->
 <nav class="bg-blue-600 text-white py-4 no-print">
   <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
     <a href="index.html" class="font-bold text-xl mr-4">Easy&nbsp;Suite</a>
@@ -46,6 +76,7 @@
     <a href="easy-crm.html" class="hover:underline">CRM</a>
   </div>
 </nav>
+<!-- NAV:END -->
 
 <main class="container mx-auto px-4 py-8">
 
@@ -153,7 +184,7 @@
       </td>
       <td class="border px-3 py-2 total">R0.00</td>
       <td class="border px-3 py-2 no-print">
-        <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600">✕</button>
+        <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600">âœ•</button>
       </td>
     `;
 
@@ -188,3 +219,6 @@
 
 </body>
 </html>
+
+
+

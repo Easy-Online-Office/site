@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-ZA">
 <head>
+  <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Easy Suite — Dashboard</title>
-  <meta name="description" content="Easy Suite dashboard — Quotes, Invoices, Purchase Orders, Sales Orders, Receipts, Statements, Job Cards, Payroll, Inventory, CRM, Asset Management, Site Inspections." />
+  <title>Easy Suite â€” Dashboard</title>
+  <meta name="description" content="Easy Suite dashboard â€” Quotes, Invoices, Purchase Orders, Sales Orders, Receipts, Statements, Job Cards, Payroll, Inventory, CRM, Asset Management, Site Inspections." />
 
   <!-- Favicon (local) -->
   <link rel="icon" href="icon.png" type="image/png" />
@@ -41,7 +42,7 @@
       { id:"invoice", name:"Easy Invoice", href:"easy-invoice.html", icon:"fa-file-invoice-dollar", color:"bg-green-100 text-green-600", tags:["billing","tax","vat"], desc:"Generate professional invoices with tax, discounts and export options." },
       { id:"po", name:"Easy Purchase Order", href:"easy-purchase-order.html", icon:"fa-shopping-cart", color:"bg-purple-100 text-purple-600", tags:["procurement","supplier"], desc:"Create purchase orders for suppliers and track purchasing activity." },
       { id:"so", name:"Easy Sales Order", href:"easy-sales-order.html", icon:"fa-shopping-bag", color:"bg-yellow-100 text-yellow-700", tags:["orders","fulfillment"], desc:"Record customer orders and manage fulfilment from a single module." },
-      // ✅ correct spelling
+      // âœ… correct spelling
       { id:"receipt", name:"Easy Receipt", href:"easy-receipt.html", icon:"fa-receipt", color:"bg-teal-100 text-teal-700", tags:["payments","proof"], desc:"Issue receipts and maintain a record of payments received." },
       { id:"statement", name:"Easy Statement", href:"easy-statement.html", icon:"fa-file-contract", color:"bg-red-100 text-red-600", tags:["accounts","aging"], desc:"Generate account statements summarising transactions over a period." },
       { id:"job", name:"Easy Job Card", href:"easy-job-card.html", icon:"fa-briefcase", color:"bg-orange-100 text-orange-700", tags:["service","workshop"], desc:"Manage service jobs with tasks, materials and labour logs." },
@@ -49,7 +50,7 @@
       { id:"inventory", name:"Easy Inventory", href:"easy-inventory.html", icon:"fa-boxes-stacked", color:"bg-pink-100 text-pink-700", tags:["stock","warehouse"], desc:"Track stock levels and product information to stay organised." },
       { id:"crm", name:"Easy CRM", href:"easy-crm.html", icon:"fa-users", color:"bg-gray-100 text-gray-700", tags:["customers","pipeline"], desc:"Maintain customer relationships, contacts and follow-ups." },
 
-      // ✅ added
+      // âœ… added
       { id:"assets", name:"Easy Asset Management", href:"easy-asset-management.html", icon:"fa-screwdriver-wrench", color:"bg-slate-100 text-slate-700", tags:["assets","tracking","register"], desc:"Track company assets, assignments, service history and depreciation-ready records." },
       { id:"inspection", name:"Easy Site Inspection", href:"easy-site-inspection.html", icon:"fa-clipboard-check", color:"bg-cyan-100 text-cyan-700", tags:["inspection","checklist","compliance"], desc:"Run site inspections with checklists, findings, actions, and printable reports." }
     ];
@@ -254,7 +255,8 @@
 
 <body class="bg-gray-100 min-h-screen">
   <!-- Navigation Bar -->
-  <nav class="bg-blue-600 text-white py-4">
+  <!-- NAV:START -->
+<nav class="bg-blue-600 text-white py-4">
     <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
       <a href="index.htm" class="font-black text-xl mr-2">Easy&nbsp;Suite</a>
 
@@ -280,12 +282,13 @@
           <i class="fa-solid fa-moon"></i><span class="hidden sm:inline">Dark</span>
         </button>
 
-        <input id="search" type="text" placeholder="Search modules…  ( / or Ctrl+K )"
+        <input id="search" type="text" placeholder="Search modulesâ€¦  ( / or Ctrl+K )"
                oninput="filterCards()"
                class="px-3 py-2 rounded-lg text-gray-800 border border-gray-200 w-64 max-w-full" />
       </span>
     </div>
   </nav>
+<!-- NAV:END -->
 
   <!-- Hero -->
   <header class="container mx-auto px-4 py-10">
@@ -302,7 +305,7 @@
 
         <h1 class="text-3xl sm:text-4xl font-black text-gray-800 mb-3">Welcome to Easy Suite</h1>
         <p class="text-gray-600 text-lg max-w-3xl">
-          Launch any module in seconds — Quotes, Invoices, Orders, Receipts, Statements and more.
+          Launch any module in seconds â€” Quotes, Invoices, Orders, Receipts, Statements and more.
           Use search, pin your favourites, and pick up where you left off.
         </p>
 
@@ -375,10 +378,12 @@
     </section>
 
     <footer class="mt-12 text-center text-gray-600 font-extrabold">
-      Easy Suite • Local-first tools • Designed for speed
+      Easy Suite â€¢ Local-first tools â€¢ Designed for speed
     </footer>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
 </body>
 </html>
+
+

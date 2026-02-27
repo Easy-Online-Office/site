@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-ZA">
 <head>
+  <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyINV – Feature-Rich Invoice Generator</title>
+  <title>EasyINV â€“ Feature-Rich Invoice Generator</title>
   <meta name="description" content="Create professional invoices in seconds. Preview, print, export PDF/Word/Excel/CSV, and save templates locally." />
   
   <!-- Favicon -->
@@ -78,10 +79,39 @@
 </head>
 
 <body class="min-h-screen flex flex-col">
+<!-- HEADER:START -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
+  </div>
+</div>
+<!-- HEADER:END -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
+  </div>
+</div>
 
   
   <!-- Navigation -->
-  <nav class="bg-blue-600 text-white py-4 no-print">
+  <!-- NAV:START -->
+<nav class="bg-blue-600 text-white py-4 no-print">
     <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
       <a href="index.html" class="font-bold text-xl mr-4">Easy&nbsp;Suite</a>
       <a href="easy-quote.html" class="underline font-semibold">Quote</a>
@@ -96,6 +126,7 @@
       <a href="easy-crm.html" class="hover:underline">CRM</a>
     </div>
   </nav>
+<!-- NAV:END -->
 
 <!-- Header -->
   <header class="bg-white border-b border-gray-200 no-print">
@@ -135,7 +166,7 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Add your company + client details → 2) Add line items → 3) Preview → 4) Export PDF/Word/Excel/CSV → 5) Save as a template.
+            1) Add your company + client details â†’ 2) Add line items â†’ 3) Preview â†’ 4) Export PDF/Word/Excel/CSV â†’ 5) Save as a template.
           </div>
         </div>
       </div>
@@ -282,8 +313,8 @@
               <select id="currency" class="w-full border border-gray-200 rounded-lg px-3 py-2">
                 <option value="ZAR" selected>ZAR (R)</option>
                 <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
+                <option value="EUR">EUR (â‚¬)</option>
+                <option value="GBP">GBP (Â£)</option>
               </select>
               <p class="text-xs text-slate-500 mt-1">Formatting adapts; no FX conversion.</p>
             </div>
@@ -598,7 +629,7 @@
         </div>
 
         <div class="mt-6 text-xs text-slate-500 text-center">
-          Generated with EasyINV • Print-friendly output
+          Generated with EasyINV â€¢ Print-friendly output
         </div>
       </div>
     </div>
@@ -610,14 +641,14 @@
   // Helpers
   // ===========================
   // In production, avoid global alert handlers. Errors will be logged via
-  // console.error instead of interrupting the user with pop‑up messages.
+  // console.error instead of interrupting the user with popâ€‘up messages.
   // window.onerror is intentionally left undefined here.
   const $ = (id) => document.getElementById(id);
 
   function escapeHtml(str){
     // Convert the input to a string before replacing to avoid errors when
-    // non‑string values (e.g. numbers) are passed.  Using String() ensures
-    // that truthy non‑string values like numbers or booleans are coerced to
+    // nonâ€‘string values (e.g. numbers) are passed.  Using String() ensures
+    // that truthy nonâ€‘string values like numbers or booleans are coerced to
     // strings, and that undefined/null becomes an empty string.  Without this
     // conversion, calling `.replace` on a number would throw an error.
     return String(str || "").replace(/[&<>"']/g, m => ({
@@ -628,8 +659,8 @@
   function symbolForCurrency(cur){
     switch(cur){
       case "USD": return "$";
-      case "EUR": return "€";
-      case "GBP": return "£";
+      case "EUR": return "â‚¬";
+      case "GBP": return "Â£";
       case "ZAR":
       default: return "R";
     }
@@ -970,7 +1001,7 @@
   function exportPDF(){
     // PDF export fallback: open the print dialog on the preview.  We
     // generate the preview (which already lays out the invoice in a
-    // print‑friendly format) and then invoke the browser's native print
+    // printâ€‘friendly format) and then invoke the browser's native print
     // function.  Users can select "Save as PDF" in the print dialog to
     // generate a PDF.  This approach avoids reliance on external
     // libraries and works offline across modern browsers.
@@ -1021,7 +1052,36 @@
       tr.appendChild(td);
       wrapperTable.appendChild(tr);
       // Serialize to HTML
-      const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>${wrapperTable.outerHTML}</body></html>`;
+      const html = `<!DOCTYPE html><html><head>
+  <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="UTF-8"></head><body>
+<!-- HEADER:START -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
+  </div>
+</div>
+<!-- HEADER:END -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
+  </div>
+</div>${wrapperTable.outerHTML}</body></html>`;
       const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
       const filename = ($("invoiceNumber").value || 'invoice') + '.xls';
       saveAs(blob, filename);
@@ -1182,7 +1242,36 @@
       const wrapper = document.createElement('div');
       wrapper.appendChild(dom);
       // Serialize the DOM into a complete HTML document string
-      const htmlContent = `<!DOCTYPE html><html lang="en-ZA"><head><meta charset="UTF-8"><title>Invoice</title></head><body>${wrapper.innerHTML}</body></html>`;
+      const htmlContent = `<!DOCTYPE html><html lang="en-ZA"><head>
+  <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="UTF-8"><title>Invoice</title></head><body>
+<!-- HEADER:START -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
+  </div>
+</div>
+<!-- HEADER:END -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
+  </div>
+</div>${wrapper.innerHTML}</body></html>`;
       // Create a Word document blob from the HTML content
       const blob = new Blob([htmlContent], { type: 'application/msword' });
       const filename = ($("invoiceNumber").value || 'invoice') + '.doc';
@@ -1449,7 +1538,36 @@
     `;
 
     w.document.write(`
-      <html><head><title>Print Invoice</title>${style}</head><body></body></html>
+      <html><head>
+  <!-- NAV_SYNC: scripts/sync-nav.js --><title>Print Invoice</title>${style}</head><body>
+<!-- HEADER:START -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
+  </div>
+</div>
+<!-- HEADER:END -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
+  </div>
+</div></body></html>
     `);
     w.document.body.appendChild(dom);
     w.document.close();
@@ -1553,3 +1671,6 @@
 
 </body>
 </html>
+
+
+

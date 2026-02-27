@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-ZA">
 <head>
+  <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasySTAT – Statement Generator</title>
+  <title>EasySTAT â€“ Statement Generator</title>
   <meta name="description" content="Generate professional customer account statements with transactions, running balance, ageing, and offline-friendly exports." />
 
   <!-- Favicon -->
@@ -72,9 +73,38 @@
 </head>
 
 <body class="min-h-screen flex flex-col">
+<!-- HEADER:START -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
+  </div>
+</div>
+<!-- HEADER:END -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
+  </div>
+</div>
 
   <!-- NAV -->
-  <nav class="bg-blue-600 text-white py-4 no-print">
+  <!-- NAV:START -->
+<nav class="bg-blue-600 text-white py-4 no-print">
     <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
       <a data-safe-link href="index.html" class="font-black text-xl mr-4">Easy&nbsp;Suite</a>
       <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
@@ -98,6 +128,7 @@
       </div>
     </div>
   </nav>
+<!-- NAV:END -->
 
   <main class="container mx-auto px-4 py-8">
 
@@ -143,7 +174,7 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Company + customer → 2) Set statement period + opening balance → 3) Add/import transactions → 4) Review running balance + ageing → 5) Preview/print/export.
+            1) Company + customer â†’ 2) Set statement period + opening balance â†’ 3) Add/import transactions â†’ 4) Review running balance + ageing â†’ 5) Preview/print/export.
           </div>
         </div>
       </div>
@@ -300,8 +331,8 @@
               <select id="currency" class="w-full border border-gray-200 rounded-lg px-3 py-2">
                 <option value="ZAR" selected>ZAR (R)</option>
                 <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
+                <option value="EUR">EUR (â‚¬)</option>
+                <option value="GBP">GBP (Â£)</option>
               </select>
               <p class="text-xs text-slate-500 mt-1">Formatting adapts; no FX conversion.</p>
             </div>
@@ -418,7 +449,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div class="lg:col-span-2">
           <h2 class="text-lg font-extrabold mb-2"><i class="fa-solid fa-chart-line text-blue-600 mr-2"></i>Summary</h2>
-          <p class="text-sm text-slate-500">Closing balance equals opening balance plus (debits − credits) within the period.</p>
+          <p class="text-sm text-slate-500">Closing balance equals opening balance plus (debits âˆ’ credits) within the period.</p>
 
           <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="border border-gray-200 rounded-lg p-4">
@@ -460,15 +491,15 @@
                   <span id="aCurrent" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">1–30</span>
+                  <span class="font-bold text-slate-700">1â€“30</span>
                   <span id="a30" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">31–60</span>
+                  <span class="font-bold text-slate-700">31â€“60</span>
                   <span id="a60" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">61–90</span>
+                  <span class="font-bold text-slate-700">61â€“90</span>
                   <span id="a90" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
@@ -638,9 +669,9 @@
             <div class="text-xs text-slate-500 font-black mb-2">AGEING SUMMARY (EST.)</div>
             <div class="text-sm space-y-2">
               <div class="flex justify-between"><span class="font-bold text-slate-700">Current</span><span id="tplACurrent" class="mono font-extrabold"></span></div>
-              <div class="flex justify-between"><span class="font-bold text-slate-700">1–30</span><span id="tplA30" class="mono font-extrabold"></span></div>
-              <div class="flex justify-between"><span class="font-bold text-slate-700">31–60</span><span id="tplA60" class="mono font-extrabold"></span></div>
-              <div class="flex justify-between"><span class="font-bold text-slate-700">61–90</span><span id="tplA90" class="mono font-extrabold"></span></div>
+              <div class="flex justify-between"><span class="font-bold text-slate-700">1â€“30</span><span id="tplA30" class="mono font-extrabold"></span></div>
+              <div class="flex justify-between"><span class="font-bold text-slate-700">31â€“60</span><span id="tplA60" class="mono font-extrabold"></span></div>
+              <div class="flex justify-between"><span class="font-bold text-slate-700">61â€“90</span><span id="tplA90" class="mono font-extrabold"></span></div>
               <div class="flex justify-between"><span class="font-bold text-slate-700">90+</span><span id="tplA120" class="mono font-extrabold"></span></div>
               <div class="flex justify-between border-t border-gray-200 pt-2 text-base"><span class="font-black text-slate-900">Total</span><span id="tplATotal" class="mono font-black"></span></div>
             </div>
@@ -656,7 +687,7 @@
         </div>
 
         <div class="mt-6 text-xs text-slate-500 text-center">
-          Generated with EasySTAT • Print-friendly output
+          Generated with EasySTAT â€¢ Print-friendly output
         </div>
       </div>
     </div>
@@ -678,8 +709,8 @@
   function symbolForCurrency(cur){
     switch(cur){
       case "USD": return "$";
-      case "EUR": return "€";
-      case "GBP": return "£";
+      case "EUR": return "â‚¬";
+      case "GBP": return "Â£";
       case "ZAR":
       default: return "R";
     }
@@ -941,7 +972,7 @@
     const issues = [];
 
     if (txWB.length === 0 && Math.abs(opening) < 0.00001) {
-      issues.push({ type:"warn", text:"No transactions and opening balance is 0.00 — your statement will be empty." });
+      issues.push({ type:"warn", text:"No transactions and opening balance is 0.00 â€” your statement will be empty." });
     }
 
     // date sanity checks
@@ -1108,7 +1139,7 @@
 
     const pf = $("periodFrom").value;
     const pt = $("periodTo").value;
-    tpl.querySelector("#tplPeriod").textContent = (pf && pt) ? `${formatDateISO(pf)} – ${formatDateISO(pt)}` : "";
+    tpl.querySelector("#tplPeriod").textContent = (pf && pt) ? `${formatDateISO(pf)} â€“ ${formatDateISO(pt)}` : "";
     tpl.querySelector("#tplStmtRef").textContent = $("statementReference").value || "";
 
     // client
@@ -1191,7 +1222,36 @@
       const wrapper = document.createElement("div");
       wrapper.appendChild(dom);
 
-      const htmlContent = `<!DOCTYPE html><html lang="en-ZA"><head><meta charset="UTF-8"><title>Statement</title></head><body>${wrapper.innerHTML}</body></html>`;
+      const htmlContent = `<!DOCTYPE html><html lang="en-ZA"><head>
+  <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="UTF-8"><title>Statement</title></head><body>
+<!-- HEADER:START -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
+  </div>
+</div>
+<!-- HEADER:END -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
+  </div>
+</div>${wrapper.innerHTML}</body></html>`;
       const blob = new Blob([htmlContent], { type: "application/msword" });
       const filename = ($("statementNumber").value || "statement") + ".doc";
       saveAs(blob, filename);
@@ -1211,7 +1271,36 @@
       tr.appendChild(td);
       wrapperTable.appendChild(tr);
 
-      const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>${wrapperTable.outerHTML}</body></html>`;
+      const html = `<!DOCTYPE html><html><head>
+  <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="UTF-8"></head><body>
+<!-- HEADER:START -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
+  </div>
+</div>
+<!-- HEADER:END -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
+  </div>
+</div>${wrapperTable.outerHTML}</body></html>`;
       const blob = new Blob([html], { type: "application/vnd.ms-excel" });
       const filename = ($("statementNumber").value || "statement") + ".xls";
       saveAs(blob, filename);
@@ -1257,7 +1346,36 @@
         th{background:#f9fafb;}
       </style>
     `;
-    w.document.write(`<html><head><title>Print Statement</title>${style}</head><body></body></html>`);
+    w.document.write(`<html><head>
+  <!-- NAV_SYNC: scripts/sync-nav.js --><title>Print Statement</title>${style}</head><body>
+<!-- HEADER:START -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="save">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="load">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50" data-action="reset">Reset</button>
+  </div>
+</div>
+<!-- HEADER:END -->
+<div class="bg-gray-100 border-b px-6 py-4 flex justify-between items-center">
+  <div>
+    <h1 class="text-2xl font-bold text-blue-600">Easy Suite</h1>
+    <p class="text-sm text-gray-600">Feature-Rich Document Generator</p>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="px-4 py-2 bg-blue-600 text-white rounded shadow-sm hover:bg-blue-700">Dashboard</a>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Save</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Load</button>
+    <button class="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50">Reset</button>
+  </div>
+</div></body></html>`);
     w.document.body.appendChild(dom);
     w.document.close();
     w.focus();
@@ -1590,3 +1708,6 @@
 
 </body>
 </html>
+
+
+
