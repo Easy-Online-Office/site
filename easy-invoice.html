@@ -1,1545 +1,1213 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-ZA">
 <head>
-  <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyINV Ã¢â‚¬" Feature-Rich Invoice Generator</title>
-  
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EasyINV – Invoice Generator</title>
+  <meta name="description" content="Create professional invoices with line items, VAT, discounts, preview, and export to PDF, Word, Excel, and CSV — offline-friendly in your browser." />
 
   <!-- Favicon -->
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
-<meta name="description" content="Create professional invoices in seconds. Preview, print, export PDF/Word/Excel/CSV, and save templates locally." />
-  
-  <!-- Favicon --><link rel="alternate icon" href="favicon.ico" type="image/x-icon"><!-- Tailwind CSS -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="icon" href="icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="icon.png" />
 
-  <!-- Libraries removed -->
-  <!-- External PDF/Excel/Word libraries have been removed to ensure the page functions offline.  -->
-
+  <!-- Tailwind (CDN) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet" />
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Export libs -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
   <style>
-    :root{
-      --primary:#2563eb;
-      --primary2:#1d4ed8;
-      --bg:#f5f7fb;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --border:#e2e8f0;
-      --danger:#dc2626;
-      --success:#16a34a;
-      --warning:#f59e0b;
-    }
-    body{background:var(--bg); color:var(--text);}
-
-    .card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 25px rgba(2,6,23,.05);}
-    .btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.7rem 1rem; border-radius:10px; font-weight:700; transition: all .2s ease; border:1px solid transparent;}
-    .btn:hover{transform:translateY(-1px);}
-    .btn-primary{background:var(--primary); color:#fff;}
-    .btn-primary:hover{background:var(--primary2);}
-    .btn-outline{background:#fff; border-color:var(--border); color:var(--text);}
-    .btn-outline:hover{border-color:#cbd5e1; background:#f8fafc;}
-    .btn-danger{background:var(--danger); color:#fff;}
-    .btn-danger:hover{filter:brightness(.95);}
-    .btn-success{background:var(--success); color:#fff;}
-    .btn-success:hover{filter:brightness(.95);}
-    .badge{display:inline-flex; align-items:center; gap:.4rem; padding:.25rem .6rem; border-radius:999px; font-weight:800; font-size:.75rem;}
-    .badge-draft{background:#eef2ff; color:#3730a3;}
-    .badge-sent{background:#ecfeff; color:#155e75;}
-    .badge-paid{background:#dcfce7; color:#166534;}
-    .badge-overdue{background:#fee2e2; color:#991b1b;}
-    .badge-partial{background:#ffedd5; color:#9a3412;}
-
-    input:focus, textarea:focus, select:focus{
-      outline:none!important;
-      border-color: rgba(37, 99, 235, .8)!important;
-      box-shadow:0 0 0 3px rgba(37,99,235,.15)!important;
-    }
-
-    .responsive-table {overflow-x:auto; -webkit-overflow-scrolling:touch;}
-    .mono {font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
-
-    /* Print-friendly manual style */
+    :root { --brand:#2563eb; --brand2:#1d4ed8; }
+    .no-print { display: block; }
     @media print {
       .no-print { display:none !important; }
-      .print-only { display:block !important; }
       body { background:#fff !important; }
-      .card { box-shadow:none !important; border:none !important; }
-      .manual-print { max-width: 210mm; margin:0 auto; padding:0; }
-      table { page-break-inside:auto; }
-      tr { page-break-inside:avoid; page-break-after:auto; }
-      thead { display:table-header-group; }
-      tfoot { display:table-footer-group; }
+      #previewModal { position: static !important; inset:auto !important; display:block !important; }
+      #previewCard { box-shadow:none !important; border:none !important; }
     }
+    .mono { font-variant-numeric: tabular-nums; }
+    .btn { background: var(--brand); }
+    .btn:hover { background: var(--brand2); }
+    .field { border:1px solid #e5e7eb; border-radius:.5rem; padding:.5rem .75rem; width:100%; }
+    .label { font-size:.75rem; color:#6b7280; margin-bottom:.25rem; display:block; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:1rem; }
+    .chip { font-size:.75rem; padding:.125rem .5rem; border-radius:999px; border:1px solid #e5e7eb; }
+    .table th { font-size:.75rem; color:#6b7280; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+    .table td, .table th { padding:.5rem .5rem; border-bottom:1px solid #eef2f7; vertical-align:top; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:.75rem; padding:.125rem .375rem; border:1px solid #e5e7eb; border-bottom-width:2px; border-radius:.375rem; background:#f9fafb; }
   </style>
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
-  <script defer src="assets/js/easy-suite-core.js"></script>
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-900">
+  <!-- NAV (UPDATED: Asset Management + Site Inspection) -->
+  <nav class="bg-blue-600 text-white py-4 no-print">
+    <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
 
-  <!-- Easy Suite mounts (injected) -->
-  <div id="easyNavMount" class="no-print"></div>
-<header class="bg-white border-b border-gray-200 no-print">
-  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">EI</div>
+      <!-- Brand -->
+      <a data-safe-link href="index.html" class="font-black text-xl mr-4">Easy&nbsp;Suite</a>
+
+      <!-- Core Documents -->
+      <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
+      <a data-safe-link href="easy-invoice.html" class="hover:underline underline font-semibold">Invoice</a>
+      <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
+      <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
+      <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
+      <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
+      <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
+
+      <!-- Operations -->
+      <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
+      <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
+      <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
+
+      <!-- NEW -->
+      <a data-safe-link href="easy-asset-management.html" class="hover:underline">Asset&nbsp;Management</a>
+      <a data-safe-link href="easy-site-inspection.html" class="hover:underline">Site&nbsp;Inspection</a>
+
+      <!-- Right Controls -->
+      <div class="ml-auto flex items-center gap-2">
+        <a data-safe-link href="index.html" class="bg-white/15 hover:bg-white/25 px-3 py-2 rounded-lg text-sm">
+          <i class="fa-solid fa-gauge-high mr-2"></i>Dashboard
+        </a>
+
+        <button id="btnSaveDraft" class="bg-white/15 hover:bg-white/25 px-3 py-2 rounded-lg text-sm">
+          <i class="fa-solid fa-floppy-disk mr-2"></i>Save
+        </button>
+
+        <button id="btnLoadDraft" class="bg-white/15 hover:bg-white/25 px-3 py-2 rounded-lg text-sm">
+          <i class="fa-solid fa-rotate mr-2"></i>Load
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 py-6 space-y-6">
+    <header class="flex flex-wrap items-center gap-3">
       <div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasyINV</h1>
-        <p class="text-sm text-gray-500">Feature-Rich Invoice Generator</p>
+        <h1 class="text-2xl font-extrabold">EasyINV</h1>
+        <p class="text-gray-600">Feature-rich invoice generator with VAT, discounts, preview, and exports.</p>
       </div>
-    </div>
 
-    <div class="flex flex-wrap items-center gap-2">
-      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
-        <i class="fa-solid fa-gauge"></i> Dashboard
-      </a>
-    </div>
-  </div>
-</header><!-- HEADER:START --><!-- HEADER:END --><!-- Navigation -->
-  <!-- NAV:START --></div>
-  </div>
-</div>
-<!-- NAV:END -->
+      <div class="ml-auto flex flex-wrap items-center gap-2 no-print">
+        <span class="chip bg-white"><i class="fa-solid fa-bolt mr-2 text-gray-500"></i>Company → Client → Lines → Preview → Export</span>
+        <span class="chip bg-white"><i class="fa-solid fa-lock mr-2 text-gray-500"></i>Data stays in your browser (localStorage)</span>
+      </div>
+    </header>
 
-<!-- Header --><main class="flex-grow container mx-auto px-4 py-6 md:py-8">
+    <!-- TOP ACTIONS -->
+    <section class="card p-4 no-print">
+      <div class="flex flex-wrap gap-2 items-center">
+        <button id="btnNewInvoice" class="btn text-white px-4 py-2 rounded-lg">
+          <i class="fa-solid fa-file-circle-plus mr-2"></i>New Invoice #
+        </button>
 
-    <!-- Tips -->
-    <div class="card p-4 mb-6 no-print">
-      <div class="flex gap-3">
-        <div class="text-blue-600 pt-0.5"><i class="fa-solid fa-circle-info"></i></div>
-        <div class="flex-1">
-          <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
-          <div class="text-sm text-slate-600 mt-1">
-            1) Add your company + client details Ã¢â€ ' 2) Add line items Ã¢â€ ' 3) Preview Ã¢â€ ' 4) Export PDF/Word/Excel/CSV Ã¢â€ ' 5) Save as a template.
-          </div>
+        <button id="btnMarkPaid" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+          <i class="fa-solid fa-circle-check mr-2"></i>Mark Paid
+        </button>
+
+        <div class="ml-auto flex flex-wrap gap-2">
+          <button id="btnPreview" class="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg">
+            <i class="fa-solid fa-eye mr-2"></i>Preview
+          </button>
+          <button id="btnPrint" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg">
+            <i class="fa-solid fa-print mr-2"></i>Print
+          </button>
+          <button id="btnPdf" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg">
+            <i class="fa-solid fa-file-pdf mr-2 text-red-600"></i>Export PDF
+          </button>
+          <button id="btnWord" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg">
+            <i class="fa-solid fa-file-word mr-2 text-blue-600"></i>Export Word
+          </button>
+          <button id="btnExcel" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg">
+            <i class="fa-solid fa-file-excel mr-2 text-green-600"></i>Export Excel
+          </button>
+          <button id="btnCsv" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg">
+            <i class="fa-solid fa-file-csv mr-2 text-gray-700"></i>Export CSV
+          </button>
         </div>
       </div>
-    </div>
+      <p class="text-xs text-gray-500 mt-3">
+        Tips: <span class="kbd">Ctrl</span>+<span class="kbd">S</span> saves. <span class="kbd">Ctrl</span>+<span class="kbd">P</span> prints the preview layout.
+      </p>
+    </section>
 
-    <!-- Top Grid: Parties + Invoice Meta -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <!-- FORMS -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Company -->
-      <section class="card p-5">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-extrabold"><i class="fa-solid fa-building text-blue-600 mr-2"></i>Company</h2>
-          <span class="text-xs text-slate-500">Sender</span>
+      <div class="card p-4 space-y-3">
+        <h2 class="font-bold text-lg"><i class="fa-solid fa-building mr-2 text-gray-500"></i>Company (Sender)</h2>
+
+        <div>
+          <label class="label">Company Logo</label>
+          <input id="companyLogo" type="file" accept="image/*" class="field bg-white" />
+          <p class="text-xs text-gray-500 mt-1" id="logoHint">No logo uploaded</p>
         </div>
 
-        <div class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Company Logo</label>
-            <input type="file" id="companyLogo" accept="image/*"
-              class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
-            <div id="companyLogoPreview" class="mt-2 h-14 flex items-center">
-              <p class="text-sm text-slate-400">No logo uploaded</p>
-            </div>
+            <label class="label">Company Name</label>
+            <input id="companyName" class="field" placeholder="Your Company (Pty) Ltd" />
           </div>
-
           <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Company Name</label>
-            <input id="companyName" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Your Company (Pty) Ltd">
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">VAT Number</label>
-              <input id="companyVat" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="e.g., 4080...">
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Reg/CK</label>
-              <input id="companyReg" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Optional">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Email</label>
-            <input id="companyEmail" type="email" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="accounts@yourcompany.co.za">
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Phone</label>
-              <input id="companyPhone" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="+27 ...">
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Website</label>
-              <input id="companyWebsite" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="https://...">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Address</label>
-            <textarea id="companyAddress" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Street, City, Province, Postal Code"></textarea>
-          </div>
-
-          <div class="border-t border-gray-100 pt-3">
-            <label class="block text-sm font-bold text-slate-700 mb-1">Bank Details (optional)</label>
-            <textarea id="companyBank" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Bank: ...&#10;Account: ...&#10;Branch: ...&#10;Reference: Invoice #"></textarea>
+            <label class="label">VAT Number</label>
+            <input id="companyVat" class="field" placeholder="VAT123..." />
           </div>
         </div>
-      </section>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">Reg/CK</label>
+            <input id="companyReg" class="field" placeholder="Reg / CK" />
+          </div>
+          <div>
+            <label class="label">Website</label>
+            <input id="companyWeb" class="field" placeholder="https://..." />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">Email</label>
+            <input id="companyEmail" class="field" placeholder="accounts@..." />
+          </div>
+          <div>
+            <label class="label">Phone</label>
+            <input id="companyPhone" class="field" placeholder="+27 ..." />
+          </div>
+        </div>
+
+        <div>
+          <label class="label">Address</label>
+          <textarea id="companyAddress" class="field" rows="3" placeholder="Street, Suburb, City, Code"></textarea>
+        </div>
+
+        <div>
+          <label class="label">Bank Details (optional)</label>
+          <textarea id="companyBank" class="field" rows="3" placeholder="Bank, Branch, Acc No, Account Name"></textarea>
+        </div>
+      </div>
 
       <!-- Client -->
-      <section class="card p-5">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-extrabold"><i class="fa-solid fa-user-tie text-blue-600 mr-2"></i>Client</h2>
-          <span class="text-xs text-slate-500">Bill To</span>
+      <div class="card p-4 space-y-3">
+        <h2 class="font-bold text-lg"><i class="fa-solid fa-user-tie mr-2 text-gray-500"></i>Client (Bill To)</h2>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">Client Name</label>
+            <input id="clientName" class="field" placeholder="Client / Company" />
+          </div>
+          <div>
+            <label class="label">Client VAT</label>
+            <input id="clientVat" class="field" placeholder="VAT..." />
+          </div>
         </div>
 
-        <div class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Client Name</label>
-            <input id="clientName" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Client Company / Person">
+            <label class="label">Client Reg/ID</label>
+            <input id="clientReg" class="field" placeholder="Reg/ID" />
           </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Client VAT</label>
-              <input id="clientVat" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Optional">
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Client Reg/ID</label>
-              <input id="clientReg" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Optional">
-            </div>
-          </div>
-
           <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Email</label>
-            <input id="clientEmail" type="email" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="billing@client.co.za">
-          </div>
-
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Phone</label>
-            <input id="clientPhone" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="+27 ...">
-          </div>
-
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Address</label>
-            <textarea id="clientAddress" rows="4" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Street, City, Province, Postal Code"></textarea>
+            <label class="label">Phone</label>
+            <input id="clientPhone" class="field" placeholder="+27 ..." />
           </div>
         </div>
-      </section>
 
-      <!-- Invoice Meta -->
-      <section class="card p-5">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-extrabold"><i class="fa-solid fa-file-invoice text-blue-600 mr-2"></i>Invoice</h2>
-          <span id="statusBadge" class="badge badge-draft"><i class="fa-solid fa-pen"></i> DRAFT</span>
+        <div>
+          <label class="label">Email</label>
+          <input id="clientEmail" class="field" placeholder="billing@..." />
         </div>
 
-        <div class="space-y-3">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Invoice #</label>
-              <input id="invoiceNumber" class="w-full border border-gray-200 rounded-lg px-3 py-2 mono" placeholder="INV0000001">
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Reference</label>
-              <input id="invoiceReference" class="w-full border border-gray-200 rounded-lg px-3 py-2 mono" placeholder="PO / SO / Job ref">
-            </div>
+        <div>
+          <label class="label">Address</label>
+          <textarea id="clientAddress" class="field" rows="4" placeholder="Street, Suburb, City, Code"></textarea>
+        </div>
+      </div>
+
+      <!-- Invoice meta -->
+      <div class="card p-4 space-y-3">
+        <h2 class="font-bold text-lg"><i class="fa-solid fa-file-invoice mr-2 text-gray-500"></i>Invoice</h2>
+
+        <div class="flex items-center gap-2">
+          <span id="statusBadge" class="chip bg-yellow-50 border-yellow-200 text-yellow-900">
+            <i class="fa-solid fa-pen-to-square mr-2"></i><span id="statusText">DRAFT</span>
+          </span>
+          <span class="text-xs text-gray-500">Status drives the preview label and overdue display.</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">Invoice #</label>
+            <input id="invNumber" class="field mono" placeholder="INV-0001" />
           </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Issue Date</label>
-              <input id="invoiceDate" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2">
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Due Date</label>
-              <input id="dueDate" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Currency</label>
-              <select id="currency" class="w-full border border-gray-200 rounded-lg px-3 py-2">
-                <option value="ZAR" selected>ZAR (R)</option>
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (Ã¢â€šÂ¬)</option>
-                <option value="GBP">GBP (Ã‚Â£)</option>
-              </select>
-              <p class="text-xs text-slate-500 mt-1">Formatting adapts; no FX conversion.</p>
-            </div>
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1">Status</label>
-              <select id="invoiceStatus" class="w-full border border-gray-200 rounded-lg px-3 py-2">
-                <option value="draft" selected>Draft</option>
-                <option value="sent">Sent</option>
-                <option value="partial">Partially Paid</option>
-                <option value="paid">Paid</option>
-                <option value="overdue">Overdue</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="border-t border-gray-100 pt-3 space-y-3">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">Overall Discount %</label>
-                <input id="overallDiscount" type="number" min="0" max="100" step="0.01" value="0.00"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2">
-              </div>
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">Shipping / Delivery</label>
-                <input id="shipping" type="number" min="0" step="0.01" value="0.00"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">Amount Paid</label>
-                <input id="amountPaid" type="number" min="0" step="0.01" value="0.00"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2">
-              </div>
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">Default VAT % (new lines)</label>
-                <input id="defaultVat" type="number" min="0" max="100" step="0.01" value="15.00"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-2">
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between gap-3">
-              <button class="btn btn-outline w-full" id="btnNewNumber">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> New Invoice #
-              </button>
-              <button class="btn btn-outline w-full" id="btnMarkPaid">
-                <i class="fa-solid fa-check"></i> Mark Paid
-              </button>
-            </div>
+          <div>
+            <label class="label">Reference</label>
+            <input id="invRef" class="field" placeholder="PO / Ref" />
           </div>
         </div>
-      </section>
-    </div>
 
-    <!-- Line Items -->
-    <section class="card p-5 mb-6">
-      <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-4">
-        <h2 class="text-lg font-extrabold"><i class="fa-solid fa-list-check text-blue-600 mr-2"></i>Line Items</h2>
-        <div class="flex flex-wrap gap-2 no-print">
-          <button class="btn btn-outline" id="btnImportCSV" title="Import line items from CSV (Description,Qty,Rate,Disc%,VAT%)">
-            <i class="fa-solid fa-file-import"></i> Import CSV
-          </button>
-          <input type="file" id="csvFile" accept=".csv" class="hidden">
-          <button class="btn btn-primary" id="btnAddLine">
-            <i class="fa-solid fa-plus"></i> Add Line
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">Issue Date</label>
+            <input id="issueDate" type="date" class="field" />
+          </div>
+          <div>
+            <label class="label">Due Date</label>
+            <input id="dueDate" type="date" class="field" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">Currency</label>
+            <select id="currency" class="field bg-white">
+              <option value="ZAR" selected>ZAR (R)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+            </select>
+            <p class="text-xs text-gray-500 mt-1">Formatting adapts; no FX conversion.</p>
+          </div>
+          <div>
+            <label class="label">Status</label>
+            <select id="status" class="field bg-white">
+              <option value="Draft" selected>Draft</option>
+              <option value="Sent">Sent</option>
+              <option value="Partially Paid">Partially Paid</option>
+              <option value="Paid">Paid</option>
+              <option value="Overdue">Overdue</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">Overall Discount %</label>
+            <input id="overallDiscount" type="number" step="0.01" min="0" class="field mono" value="0" />
+          </div>
+          <div>
+            <label class="label">Default VAT % (new lines)</label>
+            <input id="defaultVat" type="number" step="0.01" min="0" class="field mono" value="15" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">Shipping / Delivery</label>
+            <input id="shipping" type="number" step="0.01" min="0" class="field mono" value="0" />
+          </div>
+          <div>
+            <label class="label">Amount Paid</label>
+            <input id="amountPaid" type="number" step="0.01" min="0" class="field mono" value="0" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINE ITEMS -->
+    <section class="card p-4 space-y-4">
+      <div class="flex flex-wrap gap-2 items-center">
+        <h2 class="font-bold text-lg"><i class="fa-solid fa-list mr-2 text-gray-500"></i>Line Items</h2>
+        <div class="ml-auto flex flex-wrap gap-2 no-print">
+          <label class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg cursor-pointer">
+            <i class="fa-solid fa-file-import mr-2"></i>Import CSV
+            <input id="csvImport" type="file" accept=".csv,text/csv" class="hidden" />
+          </label>
+          <button id="btnAddLine" class="btn text-white px-4 py-2 rounded-lg">
+            <i class="fa-solid fa-plus mr-2"></i>Add Line
           </button>
         </div>
       </div>
 
-      <div class="responsive-table">
-        <table class="w-full text-sm border-collapse" id="itemsTable">
+      <div class="overflow-x-auto">
+        <table class="w-full table">
           <thead>
-            <tr class="bg-gray-50 text-gray-600">
-              <th class="border border-gray-200 p-2 text-left">Description</th>
-              <th class="border border-gray-200 p-2 text-center">Qty</th>
-              <th class="border border-gray-200 p-2 text-center">Rate (Excl.)</th>
-              <th class="border border-gray-200 p-2 text-center">Disc %</th>
-              <th class="border border-gray-200 p-2 text-center">VAT %</th>
-              <th class="border border-gray-200 p-2 text-right">Total Excl.</th>
-              <th class="border border-gray-200 p-2 text-right">Total Incl.</th>
-              <th class="border border-gray-200 p-2 text-center no-print">Action</th>
+            <tr>
+              <th class="text-left">Description</th>
+              <th class="text-right">Qty</th>
+              <th class="text-right">Rate (Excl.)</th>
+              <th class="text-right">Disc %</th>
+              <th class="text-right">VAT %</th>
+              <th class="text-right">Total Excl.</th>
+              <th class="text-right">Total Incl.</th>
+              <th class="text-right no-print">Action</th>
             </tr>
           </thead>
-          <tbody id="itemsBody"></tbody>
+          <tbody id="linesBody"></tbody>
         </table>
       </div>
+
+      <p class="text-xs text-gray-500">
+        CSV Import columns: <b>Description,Qty,RateExcl,DiscountPct,VatPct</b>. Discount logic: line discount → overall discount → VAT.
+      </p>
     </section>
 
-    <!-- Notes & Terms -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <section class="card p-5">
-        <h2 class="text-lg font-extrabold mb-3"><i class="fa-solid fa-note-sticky text-blue-600 mr-2"></i>Notes</h2>
-        <textarea id="notes" rows="6" class="w-full border border-gray-200 rounded-lg px-3 py-2"
-          placeholder="Optional notes to client (delivery details, contact person, etc.)"></textarea>
-      </section>
+    <!-- TOTALS -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 card p-4 space-y-3">
+        <h2 class="font-bold text-lg"><i class="fa-solid fa-notes-medical mr-2 text-gray-500"></i>Notes & Terms</h2>
 
-      <section class="card p-5">
-        <h2 class="text-lg font-extrabold mb-3"><i class="fa-solid fa-file-contract text-blue-600 mr-2"></i>Terms</h2>
-        <textarea id="terms" rows="6" class="w-full border border-gray-200 rounded-lg px-3 py-2"
-          placeholder="Payment terms, late fees, warranty conditions, etc."></textarea>
-      </section>
-    </div>
-
-    <!-- Totals + Actions -->
-    <section class="card p-5 mb-6">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <div class="lg:col-span-2">
-          <h2 class="text-lg font-extrabold mb-2"><i class="fa-solid fa-calculator text-blue-600 mr-2"></i>Totals</h2>
-          <p class="text-sm text-slate-500">Totals update automatically. Discount logic: line discount first, then overall discount on subtotal.</p>
-        </div>
-
-        <div class="lg:col-span-1">
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between border-t border-gray-100 pt-2">
-              <span class="font-bold text-slate-700">Subtotal (Excl.)</span>
-              <span id="tSubtotal" class="font-extrabold mono">R0.00</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Line Discounts</span>
-              <span id="tLineDiscount" class="font-extrabold mono">R0.00</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Overall Discount</span>
-              <span id="tOverallDiscount" class="font-extrabold mono">R0.00</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">VAT Total</span>
-              <span id="tVat" class="font-extrabold mono">R0.00</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Shipping</span>
-              <span id="tShipping" class="font-extrabold mono">R0.00</span>
-            </div>
-
-            <div class="flex justify-between border-t border-b border-gray-100 py-2 text-base">
-              <span class="font-black text-slate-900">GRAND TOTAL</span>
-              <span id="tGrand" class="font-black mono">R0.00</span>
-            </div>
-
-            <div class="flex justify-between mt-3 text-base">
-              <span class="font-black text-slate-900">AMOUNT PAID</span>
-              <span id="tPaid" class="font-black mono">R0.00</span>
-            </div>
-
-            <div class="flex justify-between border-t border-gray-200 pt-3 text-lg">
-              <span class="font-black text-slate-900">BALANCE DUE</span>
-              <span id="tBalance" class="font-black mono">R0.00</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-6 flex flex-wrap gap-3 justify-center no-print">
-        <button class="btn btn-outline" id="btnPreview">
-          <i class="fa-solid fa-eye"></i> Preview
-        </button>
-        <button class="btn btn-outline" id="btnPrint">
-          <i class="fa-solid fa-print"></i> Print (Manual)
-        </button>
-        <button class="btn btn-danger" id="btnPDF">
-          <i class="fa-solid fa-file-pdf"></i> Export PDF
-        </button>
-        <button class="btn btn-primary" id="btnWord">
-          <i class="fa-solid fa-file-word"></i> Export Word
-        </button>
-        <button class="btn btn-success" id="btnExcel">
-          <i class="fa-solid fa-file-excel"></i> Export Excel
-        </button>
-        <button class="btn btn-outline" id="btnCSV">
-          <i class="fa-solid fa-file-csv"></i> Export CSV
-        </button>
-      </div>
-    </section>
-
-    <!-- Preview Modal -->
-    <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50 no-print">
-      <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-screen overflow-y-auto">
-        <div class="p-4 flex justify-between items-center border-b border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <h2 class="text-xl font-black text-slate-900">Invoice Preview</h2>
-            <p class="text-xs text-slate-500">This is the export/print layout.</p>
+            <label class="label">Invoice Notes</label>
+            <textarea id="notes" class="field" rows="6" placeholder="Thank you for your business."></textarea>
           </div>
-          <button id="btnClosePreview" class="text-slate-500 hover:text-slate-800">
-            <i class="fa-solid fa-xmark text-xl"></i>
-          </button>
-        </div>
-
-        <div id="previewContent" class="p-6"></div>
-
-        <div class="p-4 border-t border-gray-200 flex justify-end gap-2">
-          <button class="btn btn-outline" id="btnClosePreviewBottom">Close</button>
-          <button class="btn btn-danger" id="btnPDF2">
-            <i class="fa-solid fa-file-pdf"></i> Export PDF
-          </button>
+          <div>
+            <label class="label">Payment Terms</label>
+            <textarea id="terms" class="field" rows="6" placeholder="Payment due within 7 days. Late payments may incur fees."></textarea>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Hidden Export Template -->
-    <div id="invoiceTemplate" class="hidden">
-      <div class="manual-print max-w-4xl mx-auto bg-white p-6">
-        <div class="flex items-start justify-between gap-6 mb-6">
-          <div class="flex-1">
-            <div id="tplLogo" class="mb-3"></div>
-            <div class="text-xl font-black" id="tplCompanyName">Company</div>
-            <div class="text-sm text-slate-600 mt-1 whitespace-pre-line" id="tplCompanyAddress"></div>
-            <div class="text-sm text-slate-600 mt-2">
-              <div><span class="font-bold">VAT:</span> <span id="tplCompanyVat"></span></div>
-              <div><span class="font-bold">Reg:</span> <span id="tplCompanyReg"></span></div>
-              <div><span class="font-bold">Email:</span> <span id="tplCompanyEmail"></span></div>
-              <div><span class="font-bold">Phone:</span> <span id="tplCompanyPhone"></span></div>
-              <div><span class="font-bold">Website:</span> <span id="tplCompanyWebsite"></span></div>
-            </div>
-          </div>
+      <div class="card p-4 space-y-3">
+        <h2 class="font-bold text-lg"><i class="fa-solid fa-calculator mr-2 text-gray-500"></i>Totals</h2>
 
-          <div class="w-72 text-right">
-            <div class="text-3xl font-black tracking-tight">INVOICE</div>
-            <div class="mt-2 grid grid-cols-2 gap-x-2 text-sm">
-              <span class="text-right font-bold">NUMBER:</span><span class="text-left mono" id="tplInvNumber"></span>
-              <span class="text-right font-bold">REF:</span><span class="text-left mono" id="tplInvRef"></span>
-              <span class="text-right font-bold">DATE:</span><span class="text-left" id="tplInvDate"></span>
-              <span class="text-right font-bold">DUE:</span><span class="text-left" id="tplInvDue"></span>
-              <span class="text-right font-bold">STATUS:</span><span class="text-left" id="tplInvStatus"></span>
-              <span class="text-right font-bold">CURRENCY:</span><span class="text-left mono" id="tplInvCurrency"></span>
-            </div>
-          </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-gray-600">Subtotal (Excl.)</span><span id="tSubtotalEx" class="mono font-semibold">R 0.00</span></div>
+          <div class="flex justify-between"><span class="text-gray-600">Overall Discount</span><span id="tOverallDiscount" class="mono font-semibold">R 0.00</span></div>
+          <div class="flex justify-between"><span class="text-gray-600">Shipping</span><span id="tShipping" class="mono font-semibold">R 0.00</span></div>
+          <div class="flex justify-between"><span class="text-gray-600">VAT</span><span id="tVat" class="mono font-semibold">R 0.00</span></div>
+          <hr />
+          <div class="flex justify-between text-lg"><span class="font-extrabold">Total (Incl.)</span><span id="tTotal" class="mono font-extrabold">R 0.00</span></div>
+          <div class="flex justify-between"><span class="text-gray-600">Paid</span><span id="tPaid" class="mono font-semibold">R 0.00</span></div>
+          <div class="flex justify-between"><span class="text-gray-600">Balance Due</span><span id="tBalance" class="mono font-semibold">R 0.00</span></div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-          <div class="border border-gray-200 rounded-lg p-4">
-            <div class="text-xs text-slate-500 font-black mb-2">BILL TO</div>
-            <div class="text-base font-black" id="tplClientName"></div>
-            <div class="text-sm text-slate-600 mt-1 whitespace-pre-line" id="tplClientAddress"></div>
-            <div class="text-sm text-slate-600 mt-2">
-              <div><span class="font-bold">VAT:</span> <span id="tplClientVat"></span></div>
-              <div><span class="font-bold">Reg/ID:</span> <span id="tplClientReg"></span></div>
-              <div><span class="font-bold">Email:</span> <span id="tplClientEmail"></span></div>
-              <div><span class="font-bold">Phone:</span> <span id="tplClientPhone"></span></div>
-            </div>
-          </div>
-
-          <div class="border border-gray-200 rounded-lg p-4">
-            <div class="text-xs text-slate-500 font-black mb-2">PAYMENT / BANK</div>
-            <div class="text-sm text-slate-700 whitespace-pre-line" id="tplBank"></div>
-          </div>
-        </div>
-
-        <div class="responsive-table mb-5">
-          <table class="w-full border-collapse text-sm">
-            <thead>
-              <tr class="bg-gray-50">
-                <th class="border border-gray-200 p-2 text-left">Description</th>
-                <th class="border border-gray-200 p-2 text-center">Qty</th>
-                <th class="border border-gray-200 p-2 text-right">Rate</th>
-                <th class="border border-gray-200 p-2 text-center">Disc</th>
-                <th class="border border-gray-200 p-2 text-center">VAT</th>
-                <th class="border border-gray-200 p-2 text-right">Excl</th>
-                <th class="border border-gray-200 p-2 text-right">Incl</th>
-              </tr>
-            </thead>
-            <tbody id="tplItems"></tbody>
-          </table>
-        </div>
-
-        <div class="flex justify-end mb-6">
-          <div class="w-full sm:w-1/2 md:w-1/3 text-sm">
-            <div class="flex justify-between border-t border-gray-200 pt-2">
-              <span class="font-bold text-slate-700">Subtotal</span>
-              <span class="mono" id="tplSubtotal"></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Line Discounts</span>
-              <span class="mono" id="tplLineDisc"></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Overall Discount</span>
-              <span class="mono" id="tplOverallDisc"></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">VAT</span>
-              <span class="mono" id="tplVat"></span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-700">Shipping</span>
-              <span class="mono" id="tplShipping"></span>
-            </div>
-            <div class="flex justify-between border-t border-b border-gray-200 py-2 font-black text-base">
-              <span>GRAND TOTAL</span>
-              <span class="mono" id="tplGrand"></span>
-            </div>
-            <div class="flex justify-between mt-2">
-              <span class="font-black text-slate-900">PAID</span>
-              <span class="mono font-black" id="tplPaid"></span>
-            </div>
-            <div class="flex justify-between mt-2 text-lg font-black">
-              <span>BALANCE DUE</span>
-              <span class="mono" id="tplBalance"></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div class="border border-gray-200 rounded-lg p-4">
-            <div class="text-xs text-slate-500 font-black mb-2">NOTES</div>
-            <div class="text-sm text-slate-700 whitespace-pre-line" id="tplNotes"></div>
-          </div>
-          <div class="border border-gray-200 rounded-lg p-4">
-            <div class="text-xs text-slate-500 font-black mb-2">TERMS</div>
-            <div class="text-sm text-slate-700 whitespace-pre-line" id="tplTerms"></div>
-          </div>
-        </div>
-
-        <div class="mt-6 text-xs text-slate-500 text-center">
-          Generated with EasyINV Ã¢â‚¬Â¢ Print-friendly output
+        <div class="no-print text-xs text-gray-500">
+          Auto-save: Draft is stored locally when you click Save (or Ctrl+S).
         </div>
       </div>
-    </div>
-
+    </section>
   </main>
 
-<script>
-  // ===========================
-  // Helpers
-  // ===========================
-  // In production, avoid global alert handlers. Errors will be logged via
-  // console.error instead of interrupting the user with popÃ¢â‚¬â€˜up messages.
-  // window.onerror is intentionally left undefined here.
-  const $ = (id) => document.getElementById(id);
-
-  function escapeHtml(str){
-    // Convert the input to a string before replacing to avoid errors when
-    // nonÃ¢â‚¬â€˜string values (e.g. numbers) are passed.  Using String() ensures
-    // that truthy nonÃ¢â‚¬â€˜string values like numbers or booleans are coerced to
-    // strings, and that undefined/null becomes an empty string.  Without this
-    // conversion, calling `.replace` on a number would throw an error.
-    return String(str || "").replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-    }[m]));
-  }
-
-  function symbolForCurrency(cur){
-    switch(cur){
-      case "USD": return "$";
-      case "EUR": return "Ã¢â€šÂ¬";
-      case "GBP": return "Ã‚Â£";
-      case "ZAR":
-      default: return "R";
-    }
-  }
-
-  // Simple file saver helper.  Replaces the external FileSaver.js dependency.
-  // Creates a download link for the provided blob and triggers a click so the
-  // browser prompts the user to save the file.  Afterwards the link and
-  // object URL are cleaned up.  This keeps downloads working offline.
-  function saveAs(blob, filename){
-    try {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      // Give the browser a tick to register the click before cleanup
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 0);
-    } catch (err) {
-      console.error(err);
-      alert('Download failed. Your browser may not support programmatic downloads.');
-    }
-  }
-
-  function fmt(amount){
-    const cur = $("currency").value || "ZAR";
-    const sym = symbolForCurrency(cur);
-    const n = Number(amount || 0);
-    // Keep simple formatting consistent across browsers
-    const fixed = n.toFixed(2);
-    const withSep = fixed.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return sym + withSep;
-  }
-
-  function formatDateISO(iso){
-    if(!iso) return "";
-    const [y,m,d] = iso.split("-");
-    return `${d}/${m}/${y}`;
-  }
-
-  function setStatusBadge(){
-    const s = $("invoiceStatus").value;
-    const badge = $("statusBadge");
-
-    const map = {
-      draft: {cls:"badge badge-draft", icon:"fa-pen", text:"DRAFT"},
-      sent: {cls:"badge badge-sent", icon:"fa-paper-plane", text:"SENT"},
-      partial: {cls:"badge badge-partial", icon:"fa-circle-half-stroke", text:"PARTIAL"},
-      paid: {cls:"badge badge-paid", icon:"fa-check", text:"PAID"},
-      overdue: {cls:"badge badge-overdue", icon:"fa-triangle-exclamation", text:"OVERDUE"},
-    };
-    const v = map[s] || map.draft;
-    badge.className = v.cls;
-    badge.innerHTML = `<i class="fa-solid ${v.icon}"></i> ${v.text}`;
-  }
-
-  function generateInvoiceNumber(){
-    const n = Math.floor(Math.random()*10000000).toString().padStart(7,"0");
-    $("invoiceNumber").value = "INV" + n;
-  }
-
-  // ===========================
-  // Line items
-  // ===========================
-  let lineCounter = 0;
-
-  function addLineItem(prefill={}){
-    const tbody = $("itemsBody");
-    const rowId = "li-" + (lineCounter++);
-
-    const defaultVat = Number($("defaultVat").value || 0).toFixed(2);
-
-    const tr = document.createElement("tr");
-    tr.id = rowId;
-    tr.className = "line-item";
-
-    tr.innerHTML = `
-      <td class="border border-gray-200 p-2">
-        <input type="text" class="w-full border border-gray-200 rounded-md px-2 py-1 item-desc"
-          placeholder="Description" value="${escapeHtml(prefill.desc || "")}">
-      </td>
-      <td class="border border-gray-200 p-2">
-        <input type="number" min="0" step="1" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-qty"
-          value="${escapeHtml(prefill.qty ?? 1)}">
-      </td>
-      <td class="border border-gray-200 p-2">
-        <input type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-rate"
-          value="${escapeHtml(prefill.rate ?? "0.00")}">
-      </td>
-      <td class="border border-gray-200 p-2">
-        <input type="number" min="0" max="100" step="0.01" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-disc"
-          value="${escapeHtml(prefill.disc ?? "0.00")}">
-      </td>
-      <td class="border border-gray-200 p-2">
-        <input type="number" min="0" max="100" step="0.01" class="w-full border border-gray-200 rounded-md px-2 py-1 text-center item-vat"
-          value="${escapeHtml(prefill.vat ?? defaultVat)}">
-      </td>
-      <td class="border border-gray-200 p-2 text-right mono item-excl">${fmt(0)}</td>
-      <td class="border border-gray-200 p-2 text-right mono item-incl">${fmt(0)}</td>
-      <td class="border border-gray-200 p-2 text-center no-print">
-        <button class="text-red-600 hover:text-red-800" title="Delete line">
-          <i class="fa-solid fa-trash-can"></i>
+  <!-- PREVIEW MODAL -->
+  <div id="previewModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
+    <div class="max-w-4xl w-full">
+      <div class="flex items-center gap-2 mb-2 no-print">
+        <button id="btnClosePreview" class="bg-white hover:bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg">
+          <i class="fa-solid fa-xmark mr-2"></i>Close
         </button>
-      </td>
-    `;
+        <button id="btnPrint2" class="bg-white hover:bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg">
+          <i class="fa-solid fa-print mr-2"></i>Print
+        </button>
+        <button id="btnPdf2" class="bg-white hover:bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg">
+          <i class="fa-solid fa-file-pdf mr-2 text-red-600"></i>PDF
+        </button>
+        <button id="btnWord2" class="bg-white hover:bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg">
+          <i class="fa-solid fa-file-word mr-2 text-blue-600"></i>Word
+        </button>
+        <button id="btnExcel2" class="bg-white hover:bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg">
+          <i class="fa-solid fa-file-excel mr-2 text-green-600"></i>Excel
+        </button>
+        <button id="btnCsv2" class="bg-white hover:bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg">
+          <i class="fa-solid fa-file-csv mr-2 text-gray-700"></i>CSV
+        </button>
+      </div>
 
-    tbody.appendChild(tr);
+      <div id="previewCard" class="card p-8 bg-white shadow-xl">
+        <!-- Preview content injected -->
+        <div id="previewContent"></div>
+      </div>
+    </div>
+  </div>
 
-    // delete
-    tr.querySelector("button").addEventListener("click", () => {
-      tr.remove();
-      calculateTotals();
-      autosave();
-    });
+  <!-- Optional shared nav sync (safe if missing) -->
+  <script defer src="sync-nav.js"></script>
 
-    // recalc on changes
-    tr.querySelectorAll("input").forEach(inp=>{
-      inp.addEventListener("input", () => {
-        calculateTotals();
-        autosave();
-      });
-    });
+  <script>
+    // ---------- Utilities ----------
+    const $ = (id) => document.getElementById(id);
 
-    calculateTotals();
-  }
-
-  function readLineItems(){
-    const items = [];
-    document.querySelectorAll(".line-item").forEach(tr=>{
-      items.push({
-        desc: tr.querySelector(".item-desc").value || "",
-        qty: Number(tr.querySelector(".item-qty").value || 0),
-        rate: Number(tr.querySelector(".item-rate").value || 0),
-        disc: Number(tr.querySelector(".item-disc").value || 0),
-        vat: Number(tr.querySelector(".item-vat").value || 0),
-      });
-    });
-    return items;
-  }
-
-  // ===========================
-  // Totals
-  // ===========================
-  function calculateTotals(){
-    setStatusBadge();
-
-    const overallDiscPct = Number($("overallDiscount").value || 0) / 100;
-    const shipping = Number($("shipping").value || 0);
-    const paid = Number($("amountPaid").value || 0);
-
-    let subtotalExcl = 0;
-    let lineDiscountTotal = 0;
-    let vatTotal = 0;
-
-    document.querySelectorAll(".line-item").forEach(tr=>{
-      const qty = Number(tr.querySelector(".item-qty").value || 0);
-      const rate = Number(tr.querySelector(".item-rate").value || 0);
-      const discPct = Number(tr.querySelector(".item-disc").value || 0) / 100;
-      const vatPct = Number(tr.querySelector(".item-vat").value || 0) / 100;
-
-      const base = qty * rate;
-      const discAmt = base * discPct;
-      const excl = Math.max(0, base - discAmt);
-      const vatAmt = excl * vatPct;
-      const incl = excl + vatAmt;
-
-      subtotalExcl += excl;
-      lineDiscountTotal += discAmt;
-      vatTotal += vatAmt;
-
-      tr.querySelector(".item-excl").textContent = fmt(excl);
-      tr.querySelector(".item-incl").textContent = fmt(incl);
-    });
-
-    const overallDiscountAmt = subtotalExcl * overallDiscPct;
-    const discountedSubtotal = Math.max(0, subtotalExcl - overallDiscountAmt);
-
-    // VAT already computed per line based on line-excl after line discount.
-    // Overall discount usually reduces taxable base; we apply proportional reduction to VAT:
-    const vatAfterOverallDisc = Math.max(0, vatTotal - (vatTotal * overallDiscPct));
-
-    const grand = discountedSubtotal + vatAfterOverallDisc + shipping;
-    const balance = Math.max(0, grand - paid);
-
-    $("tSubtotal").textContent = fmt(subtotalExcl);
-    $("tLineDiscount").textContent = fmt(lineDiscountTotal);
-    $("tOverallDiscount").textContent = fmt(overallDiscountAmt);
-    $("tVat").textContent = fmt(vatAfterOverallDisc);
-    $("tShipping").textContent = fmt(shipping);
-    $("tGrand").textContent = fmt(grand);
-    $("tPaid").textContent = fmt(paid);
-    $("tBalance").textContent = fmt(balance);
-
-    return {
-      subtotalExcl,
-      lineDiscountTotal,
-      overallDiscountAmt,
-      vat: vatAfterOverallDisc,
-      shipping,
-      grand,
-      paid,
-      balance
-    };
-  }
-
-  // ===========================
-  // Logo handling (embed as DataURL)
-  // ===========================
-  let companyLogoDataUrl = null;
-
-  function handleLogoUpload(file){
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      companyLogoDataUrl = e.target.result;
-      const preview = $("companyLogoPreview");
-      preview.innerHTML = "";
-      const img = document.createElement("img");
-      img.src = companyLogoDataUrl;
-      img.className = "h-14 object-contain";
-      preview.appendChild(img);
-      autosave();
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // ===========================
-  // Preview / Template fill
-  // ===========================
-  function buildTemplateDom(){
-    const tpl = $("invoiceTemplate").firstElementChild.cloneNode(true);
-
-    // logo
-    const logoWrap = tpl.querySelector("#tplLogo");
-    logoWrap.innerHTML = "";
-    if(companyLogoDataUrl){
-      const img = document.createElement("img");
-      img.src = companyLogoDataUrl;
-      img.style.height = "60px";
-      img.style.objectFit = "contain";
-      logoWrap.appendChild(img);
+    function safeNumber(v) {
+      const n = Number(String(v ?? "").replace(/[^0-9.\-]/g, ""));
+      return Number.isFinite(n) ? n : 0;
     }
 
-    // company
-    tpl.querySelector("#tplCompanyName").textContent = $("companyName").value || "Company";
-    tpl.querySelector("#tplCompanyAddress").textContent = $("companyAddress").value || "";
-    tpl.querySelector("#tplCompanyVat").textContent = $("companyVat").value || "";
-    tpl.querySelector("#tplCompanyReg").textContent = $("companyReg").value || "";
-    tpl.querySelector("#tplCompanyEmail").textContent = $("companyEmail").value || "";
-    tpl.querySelector("#tplCompanyPhone").textContent = $("companyPhone").value || "";
-    tpl.querySelector("#tplCompanyWebsite").textContent = $("companyWebsite").value || "";
-
-    // invoice meta
-    tpl.querySelector("#tplInvNumber").textContent = $("invoiceNumber").value || "";
-    tpl.querySelector("#tplInvRef").textContent = $("invoiceReference").value || "";
-    tpl.querySelector("#tplInvDate").textContent = formatDateISO($("invoiceDate").value) || "";
-    tpl.querySelector("#tplInvDue").textContent = formatDateISO($("dueDate").value) || "";
-    tpl.querySelector("#tplInvStatus").textContent = ($("invoiceStatus").value || "draft").toUpperCase();
-    tpl.querySelector("#tplInvCurrency").textContent = $("currency").value || "ZAR";
-
-    // client
-    tpl.querySelector("#tplClientName").textContent = $("clientName").value || "Client";
-    tpl.querySelector("#tplClientAddress").textContent = $("clientAddress").value || "";
-    tpl.querySelector("#tplClientVat").textContent = $("clientVat").value || "";
-    tpl.querySelector("#tplClientReg").textContent = $("clientReg").value || "";
-    tpl.querySelector("#tplClientEmail").textContent = $("clientEmail").value || "";
-    tpl.querySelector("#tplClientPhone").textContent = $("clientPhone").value || "";
-
-    // bank / payment
-    tpl.querySelector("#tplBank").textContent = $("companyBank").value || "";
-
-    // items
-    const items = readLineItems();
-    const tbody = tpl.querySelector("#tplItems");
-    tbody.innerHTML = "";
-
-    items.forEach(i=>{
-      const base = i.qty * i.rate;
-      const discAmt = base * (i.disc/100);
-      const excl = Math.max(0, base - discAmt);
-      const vatAmt = excl * (i.vat/100);
-      const incl = excl + vatAmt;
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="border border-gray-200 p-2">${escapeHtml(i.desc || "Item")}</td>
-        <td class="border border-gray-200 p-2 text-center">${i.qty}</td>
-        <td class="border border-gray-200 p-2 text-right mono">${fmt(i.rate)}</td>
-        <td class="border border-gray-200 p-2 text-center">${Number(i.disc||0).toFixed(2)}%</td>
-        <td class="border border-gray-200 p-2 text-center">${Number(i.vat||0).toFixed(2)}%</td>
-        <td class="border border-gray-200 p-2 text-right mono">${fmt(excl)}</td>
-        <td class="border border-gray-200 p-2 text-right mono">${fmt(incl)}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-
-    // totals
-    const t = calculateTotals();
-    tpl.querySelector("#tplSubtotal").textContent = fmt(t.subtotalExcl);
-    tpl.querySelector("#tplLineDisc").textContent = fmt(t.lineDiscountTotal);
-    tpl.querySelector("#tplOverallDisc").textContent = fmt(t.overallDiscountAmt);
-    tpl.querySelector("#tplVat").textContent = fmt(t.vat);
-    tpl.querySelector("#tplShipping").textContent = fmt(t.shipping);
-    tpl.querySelector("#tplGrand").textContent = fmt(t.grand);
-    tpl.querySelector("#tplPaid").textContent = fmt(t.paid);
-    tpl.querySelector("#tplBalance").textContent = fmt(t.balance);
-
-    // notes/terms
-    tpl.querySelector("#tplNotes").textContent = $("notes").value || "";
-    tpl.querySelector("#tplTerms").textContent = $("terms").value || "";
-
-    return tpl;
-  }
-
-  function openPreview(){
-    const modal = $("previewModal");
-    const content = $("previewContent");
-    content.innerHTML = "";
-    content.appendChild(buildTemplateDom());
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-  }
-
-  function closePreview(){
-    const modal = $("previewModal");
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-  }
-
-  // ===========================
-  // Exports
-  // ===========================
-  function exportPDF(){
-    // PDF export fallback: open the print dialog on the preview.  We
-    // generate the preview (which already lays out the invoice in a
-    // printÃ¢â‚¬â€˜friendly format) and then invoke the browser's native print
-    // function.  Users can select "Save as PDF" in the print dialog to
-    // generate a PDF.  This approach avoids reliance on external
-    // libraries and works offline across modern browsers.
-    openPreview();
-    // Give the modal a moment to render before printing
-    setTimeout(() => {
-      window.print();
-    }, 100);
-  }
-
-  function exportCSV(){
-    const items = readLineItems();
-    const headers = ["Description","Qty","Rate","Disc%","VAT%"];
-    const rows = items.map(i => [
-      (i.desc || "").replaceAll('"','""'),
-      i.qty,
-      i.rate,
-      i.disc,
-      i.vat
-    ]);
-
-    const csv = [headers, ...rows]
-      .map(r => r.map(v => `"${String(v ?? "")}"`).join(","))
-      .join("\n");
-
-    const filename = ($("invoiceNumber").value || "invoice") + ".csv";
-    const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
-    saveAs(blob, filename);
-  }
-
-  // Excel export rewritten to avoid external dependencies.  This version
-  // generates a simple HTML table wrapped in an Excel-compatible file
-  // structure and saves it with a .xls extension.  Modern versions of
-  // Excel will open this file without issues.  Note: this is a basic
-  // representation and may not support all Excel features.
-  function exportExcel(){
-    try {
-      const templateDom = buildTemplateDom();
-      // Clone the template DOM so we can tweak it without affecting the preview
-      const clone = templateDom.cloneNode(true);
-      // Build a wrapper table containing the invoice content.  We'll
-      // surround the entire invoice in a single table cell to preserve
-      // layout.  Excel interprets HTML tables directly.
-      const wrapperTable = document.createElement('table');
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      td.appendChild(clone);
-      tr.appendChild(td);
-      wrapperTable.appendChild(tr);
-      // Serialize to HTML
-      const html = `<!DOCTYPE html><html><head>
-  <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="UTF-8"></head><body>
-<!-- HEADER:START --><!-- HEADER:END -->${wrapperTable.outerHTML}</body></html>`;
-      const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-      const filename = ($("invoiceNumber").value || 'invoice') + '.xls';
-      saveAs(blob, filename);
-    } catch (err) {
-      console.error(err);
-      alert('Excel export failed.');
+    function pad(n, w = 4) {
+      const s = String(n);
+      return s.length >= w ? s : "0".repeat(w - s.length) + s;
     }
-  }
 
-  function _exportWordOld(){
-    // This legacy Word export relied on the external `docx` library. It's deprecated to
-    // ensure offline functionality. Return early and advise the user to use the new
-    // `Export Word` button which uses the offline HTML-to-Doc fallback.
-    alert("This legacy Word export is deprecated. Please use the Export Word button instead.");
-    return;
-
-    const { Document, Paragraph, HeadingLevel, Table, TableRow, TableCell, WidthType, AlignmentType, BorderStyle } = docx;
-
-    const t = calculateTotals();
-    const items = readLineItems();
-
-    const doc = new Document({
-      sections: [{
-        properties: {},
-        children: [
-          new Paragraph({ text: "INVOICE", heading: HeadingLevel.HEADING_1, alignment: AlignmentType.CENTER }),
-          new Paragraph({ text: " " }),
-
-          new Table({
-            width: { size: 100, type: WidthType.PERCENTAGE },
-            rows: [
-              new TableRow({
-                children: [
-                  new TableCell({ children: [new Paragraph("Invoice #")]}),
-                  new TableCell({ children: [new Paragraph($("invoiceNumber").value || "")]}),
-                  new TableCell({ children: [new Paragraph("Issue Date")]}),
-                  new TableCell({ children: [new Paragraph(formatDateISO($("invoiceDate").value))]}),
-                ]
-              }),
-              new TableRow({
-                children: [
-                  new TableCell({ children: [new Paragraph("Reference")]}),
-                  new TableCell({ children: [new Paragraph($("invoiceReference").value || "")]}),
-                  new TableCell({ children: [new Paragraph("Due Date")]}),
-                  new TableCell({ children: [new Paragraph(formatDateISO($("dueDate").value))]}),
-                ]
-              }),
-            ]
-          }),
-
-          new Paragraph({ text: " " }),
-          new Paragraph({ text: "FROM:", heading: HeadingLevel.HEADING_3 }),
-          new Paragraph($("companyName").value || ""),
-          new Paragraph(`VAT: ${$("companyVat").value || ""}`),
-          new Paragraph($("companyAddress").value || ""),
-          new Paragraph(`Email: ${$("companyEmail").value || ""}`),
-          new Paragraph(`Phone: ${$("companyPhone").value || ""}`),
-
-          new Paragraph({ text: " " }),
-          new Paragraph({ text: "BILL TO:", heading: HeadingLevel.HEADING_3 }),
-          new Paragraph($("clientName").value || ""),
-          new Paragraph(`VAT: ${$("clientVat").value || ""}`),
-          new Paragraph($("clientAddress").value || ""),
-          new Paragraph(`Email: ${$("clientEmail").value || ""}`),
-          new Paragraph(`Phone: ${$("clientPhone").value || ""}`),
-
-          new Paragraph({ text: " " }),
-
-          new Table({
-            width: { size: 100, type: WidthType.PERCENTAGE },
-            rows: [
-              new TableRow({
-                tableHeader: true,
-                children: ["Description","Qty","Rate","Disc%","VAT%","Excl","Incl"].map(h =>
-                  new TableCell({
-                    children:[new Paragraph({text:h, bold:true})],
-                    borders: {
-                      top: { style: BorderStyle.SINGLE, size: 1 },
-                      bottom: { style: BorderStyle.SINGLE, size: 1 },
-                      left: { style: BorderStyle.SINGLE, size: 1 },
-                      right: { style: BorderStyle.SINGLE, size: 1 },
-                    }
-                  })
-                )
-              }),
-              ...items.map(i=>{
-                const base = i.qty*i.rate;
-                const discAmt = base*(i.disc/100);
-                const excl = Math.max(0, base-discAmt);
-                const vatAmt = excl*(i.vat/100);
-                const incl = excl+vatAmt;
-
-                const cells = [
-                  i.desc || "",
-                  String(i.qty),
-                  fmt(i.rate),
-                  `${Number(i.disc||0).toFixed(2)}%`,
-                  `${Number(i.vat||0).toFixed(2)}%`,
-                  fmt(excl),
-                  fmt(incl),
-                ];
-
-                return new TableRow({
-                  children: cells.map(v => new TableCell({
-                    children:[new Paragraph(String(v))],
-                    borders: {
-                      top: { style: BorderStyle.SINGLE, size: 1 },
-                      bottom: { style: BorderStyle.SINGLE, size: 1 },
-                      left: { style: BorderStyle.SINGLE, size: 1 },
-                      right: { style: BorderStyle.SINGLE, size: 1 },
-                    }
-                  }))
-                });
-              })
-            ]
-          }),
-
-          new Paragraph({ text: " " }),
-          new Paragraph({ text: `Subtotal: ${fmt(t.subtotalExcl)}` }),
-          new Paragraph({ text: `Line Discounts: ${fmt(t.lineDiscountTotal)}` }),
-          new Paragraph({ text: `Overall Discount: ${fmt(t.overallDiscountAmt)}` }),
-          new Paragraph({ text: `VAT: ${fmt(t.vat)}` }),
-          new Paragraph({ text: `Shipping: ${fmt(t.shipping)}` }),
-          new Paragraph({ text: `Grand Total: ${fmt(t.grand)}`, bold: true }),
-          new Paragraph({ text: `Paid: ${fmt(t.paid)}` }),
-          new Paragraph({ text: `Balance Due: ${fmt(t.balance)}`, bold: true }),
-
-          new Paragraph({ text: " " }),
-          new Paragraph({ text: "NOTES:", heading: HeadingLevel.HEADING_3 }),
-          new Paragraph($("notes").value || ""),
-
-          new Paragraph({ text: " " }),
-          new Paragraph({ text: "TERMS:", heading: HeadingLevel.HEADING_3 }),
-          new Paragraph($("terms").value || ""),
-
-          new Paragraph({ text: " " }),
-          new Paragraph({ text: "BANK DETAILS:", heading: HeadingLevel.HEADING_3 }),
-          new Paragraph($("companyBank").value || ""),
-        ]
-      }]
-    });
-
-    docx.Packer.toBlob(doc)
-      .then(blob => saveAs(blob, ($("invoiceNumber").value || "invoice") + ".docx"))
-      .catch(err=>{
-        console.error(err);
-        alert("Word export failed. Check console for details.");
-      });
-  }
-
-  // New Word export using HTML to doc fallback. This implementation works offline without external
-  // dependencies by serializing the invoice HTML into a simple .doc file. Modern versions of
-  // Microsoft Word can open HTML content saved with a .doc extension.
-  function exportWord(){
-    try {
-      // Build the invoice template DOM
-      const dom = buildTemplateDom();
-      const wrapper = document.createElement('div');
-      wrapper.appendChild(dom);
-      // Serialize the DOM into a complete HTML document string
-      const htmlContent = `<!DOCTYPE html><html lang="en-ZA"><head>
-  <!-- NAV_SYNC: scripts/sync-nav.js --><meta charset="UTF-8"><title>Invoice</title></head><body>
-<!-- HEADER:START --><!-- HEADER:END -->${wrapper.innerHTML}</body></html>`;
-      // Create a Word document blob from the HTML content
-      const blob = new Blob([htmlContent], { type: 'application/msword' });
-      const filename = ($("invoiceNumber").value || 'invoice') + '.doc';
-      // Trigger the download
-      saveAs(blob, filename);
-    } catch (err) {
-      console.error(err);
-      alert('Word export failed.');
+    function todayISO() {
+      const d = new Date();
+      const tzOff = d.getTimezoneOffset() * 60000;
+      return new Date(d - tzOff).toISOString().slice(0,10);
     }
-  }
 
-  // ===========================
-  // CSV Import
-  // ===========================
-  function parseCSV(text){
-    // Minimal CSV parser for: Description,Qty,Rate,Disc%,VAT%
-    // Handles quotes and commas in quotes.
-    const rows = [];
-    let i=0, field="", row=[], inQuotes=false;
+    function currencySymbol(code) {
+      switch (code) {
+        case "USD": return "$";
+        case "EUR": return "€";
+        case "GBP": return "£";
+        default: return "R";
+      }
+    }
 
-    const pushField = () => { row.push(field); field=""; };
-    const pushRow = () => { if(row.length) rows.push(row); row=[]; };
+    function formatMoney(code, amount) {
+      const sym = currencySymbol(code);
+      const n = (Number.isFinite(amount) ? amount : 0);
+      return `${sym} ${n.toFixed(2)}`;
+    }
 
-    while(i<text.length){
-      const c = text[i];
-      if(inQuotes){
-        if(c === '"'){
-          if(text[i+1] === '"'){ field += '"'; i++; }
-          else inQuotes = false;
-        } else field += c;
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function setStatusBadge(val) {
+      const badge = $("statusBadge");
+      const text = $("statusText");
+      text.textContent = String(val || "Draft").toUpperCase();
+
+      // reset classes
+      badge.className = "chip";
+      if (val === "Paid") {
+        badge.classList.add("bg-green-50","border-green-200","text-green-900");
+      } else if (val === "Overdue") {
+        badge.classList.add("bg-red-50","border-red-200","text-red-900");
+      } else if (val === "Sent") {
+        badge.classList.add("bg-blue-50","border-blue-200","text-blue-900");
+      } else if (val === "Partially Paid") {
+        badge.classList.add("bg-purple-50","border-purple-200","text-purple-900");
       } else {
-        if(c === '"') inQuotes = true;
-        else if(c === ','){ pushField(); }
-        else if(c === '\n'){ pushField(); pushRow(); }
-        else if(c !== '\r'){ field += c; }
+        badge.classList.add("bg-yellow-50","border-yellow-200","text-yellow-900");
       }
-      i++;
     }
-    pushField(); pushRow();
-    return rows;
-  }
 
-  function importCSV(file){
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target.result || "";
-      const rows = parseCSV(text).filter(r => r.join("").trim().length);
+    // ---------- Line Items Model ----------
+    let lines = [];
 
-      // If header row present, skip if first cell is Description
-      let startIdx = 0;
-      if(rows[0] && rows[0][0] && rows[0][0].toLowerCase().includes("description")) startIdx = 1;
+    function newLine(prefVat) {
+      return {
+        desc: "",
+        qty: 1,
+        rate: 0,
+        disc: 0,
+        vat: safeNumber(prefVat),
+      };
+    }
 
-      for(let r=startIdx; r<rows.length; r++){
-        const [desc, qty, rate, disc, vat] = rows[r];
-        addLineItem({
-          desc: (desc||"").trim(),
-          qty: Number((qty||"1").trim()),
-          rate: Number((rate||"0").trim()),
-          disc: Number((disc||"0").toString().replace("%","").trim()),
-          vat: Number((vat||$("defaultVat").value||"0").toString().replace("%","").trim()),
-        });
+    function calcLine(line) {
+      const qty = Math.max(0, safeNumber(line.qty));
+      const rate = Math.max(0, safeNumber(line.rate));
+      const discPct = Math.min(100, Math.max(0, safeNumber(line.disc)));
+      const vatPct = Math.min(100, Math.max(0, safeNumber(line.vat)));
+
+      const gross = qty * rate;
+      const disc = gross * (discPct / 100);
+      const netEx = gross - disc;
+      const vat = netEx * (vatPct / 100);
+      const netInc = netEx + vat;
+
+      return { qty, rate, discPct, vatPct, gross, disc, netEx, vat, netInc };
+    }
+
+    function renderLines() {
+      const tbody = $("linesBody");
+      tbody.innerHTML = "";
+
+      if (lines.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center text-gray-500 py-6">
+              No line items yet. Click <b>Add Line</b> to start.
+            </td>
+          </tr>`;
+        recalcTotals();
+        return;
       }
-      calculateTotals();
-      autosave();
-    };
-    reader.readAsText(file);
-  }
 
-  // ===========================
-  // Save/Load templates (localStorage)
-  // ===========================
-  const AUTOSAVE_KEY = "easyinv.autosave.v1";
-  const TEMPLATES_KEY = "easyinv.templates.v1";
+      lines.forEach((line, idx) => {
+        const c = calcLine(line);
+        const cur = $("currency").value;
 
-  function serializeState(){
-    return {
-      version: 1,
-      savedAt: new Date().toISOString(),
-      companyLogoDataUrl,
-      fields: {
-        companyName: $("companyName").value,
-        companyVat: $("companyVat").value,
-        companyReg: $("companyReg").value,
-        companyEmail: $("companyEmail").value,
-        companyPhone: $("companyPhone").value,
-        companyWebsite: $("companyWebsite").value,
-        companyAddress: $("companyAddress").value,
-        companyBank: $("companyBank").value,
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="w-2/5">
+            <textarea class="field" rows="2" placeholder="e.g., Consulting services" data-k="desc" data-i="${idx}">${escapeHtml(line.desc)}</textarea>
+          </td>
+          <td class="text-right">
+            <input class="field mono text-right" type="number" min="0" step="0.01" value="${c.qty}" data-k="qty" data-i="${idx}" />
+          </td>
+          <td class="text-right">
+            <input class="field mono text-right" type="number" min="0" step="0.01" value="${c.rate}" data-k="rate" data-i="${idx}" />
+          </td>
+          <td class="text-right">
+            <input class="field mono text-right" type="number" min="0" max="100" step="0.01" value="${c.discPct}" data-k="disc" data-i="${idx}" />
+          </td>
+          <td class="text-right">
+            <input class="field mono text-right" type="number" min="0" max="100" step="0.01" value="${c.vatPct}" data-k="vat" data-i="${idx}" />
+          </td>
+          <td class="text-right mono font-semibold">${formatMoney(cur, c.netEx)}</td>
+          <td class="text-right mono font-semibold">${formatMoney(cur, c.netInc)}</td>
+          <td class="text-right no-print">
+            <button class="bg-white border border-gray-200 hover:bg-gray-50 px-3 py-2 rounded-lg" data-act="del" data-i="${idx}">
+              <i class="fa-solid fa-trash text-red-600"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
 
-        clientName: $("clientName").value,
-        clientVat: $("clientVat").value,
-        clientReg: $("clientReg").value,
-        clientEmail: $("clientEmail").value,
-        clientPhone: $("clientPhone").value,
-        clientAddress: $("clientAddress").value,
+      // Inputs events
+      tbody.querySelectorAll("input,textarea").forEach(el => {
+        el.addEventListener("input", (e) => {
+          const i = Number(e.target.getAttribute("data-i"));
+          const k = e.target.getAttribute("data-k");
+          if (!Number.isFinite(i) || !k) return;
 
-        invoiceNumber: $("invoiceNumber").value,
-        invoiceReference: $("invoiceReference").value,
-        invoiceDate: $("invoiceDate").value,
-        dueDate: $("dueDate").value,
-        currency: $("currency").value,
-        invoiceStatus: $("invoiceStatus").value,
+          if (k === "desc") lines[i][k] = e.target.value;
+          else lines[i][k] = safeNumber(e.target.value);
 
-        overallDiscount: $("overallDiscount").value,
-        shipping: $("shipping").value,
-        amountPaid: $("amountPaid").value,
-        defaultVat: $("defaultVat").value,
+          recalcTotals();
+        });
+      });
 
+      tbody.querySelectorAll("button[data-act='del']").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const i = Number(btn.getAttribute("data-i"));
+          lines.splice(i, 1);
+          renderLines();
+        });
+      });
+
+      recalcTotals();
+    }
+
+    // ---------- Totals ----------
+    function recalcTotals() {
+      const cur = $("currency").value;
+
+      const subtotalEx = lines.reduce((s, ln) => s + calcLine(ln).netEx, 0);
+      const vatTotal = lines.reduce((s, ln) => s + calcLine(ln).vat, 0);
+
+      const overallDiscPct = Math.min(100, Math.max(0, safeNumber($("overallDiscount").value)));
+      const overallDiscount = subtotalEx * (overallDiscPct / 100);
+
+      const shipping = Math.max(0, safeNumber($("shipping").value));
+      const paid = Math.max(0, safeNumber($("amountPaid").value));
+
+      // Apply overall discount to subtotalEx; VAT already calculated per line on netEx.
+      // If you want overall discount to reduce VAT proportionally, you can adjust VAT here.
+      const discountedEx = Math.max(0, subtotalEx - overallDiscount);
+      const totalInc = discountedEx + vatTotal + shipping;
+      const balance = Math.max(0, totalInc - paid);
+
+      $("tSubtotalEx").textContent = formatMoney(cur, subtotalEx);
+      $("tOverallDiscount").textContent = `- ${formatMoney(cur, overallDiscount)}`;
+      $("tShipping").textContent = formatMoney(cur, shipping);
+      $("tVat").textContent = formatMoney(cur, vatTotal);
+      $("tTotal").textContent = formatMoney(cur, totalInc);
+      $("tPaid").textContent = formatMoney(cur, paid);
+      $("tBalance").textContent = formatMoney(cur, balance);
+
+      // Status automation: if Paid >= Total then Paid
+      if (paid > 0 && paid + 0.0001 >= totalInc && totalInc > 0) {
+        $("status").value = "Paid";
+      } else if ($("status").value === "Paid" && paid + 0.0001 < totalInc) {
+        $("status").value = "Partially Paid";
+      }
+      setStatusBadge($("status").value);
+    }
+
+    // ---------- Draft Save/Load ----------
+    const DRAFT_KEY = "easyinv:draft:v2";
+
+    function getDraft() {
+      return {
+        meta: {
+          invNumber: $("invNumber").value,
+          invRef: $("invRef").value,
+          issueDate: $("issueDate").value,
+          dueDate: $("dueDate").value,
+          currency: $("currency").value,
+          status: $("status").value,
+          overallDiscount: safeNumber($("overallDiscount").value),
+          defaultVat: safeNumber($("defaultVat").value),
+          shipping: safeNumber($("shipping").value),
+          amountPaid: safeNumber($("amountPaid").value),
+        },
+        company: {
+          name: $("companyName").value,
+          vat: $("companyVat").value,
+          reg: $("companyReg").value,
+          web: $("companyWeb").value,
+          email: $("companyEmail").value,
+          phone: $("companyPhone").value,
+          address: $("companyAddress").value,
+          bank: $("companyBank").value,
+          logoDataUrl: window.__companyLogoDataUrl || "",
+        },
+        client: {
+          name: $("clientName").value,
+          vat: $("clientVat").value,
+          reg: $("clientReg").value,
+          phone: $("clientPhone").value,
+          email: $("clientEmail").value,
+          address: $("clientAddress").value,
+        },
         notes: $("notes").value,
         terms: $("terms").value,
-      },
-      items: readLineItems()
-    };
-  }
-
-  function applyState(state){
-    if(!state) return;
-    companyLogoDataUrl = state.companyLogoDataUrl || null;
-
-    // Logo preview
-    const preview = $("companyLogoPreview");
-    preview.innerHTML = "";
-    if(companyLogoDataUrl){
-      const img = document.createElement("img");
-      img.src = companyLogoDataUrl;
-      img.className = "h-14 object-contain";
-      preview.appendChild(img);
-    } else {
-      preview.innerHTML = `<p class="text-sm text-slate-400">No logo uploaded</p>`;
+        lines: lines,
+      };
     }
 
-    const f = state.fields || {};
+    function applyDraft(d) {
+      if (!d) return;
 
-    Object.keys(f).forEach(k=>{
-      if($(k)) $(k).value = f[k] ?? "";
-    });
+      $("invNumber").value = d.meta?.invNumber || $("invNumber").value;
+      $("invRef").value = d.meta?.invRef || "";
+      $("issueDate").value = d.meta?.issueDate || todayISO();
+      $("dueDate").value = d.meta?.dueDate || "";
+      $("currency").value = d.meta?.currency || "ZAR";
+      $("status").value = d.meta?.status || "Draft";
+      $("overallDiscount").value = safeNumber(d.meta?.overallDiscount || 0);
+      $("defaultVat").value = safeNumber(d.meta?.defaultVat ?? 15);
+      $("shipping").value = safeNumber(d.meta?.shipping || 0);
+      $("amountPaid").value = safeNumber(d.meta?.amountPaid || 0);
 
-    // items
-    $("itemsBody").innerHTML = "";
-    (state.items || []).forEach(it => addLineItem(it));
-    if(!(state.items || []).length) addLineItem();
+      $("companyName").value = d.company?.name || "";
+      $("companyVat").value = d.company?.vat || "";
+      $("companyReg").value = d.company?.reg || "";
+      $("companyWeb").value = d.company?.web || "";
+      $("companyEmail").value = d.company?.email || "";
+      $("companyPhone").value = d.company?.phone || "";
+      $("companyAddress").value = d.company?.address || "";
+      $("companyBank").value = d.company?.bank || "";
+      window.__companyLogoDataUrl = d.company?.logoDataUrl || "";
+      $("logoHint").textContent = window.__companyLogoDataUrl ? "Logo loaded from last saved draft" : "No logo uploaded";
 
-    calculateTotals();
-    setStatusBadge();
-  }
+      $("clientName").value = d.client?.name || "";
+      $("clientVat").value = d.client?.vat || "";
+      $("clientReg").value = d.client?.reg || "";
+      $("clientPhone").value = d.client?.phone || "";
+      $("clientEmail").value = d.client?.email || "";
+      $("clientAddress").value = d.client?.address || "";
 
-  function autosave(){
-    try{
-      localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(serializeState()));
-    } catch(e){
-      console.warn("Autosave failed:", e);
-    }
-  }
+      $("notes").value = d.notes || "";
+      $("terms").value = d.terms || "";
 
-  function loadAutosave(){
-    try{
-      const raw = localStorage.getItem(AUTOSAVE_KEY);
-      if(!raw) return false;
-      applyState(JSON.parse(raw));
-      return true;
-    } catch(e){
-      console.warn("Autosave load failed:", e);
-      return false;
-    }
-  }
-
-  function saveTemplate(){
-    const name = prompt("Template name (e.g., 'Skunkworks Default'):");
-    if(!name) return;
-    const state = serializeState();
-    state.templateName = name;
-
-    const templates = loadTemplates();
-    templates.push(state);
-
-    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
-    alert("Template saved: " + name);
-  }
-
-  function loadTemplates(){
-    try{
-      return JSON.parse(localStorage.getItem(TEMPLATES_KEY) || "[]");
-    } catch {
-      return [];
-    }
-  }
-
-  function pickAndLoadTemplate(){
-    const templates = loadTemplates();
-    if(!templates.length){
-      alert("No templates saved yet.");
-      return;
-    }
-    const names = templates.map((t,i)=> `${i+1}) ${t.templateName || ("Template " + (i+1))}`).join("\n");
-    const choice = prompt("Choose a template number:\n\n" + names);
-    if(!choice) return;
-    const idx = Number(choice) - 1;
-    if(idx < 0 || idx >= templates.length){
-      alert("Invalid choice.");
-      return;
-    }
-    applyState(templates[idx]);
-    autosave();
-  }
-
-  function resetForm(){
-    if(!confirm("Reset the invoice form? (Templates remain saved)")) return;
-
-    companyLogoDataUrl = null;
-    $("companyLogo").value = "";
-    $("companyLogoPreview").innerHTML = `<p class="text-sm text-slate-400">No logo uploaded</p>`;
-
-    // Clear fields
-    [
-      "companyName","companyVat","companyReg","companyEmail","companyPhone","companyWebsite","companyAddress","companyBank",
-      "clientName","clientVat","clientReg","clientEmail","clientPhone","clientAddress",
-      "invoiceReference","notes","terms"
-    ].forEach(id => { if($(id)) $(id).value = ""; });
-
-    $("currency").value = "ZAR";
-    $("invoiceStatus").value = "draft";
-    $("overallDiscount").value = "0.00";
-    $("shipping").value = "0.00";
-    $("amountPaid").value = "0.00";
-    $("defaultVat").value = "15.00";
-
-    // Dates + new number
-    const today = new Date();
-    $("invoiceDate").value = today.toISOString().split("T")[0];
-    const due = new Date();
-    due.setDate(due.getDate()+10);
-    $("dueDate").value = due.toISOString().split("T")[0];
-    generateInvoiceNumber();
-
-    // Items
-    $("itemsBody").innerHTML = "";
-    addLineItem();
-
-    calculateTotals();
-    autosave();
-  }
-
-  // ===========================
-  // Print (manual)
-  // ===========================
-  function printManual(){
-    // Build an isolated printable window to avoid UI/controls
-    const dom = buildTemplateDom();
-    const w = window.open("", "_blank");
-    if(!w){
-      alert("Pop-up blocked. Allow popups to print.");
-      return;
+      lines = Array.isArray(d.lines) ? d.lines : [];
+      setStatusBadge($("status").value);
+      renderLines();
     }
 
-    const style = `
-      <style>
-        body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif; margin:0; padding:20px; background:#fff;}
-        .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
-        table{width:100%; border-collapse:collapse;}
-        th,td{border:1px solid #e5e7eb; padding:8px;}
-        th{background:#f9fafb;}
-      </style>
-    `;
-
-    w.document.write(`
-      <html><head>
-  <!-- NAV_SYNC: scripts/sync-nav.js --><title>Print Invoice</title>${style}</head><body>
-<!-- HEADER:START --><!-- HEADER:END --></body></html>
-    `);
-    w.document.body.appendChild(dom);
-    w.document.close();
-    w.focus();
-    w.print();
-  }
-
-  // ===========================
-  // Init + Events
-  // ===========================
-  function bind(){
-    // meta changes recalc
-    ["overallDiscount","shipping","amountPaid","defaultVat","currency","invoiceStatus"].forEach(id=>{
-      $(id).addEventListener("input", () => { calculateTotals(); autosave(); });
-      $(id).addEventListener("change", () => { calculateTotals(); autosave(); });
-    });
-
-    // general fields autosave
-    [
-      "companyName","companyVat","companyReg","companyEmail","companyPhone","companyWebsite","companyAddress","companyBank",
-      "clientName","clientVat","clientReg","clientEmail","clientPhone","clientAddress",
-      "invoiceNumber","invoiceReference","invoiceDate","dueDate","notes","terms"
-    ].forEach(id=>{
-      $(id).addEventListener("input", autosave);
-      $(id).addEventListener("change", autosave);
-    });
-
-    // logo
-    $("companyLogo").addEventListener("change", (e)=> handleLogoUpload(e.target.files[0]));
-
-    // buttons
-    $("btnAddLine").addEventListener("click", ()=> { addLineItem(); autosave(); });
-    $("btnPreview").addEventListener("click", openPreview);
-    $("btnClosePreview").addEventListener("click", closePreview);
-    $("btnClosePreviewBottom").addEventListener("click", closePreview);
-    $("previewModal").addEventListener("click", (e)=>{ if(e.target === $("previewModal")) closePreview(); });
-
-    $("btnPDF").addEventListener("click", exportPDF);
-    $("btnPDF2").addEventListener("click", exportPDF);
-    $("btnWord").addEventListener("click", exportWord);
-    $("btnExcel").addEventListener("click", exportExcel);
-    $("btnCSV").addEventListener("click", exportCSV);
-    $("btnPrint").addEventListener("click", printManual);
-
-    $("btnSaveTemplate").addEventListener("click", saveTemplate);
-    $("btnLoadTemplate").addEventListener("click", pickAndLoadTemplate);
-    $("btnReset").addEventListener("click", resetForm);
-
-    $("btnNewNumber").addEventListener("click", ()=> { generateInvoiceNumber(); autosave(); });
-    $("btnMarkPaid").addEventListener("click", ()=>{
-      $("invoiceStatus").value = "paid";
-      $("amountPaid").value = (calculateTotals().grand).toFixed(2);
-      calculateTotals();
-      autosave();
-    });
-
-    // CSV import
-    $("btnImportCSV").addEventListener("click", ()=> $("csvFile").click());
-    $("csvFile").addEventListener("change", (e)=>{
-      importCSV(e.target.files[0]);
-      e.target.value = "";
-    });
-
-    // initial line item
-    if(document.querySelectorAll(".line-item").length === 0){
-      addLineItem();
-    }
-  }
-
-  function init(){
-    // Dates default
-    const today = new Date();
-    $("invoiceDate").value = today.toISOString().split("T")[0];
-    const due = new Date();
-    due.setDate(due.getDate()+10);
-    $("dueDate").value = due.toISOString().split("T")[0];
-
-    // Number
-    generateInvoiceNumber();
-
-    // Load autosave if present
-    const loaded = loadAutosave();
-    if(!loaded){
-      // ensure at least one row
-      addLineItem();
-      calculateTotals();
-      autosave();
-    } else {
-      calculateTotals();
+    function saveDraft() {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(getDraft()));
+        toast("Draft saved ✅");
+      } catch {
+        toast("Could not save draft (storage blocked).", true);
+      }
     }
 
-    // Status
-    setStatusBadge();
-  }
+    function loadDraft() {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return toast("No saved draft found.", true);
+        applyDraft(JSON.parse(raw));
+        toast("Draft loaded ✅");
+      } catch {
+        toast("Could not load draft.", true);
+      }
+    }
 
-  document.addEventListener("DOMContentLoaded", ()=>{
-    bind();
-    init();
-  });
-</script>
+    // ---------- Toast ----------
+    let toastTimer = null;
+    function toast(msg, isError=false) {
+      let el = document.getElementById("toast");
+      if (!el) {
+        el = document.createElement("div");
+        el.id = "toast";
+        el.className = "fixed bottom-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-sm";
+        document.body.appendChild(el);
+      }
+      el.className = `fixed bottom-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-sm ${isError ? "bg-red-600 text-white" : "bg-gray-900 text-white"}`;
+      el.textContent = msg;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.remove(), 2200);
+    }
 
+    // ---------- Invoice # ----------
+    function newInvoiceNumber() {
+      const key = "easyinv:lastNumber";
+      const last = safeNumber(localStorage.getItem(key) || "0");
+      const next = last + 1;
+      localStorage.setItem(key, String(next));
+      $("invNumber").value = `INV-${pad(next, 5)}`;
+    }
+
+    // ---------- Preview ----------
+    function buildPreviewHtml() {
+      const cur = $("currency").value;
+      const sym = currencySymbol(cur);
+
+      // totals (reuse computed)
+      const subtotalEx = lines.reduce((s, ln) => s + calcLine(ln).netEx, 0);
+      const vatTotal = lines.reduce((s, ln) => s + calcLine(ln).vat, 0);
+      const overallDiscPct = Math.min(100, Math.max(0, safeNumber($("overallDiscount").value)));
+      const overallDiscount = subtotalEx * (overallDiscPct / 100);
+      const shipping = Math.max(0, safeNumber($("shipping").value));
+      const discountedEx = Math.max(0, subtotalEx - overallDiscount);
+      const totalInc = discountedEx + vatTotal + shipping;
+      const paid = Math.max(0, safeNumber($("amountPaid").value));
+      const balance = Math.max(0, totalInc - paid);
+
+      const due = $("dueDate").value;
+      const issue = $("issueDate").value;
+      const status = $("status").value;
+
+      const logoHtml = window.__companyLogoDataUrl
+        ? `<img src="${window.__companyLogoDataUrl}" alt="Logo" style="max-height:70px; max-width:220px; object-fit:contain;">`
+        : `<div style="height:70px; width:220px; border:1px dashed #d1d5db; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#6b7280; font-size:12px;">Logo</div>`;
+
+      const lineRows = (lines.length ? lines : [newLine($("defaultVat").value)]).map((ln) => {
+        const c = calcLine(ln);
+        return `
+          <tr>
+            <td style="padding:8px 6px; border-bottom:1px solid #eef2f7;">${escapeHtml(ln.desc || "")}</td>
+            <td style="padding:8px 6px; border-bottom:1px solid #eef2f7; text-align:right;">${c.qty.toFixed(2)}</td>
+            <td style="padding:8px 6px; border-bottom:1px solid #eef2f7; text-align:right;">${sym} ${c.rate.toFixed(2)}</td>
+            <td style="padding:8px 6px; border-bottom:1px solid #eef2f7; text-align:right;">${c.discPct.toFixed(2)}%</td>
+            <td style="padding:8px 6px; border-bottom:1px solid #eef2f7; text-align:right;">${c.vatPct.toFixed(2)}%</td>
+            <td style="padding:8px 6px; border-bottom:1px solid #eef2f7; text-align:right;">${sym} ${c.netEx.toFixed(2)}</td>
+            <td style="padding:8px 6px; border-bottom:1px solid #eef2f7; text-align:right;">${sym} ${c.netInc.toFixed(2)}</td>
+          </tr>
+        `;
+      }).join("");
+
+      const overdueNote = (status === "Overdue")
+        ? `<div style="margin-top:10px; padding:10px 12px; background:#fef2f2; border:1px solid #fecaca; border-radius:12px; color:#991b1b;">
+             <b>Overdue:</b> Payment was due on ${escapeHtml(due || "—")}.
+           </div>`
+        : "";
+
+      return `
+        <div style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:#111827;">
+          <div style="display:flex; justify-content:space-between; gap:18px; align-items:flex-start;">
+            <div>
+              ${logoHtml}
+              <div style="margin-top:10px;">
+                <div style="font-weight:800; font-size:18px;">${escapeHtml($("companyName").value || "Your Company")}</div>
+                <div style="font-size:12px; color:#4b5563; white-space:pre-line;">${escapeHtml($("companyAddress").value || "")}</div>
+                <div style="font-size:12px; color:#4b5563; margin-top:6px;">
+                  ${$("companyEmail").value ? `Email: ${escapeHtml($("companyEmail").value)}<br>` : ""}
+                  ${$("companyPhone").value ? `Phone: ${escapeHtml($("companyPhone").value)}<br>` : ""}
+                  ${$("companyVat").value ? `VAT: ${escapeHtml($("companyVat").value)}<br>` : ""}
+                  ${$("companyReg").value ? `Reg: ${escapeHtml($("companyReg").value)}<br>` : ""}
+                  ${$("companyWeb").value ? `Web: ${escapeHtml($("companyWeb").value)}` : ""}
+                </div>
+              </div>
+            </div>
+
+            <div style="text-align:right; min-width:260px;">
+              <div style="font-weight:900; font-size:28px; color:#1d4ed8;">INVOICE</div>
+              <div style="margin-top:6px; font-size:12px; color:#4b5563;">
+                <div><b>Status:</b> ${escapeHtml(status)}</div>
+                <div><b>Invoice #:</b> ${escapeHtml($("invNumber").value || "—")}</div>
+                <div><b>Reference:</b> ${escapeHtml($("invRef").value || "—")}</div>
+                <div><b>Issue Date:</b> ${escapeHtml(issue || "—")}</div>
+                <div><b>Due Date:</b> ${escapeHtml(due || "—")}</div>
+              </div>
+              ${overdueNote}
+            </div>
+          </div>
+
+          <div style="margin-top:22px; display:flex; gap:18px;">
+            <div style="flex:1; border:1px solid #e5e7eb; border-radius:14px; padding:12px 14px;">
+              <div style="font-weight:800; margin-bottom:6px;">Bill To</div>
+              <div style="font-size:12px;">
+                <div style="font-weight:700;">${escapeHtml($("clientName").value || "Client")}</div>
+                <div style="color:#4b5563; white-space:pre-line;">${escapeHtml($("clientAddress").value || "")}</div>
+                <div style="color:#4b5563; margin-top:6px;">
+                  ${$("clientEmail").value ? `Email: ${escapeHtml($("clientEmail").value)}<br>` : ""}
+                  ${$("clientPhone").value ? `Phone: ${escapeHtml($("clientPhone").value)}<br>` : ""}
+                  ${$("clientVat").value ? `VAT: ${escapeHtml($("clientVat").value)}<br>` : ""}
+                  ${$("clientReg").value ? `Reg/ID: ${escapeHtml($("clientReg").value)}` : ""}
+                </div>
+              </div>
+            </div>
+
+            <div style="width:320px; border:1px solid #e5e7eb; border-radius:14px; padding:12px 14px;">
+              <div style="font-weight:800; margin-bottom:6px;">Totals</div>
+              <div style="font-size:12px; color:#111827;">
+                <div style="display:flex; justify-content:space-between;"><span>Subtotal (Excl.)</span><b>${sym} ${subtotalEx.toFixed(2)}</b></div>
+                <div style="display:flex; justify-content:space-between;"><span>Overall Discount</span><b>- ${sym} ${overallDiscount.toFixed(2)}</b></div>
+                <div style="display:flex; justify-content:space-between;"><span>Shipping</span><b>${sym} ${shipping.toFixed(2)}</b></div>
+                <div style="display:flex; justify-content:space-between;"><span>VAT</span><b>${sym} ${vatTotal.toFixed(2)}</b></div>
+                <hr style="margin:10px 0;">
+                <div style="display:flex; justify-content:space-between; font-size:16px;"><span><b>Total (Incl.)</b></span><span><b>${sym} ${totalInc.toFixed(2)}</b></span></div>
+                <div style="display:flex; justify-content:space-between;"><span>Paid</span><b>${sym} ${paid.toFixed(2)}</b></div>
+                <div style="display:flex; justify-content:space-between;"><span>Balance Due</span><b>${sym} ${balance.toFixed(2)}</b></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px;">
+            <table style="width:100%; border-collapse:collapse;">
+              <thead>
+                <tr>
+                  <th style="text-align:left; font-size:11px; color:#6b7280; padding:8px 6px; border-bottom:1px solid #e5e7eb;">Description</th>
+                  <th style="text-align:right; font-size:11px; color:#6b7280; padding:8px 6px; border-bottom:1px solid #e5e7eb;">Qty</th>
+                  <th style="text-align:right; font-size:11px; color:#6b7280; padding:8px 6px; border-bottom:1px solid #e5e7eb;">Rate (Excl.)</th>
+                  <th style="text-align:right; font-size:11px; color:#6b7280; padding:8px 6px; border-bottom:1px solid #e5e7eb;">Disc</th>
+                  <th style="text-align:right; font-size:11px; color:#6b7280; padding:8px 6px; border-bottom:1px solid #e5e7eb;">VAT</th>
+                  <th style="text-align:right; font-size:11px; color:#6b7280; padding:8px 6px; border-bottom:1px solid #e5e7eb;">Total Excl.</th>
+                  <th style="text-align:right; font-size:11px; color:#6b7280; padding:8px 6px; border-bottom:1px solid #e5e7eb;">Total Incl.</th>
+                </tr>
+              </thead>
+              <tbody>${lineRows}</tbody>
+            </table>
+          </div>
+
+          <div style="margin-top:18px; display:flex; gap:18px;">
+            <div style="flex:1;">
+              <div style="font-weight:800; margin-bottom:6px;">Notes</div>
+              <div style="font-size:12px; color:#4b5563; white-space:pre-line;">${escapeHtml($("notes").value || "")}</div>
+            </div>
+            <div style="flex:1;">
+              <div style="font-weight:800; margin-bottom:6px;">Terms</div>
+              <div style="font-size:12px; color:#4b5563; white-space:pre-line;">${escapeHtml($("terms").value || "")}</div>
+              ${$("companyBank").value ? `<div style="margin-top:10px; font-size:12px;"><b>Bank:</b><div style="white-space:pre-line; color:#4b5563;">${escapeHtml($("companyBank").value)}</div></div>` : ""}
+            </div>
+          </div>
+
+          <div style="margin-top:18px; font-size:11px; color:#9ca3af;">
+            Generated by EasyINV (Easy Suite) • Offline-friendly • ${new Date().toLocaleString()}
+          </div>
+        </div>
+      `;
+    }
+
+    function openPreview() {
+      $("previewContent").innerHTML = buildPreviewHtml();
+      $("previewModal").classList.remove("hidden");
+      $("previewModal").classList.add("flex");
+    }
+
+    function closePreview() {
+      $("previewModal").classList.add("hidden");
+      $("previewModal").classList.remove("flex");
+    }
+
+    // ---------- Exports ----------
+    function filenameBase() {
+      return ($("invNumber").value || "invoice").replace(/[^\w\-]+/g, "_");
+    }
+
+    function exportCSV() {
+      const cur = $("currency").value;
+      const rows = [];
+      rows.push(["InvoiceNumber", $("invNumber").value || ""], ["Reference", $("invRef").value || ""], ["Currency", cur], ["IssueDate", $("issueDate").value || ""], ["DueDate", $("dueDate").value || ""], []);
+      rows.push(["CompanyName", $("companyName").value || ""], ["CompanyVAT", $("companyVat").value || ""], ["CompanyEmail", $("companyEmail").value || ""], ["CompanyPhone", $("companyPhone").value || ""], ["CompanyAddress", $("companyAddress").value || ""], []);
+      rows.push(["ClientName", $("clientName").value || ""], ["ClientVAT", $("clientVat").value || ""], ["ClientEmail", $("clientEmail").value || ""], ["ClientPhone", $("clientPhone").value || ""], ["ClientAddress", $("clientAddress").value || ""], []);
+      rows.push(["Description","Qty","RateExcl","DiscountPct","VatPct","TotalExcl","TotalIncl"]);
+
+      lines.forEach(ln => {
+        const c = calcLine(ln);
+        rows.push([ln.desc || "", c.qty, c.rate, c.discPct, c.vatPct, c.netEx, c.netInc]);
+      });
+
+      const csv = rows.map(r => r.map(v => {
+        const s = String(v ?? "");
+        return /[",\n]/.test(s) ? `"${s.replaceAll('"','""')}"` : s;
+      }).join(",")).join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `${filenameBase()}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast("CSV exported ✅");
+    }
+
+    function exportExcel() {
+      if (!window.XLSX) return toast("Excel export library not loaded.", true);
+
+      const wsData = [
+        ["Invoice #", $("invNumber").value || ""],
+        ["Reference", $("invRef").value || ""],
+        ["Issue Date", $("issueDate").value || ""],
+        ["Due Date", $("dueDate").value || ""],
+        ["Currency", $("currency").value || ""],
+        [],
+        ["Description","Qty","RateExcl","DiscountPct","VatPct","TotalExcl","TotalIncl"],
+      ];
+
+      lines.forEach(ln => {
+        const c = calcLine(ln);
+        wsData.push([ln.desc || "", c.qty, c.rate, c.discPct, c.vatPct, c.netEx, c.netInc]);
+      });
+
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(wb, ws, "Invoice");
+      XLSX.writeFile(wb, `${filenameBase()}.xlsx`);
+      toast("Excel exported ✅");
+    }
+
+    function exportWord() {
+      // Simple HTML-to-Word download using .doc (works well for most clients)
+      const html = `
+        <html><head><meta charset="utf-8"></head><body>
+          ${buildPreviewHtml()}
+        </body></html>`;
+      const blob = new Blob(["\ufeff", html], { type: "application/msword" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `${filenameBase()}.doc`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast("Word exported ✅");
+    }
+
+    async function exportPDF() {
+      const card = document.getElementById("previewCard");
+      const modalWasHidden = $("previewModal").classList.contains("hidden");
+
+      // Ensure preview content exists (for clean render)
+      $("previewContent").innerHTML = buildPreviewHtml();
+      if (modalWasHidden) {
+        $("previewModal").classList.remove("hidden");
+        $("previewModal").classList.add("flex");
+        // keep visually off? It's modal; acceptable as user triggered export.
+      }
+
+      try {
+        const canvas = await html2canvas(card, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+        const imgData = canvas.toDataURL("image/png");
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgWidth = pageWidth;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight, undefined, "FAST");
+        heightLeft -= pageHeight;
+
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight, undefined, "FAST");
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save(`${filenameBase()}.pdf`);
+        toast("PDF exported ✅");
+      } catch (e) {
+        toast("PDF export failed. Try again.", true);
+      } finally {
+        if (modalWasHidden) {
+          closePreview();
+        }
+      }
+    }
+
+    // ---------- CSV Import ----------
+    function parseCSV(text) {
+      // Minimal CSV parser (handles quotes)
+      const rows = [];
+      let i = 0, field = "", row = [], inQuotes = false;
+
+      while (i < text.length) {
+        const c = text[i];
+        if (inQuotes) {
+          if (c === '"') {
+            if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+            inQuotes = false; i++; continue;
+          }
+          field += c; i++; continue;
+        } else {
+          if (c === '"') { inQuotes = true; i++; continue; }
+          if (c === ",") { row.push(field); field = ""; i++; continue; }
+          if (c === "\n") { row.push(field); rows.push(row); field = ""; row = []; i++; continue; }
+          if (c === "\r") { i++; continue; }
+          field += c; i++; continue;
+        }
+      }
+      row.push(field);
+      rows.push(row);
+      return rows;
+    }
+
+    function importCSV(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const rows = parseCSV(String(reader.result || ""));
+          const header = rows[0].map(h => (h || "").trim().toLowerCase());
+
+          const idx = (name) => header.indexOf(name.toLowerCase());
+          const iDesc = idx("description");
+          const iQty = idx("qty");
+          const iRate = idx("rateexcl");
+          const iDisc = idx("discountpct");
+          const iVat = idx("vatpct");
+
+          if (iDesc === -1 || iQty === -1 || iRate === -1) {
+            return toast("CSV missing required columns (Description, Qty, RateExcl).", true);
+          }
+
+          const imported = [];
+          for (let r = 1; r < rows.length; r++) {
+            const row = rows[r];
+            if (!row || row.length === 0) continue;
+            const desc = (row[iDesc] || "").trim();
+            if (!desc) continue;
+
+            imported.push({
+              desc,
+              qty: safeNumber(row[iQty]),
+              rate: safeNumber(row[iRate]),
+              disc: iDisc >= 0 ? safeNumber(row[iDisc]) : 0,
+              vat: iVat >= 0 ? safeNumber(row[iVat]) : safeNumber($("defaultVat").value),
+            });
+          }
+
+          if (!imported.length) return toast("No valid lines found in CSV.", true);
+          lines = imported;
+          renderLines();
+          toast(`Imported ${imported.length} line(s) ✅`);
+        } catch {
+          toast("Could not import CSV.", true);
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    }
+
+    // ---------- Logo Upload ----------
+    function handleLogoUpload(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        window.__companyLogoDataUrl = String(reader.result || "");
+        $("logoHint").textContent = "Logo uploaded (will export in preview)";
+        toast("Logo uploaded ✅");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ---------- Auto highlight current page in nav (for every page) ----------
+    function highlightActiveNav() {
+      const current = location.pathname.split("/").pop() || "index.html";
+      document.querySelectorAll("nav a[data-safe-link]").forEach(a => {
+        const href = a.getAttribute("href") || "";
+        if (href === current) a.classList.add("underline","font-semibold");
+        else a.classList.remove("underline","font-semibold");
+      });
+    }
+
+    // ---------- Init ----------
+    function init() {
+      // Defaults
+      if (!$("issueDate").value) $("issueDate").value = todayISO();
+      if (!$("invNumber").value) newInvoiceNumber();
+
+      setStatusBadge($("status").value);
+
+      // Start with one line
+      lines = [ newLine($("defaultVat").value) ];
+      renderLines();
+
+      // Events
+      $("btnAddLine").addEventListener("click", () => {
+        lines.push(newLine($("defaultVat").value));
+        renderLines();
+      });
+
+      $("btnNewInvoice").addEventListener("click", () => {
+        newInvoiceNumber();
+        toast("New invoice number generated ✅");
+      });
+
+      $("btnMarkPaid").addEventListener("click", () => {
+        $("status").value = "Paid";
+        setStatusBadge("Paid");
+        recalcTotals();
+        toast("Marked as PAID ✅");
+      });
+
+      $("status").addEventListener("change", () => setStatusBadge($("status").value));
+
+      ["currency","overallDiscount","defaultVat","shipping","amountPaid"].forEach(id => {
+        $(id).addEventListener("input", () => {
+          // Update default VAT only for new lines; existing lines unchanged.
+          renderLines();
+        });
+      });
+
+      $("btnPreview").addEventListener("click", openPreview);
+      $("btnClosePreview").addEventListener("click", closePreview);
+      $("previewModal").addEventListener("click", (e) => {
+        if (e.target === $("previewModal")) closePreview();
+      });
+
+      // Print
+      $("btnPrint").addEventListener("click", () => { openPreview(); setTimeout(() => window.print(), 150); });
+      $("btnPrint2").addEventListener("click", () => window.print());
+
+      // Exports (main + preview)
+      $("btnCsv").addEventListener("click", exportCSV);
+      $("btnExcel").addEventListener("click", exportExcel);
+      $("btnWord").addEventListener("click", exportWord);
+      $("btnPdf").addEventListener("click", exportPDF);
+
+      $("btnCsv2").addEventListener("click", exportCSV);
+      $("btnExcel2").addEventListener("click", exportExcel);
+      $("btnWord2").addEventListener("click", exportWord);
+      $("btnPdf2").addEventListener("click", exportPDF);
+
+      // Save / Load
+      $("btnSaveDraft").addEventListener("click", saveDraft);
+      $("btnLoadDraft").addEventListener("click", loadDraft);
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && e.key.toLowerCase() === "s") { e.preventDefault(); saveDraft(); }
+        if (e.ctrlKey && e.key.toLowerCase() === "p") { e.preventDefault(); openPreview(); setTimeout(() => window.print(), 150); }
+        if (e.key === "Escape") closePreview();
+      });
+
+      // CSV import
+      $("csvImport").addEventListener("change", (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (f) importCSV(f);
+        e.target.value = "";
+      });
+
+      // Logo upload
+      $("companyLogo").addEventListener("change", (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (f) handleLogoUpload(f);
+        e.target.value = "";
+      });
+
+      // Try auto-load last draft (non-intrusive): only if user already has one
+      if (localStorage.getItem(DRAFT_KEY)) {
+        loadDraft();
+      }
+
+      highlightActiveNav();
+    }
+
+    window.addEventListener("DOMContentLoaded", init);
+  </script>
+
+  <!-- If sync-nav.js exists, it can still run; this inline script already highlights active link. -->
 </body>
 </html>
-
-
-
-
