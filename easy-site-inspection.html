@@ -4,7 +4,7 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyINSPECT â€“ Site Inspection | Easy Suite</title>
+  <title>EasyINSPECT â€" Site Inspection | Easy Suite</title>
   
 
   <!-- Favicon -->
@@ -157,7 +157,7 @@
   <main class="container mx-auto px-4 py-6 print-wrap">
     <!-- Print title (only visible in print) -->
     <div class="print-title hidden">
-      <h1 class="text-2xl font-black">EasyINSPECT â€” Site Inspection Report</h1>
+      <h1 class="text-2xl font-black">EasyINSPECT â€" Site Inspection Report</h1>
       <p class="text-sm">Print-ready inspection report (manual style).</p>
       <div class="hr"></div>
     </div>
@@ -169,8 +169,8 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Site + inspection details â†’ 2) Choose checklist â†’ 3) Add findings + photos â†’ 4) Assign corrective actions â†’
-            5) Capture signatures â†’ 6) Print/export audit-ready report.
+            1) Site + inspection details â†' 2) Choose checklist â†' 3) Add findings + photos â†' 4) Assign corrective actions â†'
+            5) Capture signatures â†' 6) Print/export audit-ready report.
           </div>
         </div>
       </div>
@@ -298,11 +298,11 @@
             <input id="search" class="input pl-9" placeholder="Search checklist + findings  /" />
           </div>
           <select id="checklistPreset" class="select w-full md:w-56" title="Checklist preset">
-            <option value="hse">HSE â€“ General</option>
-            <option value="qa">QA â€“ Workmanship</option>
-            <option value="snag">Snag â€“ Practical</option>
-            <option value="electrical">Electrical â€“ Basic</option>
-            <option value="fire">Fire â€“ Basic</option>
+            <option value="hse">HSE â€" General</option>
+            <option value="qa">QA â€" Workmanship</option>
+            <option value="snag">Snag â€" Practical</option>
+            <option value="electrical">Electrical â€" Basic</option>
+            <option value="fire">Fire â€" Basic</option>
             <option value="custom">Custom</option>
           </select>
           <button class="btn btn-outline" id="btnLoadPreset"><i class="fa-solid fa-wand-magic-sparkles"></i> Load</button>
@@ -658,9 +658,9 @@
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
       const fmtShort = (iso)=>{
-        if(!iso) return "â€”";
+        if(!iso) return "â€"";
         const d = new Date(iso);
-        if(Number.isNaN(d.getTime())) return "â€”";
+        if(Number.isNaN(d.getTime())) return "â€"";
         return d.toLocaleDateString("en-ZA", { year:"numeric", month:"short", day:"2-digit" });
       };
 
@@ -876,7 +876,7 @@
         }).join("") || `<tr><td colspan="5" class="help">No checklist items match your search.</td></tr>`;
 
         // Linked checklist dropdown
-        const opts = [`<option value="">â€” None â€”</option>`]
+        const opts = [`<option value="">â€" None â€"</option>`]
           .concat(state.checklist.map(it=> `<option value="${it.id}">${escapeHtml(it.text)}</option>`));
         els.fLinkedChecklist.innerHTML = opts.join("");
 
@@ -902,15 +902,15 @@
         });
 
         els.findingsTbody.innerHTML = filtered.map(f=>{
-          const linked = f.linkedChecklistText ? f.linkedChecklistText : (f.linkedChecklistId ? "Linked item" : "â€”");
+          const linked = f.linkedChecklistText ? f.linkedChecklistText : (f.linkedChecklistId ? "Linked item" : "â€"");
           return `
             <tr>
               <td>
-                <div class="font-extrabold">${escapeHtml(f.title||"â€”")}</div>
+                <div class="font-extrabold">${escapeHtml(f.title||"â€"")}</div>
                 <div class="help">${escapeHtml(f.area||"")}</div>
               </td>
               <td>${riskBadge(f.risk)}</td>
-              <td>${escapeHtml(f.owner||"â€”")}</td>
+              <td>${escapeHtml(f.owner||"â€"")}</td>
               <td>${fmtShort(f.dueDate)}</td>
               <td>${escapeHtml(f.status||"Open")}</td>
               <td>${escapeHtml(linked)}</td>

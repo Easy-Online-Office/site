@@ -74,7 +74,7 @@ function main() {
   for (const file of htmlFiles) {
     const rel = path.relative(REPO_ROOT, file);
 
-    // Don’t validate the nav partial as a “page”
+    // Don't validate the nav partial as a "page"
     if (path.resolve(file) === path.resolve(NAV_TEMPLATE_PATH)) continue;
 
     const filename = path.basename(file).toLowerCase();

@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>EasyPO â€“ Purchase Order Generator | Easy Suite</title>
+  <title>EasyPO â€" Purchase Order Generator | Easy Suite</title>
   
 
   <!-- Favicon -->
@@ -153,7 +153,7 @@
         <span class="ml-0 lg:ml-4 text-xs text-gray-500">
           Autosave: <span class="font-bold" id="autosaveStatus">On</span>
           <span class="mx-2">â€¢</span>
-          <span class="mono" id="autosaveTime">â€”</span>
+          <span class="mono" id="autosaveTime">â€"</span>
         </span>
       </div>
     </div>
@@ -168,7 +168,7 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold">Quick flow</h3>
           <div class="text-sm mt-1" style="color:var(--muted)">
-            1) Company + supplier â†’ 2) Set PO details â†’ 3) Add/import items â†’ 4) Review totals + VAT â†’ 5) Approve + export/print.
+            1) Company + supplier â†' 2) Set PO details â†' 3) Add/import items â†' 4) Review totals + VAT â†' 5) Approve + export/print.
           </div>
         </div>
         <div class="hidden md:block">
@@ -588,10 +588,10 @@
 
           <div class="text-right">
             <div class="text-sm">
-              <div><span class="font-bold">PO Date:</span> <span id="poDatePrint">â€”</span></div>
-              <div><span class="font-bold">Required By:</span> <span id="requiredByPrint">â€”</span></div>
-              <div><span class="font-bold">Reference:</span> <span id="poRefPrint">â€”</span></div>
-              <div><span class="font-bold">Payment:</span> <span id="termsPrint">â€”</span></div>
+              <div><span class="font-bold">PO Date:</span> <span id="poDatePrint">â€"</span></div>
+              <div><span class="font-bold">Required By:</span> <span id="requiredByPrint">â€"</span></div>
+              <div><span class="font-bold">Reference:</span> <span id="poRefPrint">â€"</span></div>
+              <div><span class="font-bold">Payment:</span> <span id="termsPrint">â€"</span></div>
             </div>
           </div>
         </div>
@@ -599,25 +599,25 @@
         <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="border rounded-xl p-4" style="border-color:var(--border)">
             <div class="text-xs font-extrabold" style="color:var(--muted)">BUYER</div>
-            <div class="font-extrabold mt-1" id="cNamePrint">â€”</div>
-            <div class="text-sm mt-1 whitespace-pre-line" id="cAddressPrint">â€”</div>
-            <div class="text-sm mt-2" id="cContactPrint">â€”</div>
-            <div class="text-sm mt-1" id="cRegVatPrint">â€”</div>
+            <div class="font-extrabold mt-1" id="cNamePrint">â€"</div>
+            <div class="text-sm mt-1 whitespace-pre-line" id="cAddressPrint">â€"</div>
+            <div class="text-sm mt-2" id="cContactPrint">â€"</div>
+            <div class="text-sm mt-1" id="cRegVatPrint">â€"</div>
           </div>
 
           <div class="border rounded-xl p-4" style="border-color:var(--border)">
             <div class="text-xs font-extrabold" style="color:var(--muted)">SUPPLIER</div>
-            <div class="font-extrabold mt-1" id="sNamePrint">â€”</div>
-            <div class="text-sm mt-1 whitespace-pre-line" id="sAddressPrint">â€”</div>
-            <div class="text-sm mt-2" id="sContactPrint">â€”</div>
-            <div class="text-sm mt-1" id="sVatPrint">â€”</div>
+            <div class="font-extrabold mt-1" id="sNamePrint">â€"</div>
+            <div class="text-sm mt-1 whitespace-pre-line" id="sAddressPrint">â€"</div>
+            <div class="text-sm mt-2" id="sContactPrint">â€"</div>
+            <div class="text-sm mt-1" id="sVatPrint">â€"</div>
           </div>
         </div>
 
         <div class="mt-6 border rounded-xl p-4" style="border-color:var(--border)">
           <div class="text-xs font-extrabold" style="color:var(--muted)">DELIVERY</div>
-          <div class="text-sm mt-1"><span class="font-bold">Method:</span> <span id="deliveryMethodPrint">â€”</span></div>
-          <div class="text-sm mt-1 whitespace-pre-line" id="deliveryAddressPrint">â€”</div>
+          <div class="text-sm mt-1"><span class="font-bold">Method:</span> <span id="deliveryMethodPrint">â€"</span></div>
+          <div class="text-sm mt-1 whitespace-pre-line" id="deliveryAddressPrint">â€"</div>
         </div>
 
         <div class="mt-6 responsive-table">
@@ -640,38 +640,38 @@
         <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="border rounded-xl p-4" style="border-color:var(--border)">
             <div class="text-xs font-extrabold" style="color:var(--muted)">NOTES</div>
-            <div class="text-sm mt-2 whitespace-pre-line" id="notesPrint">â€”</div>
+            <div class="text-sm mt-2 whitespace-pre-line" id="notesPrint">â€"</div>
           </div>
 
           <div class="border rounded-xl p-4" style="border-color:var(--border)">
             <div class="text-xs font-extrabold" style="color:var(--muted)">TOTALS</div>
-            <div class="text-sm mt-2 flex justify-between"><span>Subtotal</span><span class="mono" id="subtotalPrint">â€”</span></div>
-            <div class="text-sm mt-1 flex justify-between"><span>Discount</span><span class="mono" id="discountPrint">â€”</span></div>
-            <div class="text-sm mt-1 flex justify-between"><span>VAT</span><span class="mono" id="vatPrint">â€”</span></div>
+            <div class="text-sm mt-2 flex justify-between"><span>Subtotal</span><span class="mono" id="subtotalPrint">â€"</span></div>
+            <div class="text-sm mt-1 flex justify-between"><span>Discount</span><span class="mono" id="discountPrint">â€"</span></div>
+            <div class="text-sm mt-1 flex justify-between"><span>VAT</span><span class="mono" id="vatPrint">â€"</span></div>
             <div class="text-sm mt-2 pt-2 border-t flex justify-between font-extrabold" style="border-color:var(--border)">
-              <span>Grand Total</span><span class="mono" id="grandPrint">â€”</span>
+              <span>Grand Total</span><span class="mono" id="grandPrint">â€"</span>
             </div>
             <div class="text-xs mt-2" style="color:var(--muted)">
-              VAT Mode: <span class="mono" id="vatModePrint">â€”</span>
+              VAT Mode: <span class="mono" id="vatModePrint">â€"</span>
             </div>
           </div>
         </div>
 
         <div class="mt-6 border rounded-xl p-4" style="border-color:var(--border)">
           <div class="text-xs font-extrabold" style="color:var(--muted)">TERMS</div>
-          <div class="text-sm mt-2 whitespace-pre-line" id="termsBodyPrint">â€”</div>
+          <div class="text-sm mt-2 whitespace-pre-line" id="termsBodyPrint">â€"</div>
         </div>
 
         <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="border rounded-xl p-4" style="border-color:var(--border)">
             <div class="text-xs font-extrabold" style="color:var(--muted)">Requested By</div>
-            <div class="text-sm mt-2" id="reqByPrint">â€”</div>
+            <div class="text-sm mt-2" id="reqByPrint">â€"</div>
             <div class="text-xs mt-8" style="color:var(--muted)">Signature</div>
             <div class="border-b mt-2" style="border-color:var(--border)"></div>
           </div>
           <div class="border rounded-xl p-4" style="border-color:var(--border)">
             <div class="text-xs font-extrabold" style="color:var(--muted)">Approved By</div>
-            <div class="text-sm mt-2" id="appByPrint">â€”</div>
+            <div class="text-sm mt-2" id="appByPrint">â€"</div>
             <div class="text-xs mt-8" style="color:var(--muted)">Signature</div>
             <div class="border-b mt-2" style="border-color:var(--border)"></div>
           </div>
@@ -701,7 +701,7 @@
       </div>
 
       <div class="mt-4 flex flex-col sm:flex-row gap-3">
-        <input id="templateName" class="flex-1 border rounded-lg p-2" placeholder="Template name (e.g., Supplier A â€“ monthly)" />
+        <input id="templateName" class="flex-1 border rounded-lg p-2" placeholder="Template name (e.g., Supplier A â€" monthly)" />
         <button class="btn btn-primary" id="btnConfirmSave"><i class="fa-solid fa-floppy-disk"></i> Save</button>
       </div>
 
@@ -723,7 +723,7 @@
 
   <script>
     /***********************
-     * EasyPO â€“ Full Offline App
+     * EasyPO â€" Full Offline App
      * - LocalStorage autosave
      * - Templates save/load/export/import
      * - Items table with add/edit/remove
@@ -744,7 +744,7 @@
     // DOM helpers
     const $ = (id) => document.getElementById(id);
     const fmtDate = (d) => {
-      if(!d) return "â€”";
+      if(!d) return "â€"";
       const dt = new Date(d + "T00:00:00");
       return dt.toLocaleDateString("en-ZA", { year:"numeric", month:"short", day:"2-digit" });
     };
@@ -941,8 +941,8 @@
       $("btnInsertStdNotes").addEventListener("click", () => {
         const std = [
           "Please quote PO number on your invoice and delivery note.",
-          "Delivery hours: Monâ€“Fri 08:00â€“16:30.",
-          "Contact on arrival: " + (state.company.phone || state.company.email || "â€”"),
+          "Delivery hours: Monâ€"Fri 08:00â€"16:30.",
+          "Contact on arrival: " + (state.company.phone || state.company.email || "â€""),
         ].join("\n");
         $("notes").value = std;
         state.notes = std;
@@ -1135,7 +1135,7 @@
             </select>
           </td>
           <td class="py-2 pr-2 align-top text-right font-extrabold">
-            <span class="mono" id="line_${it.id}">â€”</span>
+            <span class="mono" id="line_${it.id}">â€"</span>
           </td>
           <td class="py-2 pr-2 align-top no-print">
             <div class="flex gap-2">
@@ -1295,31 +1295,31 @@
       $("poStatusPrint").textContent = state.meta.status;
       $("poDatePrint").textContent = fmtDate(state.meta.poDate);
       $("requiredByPrint").textContent = fmtDate(state.meta.requiredBy);
-      $("poRefPrint").textContent = state.meta.poRef || "â€”";
-      $("termsPrint").textContent = state.meta.paymentTerms || "â€”";
+      $("poRefPrint").textContent = state.meta.poRef || "â€"";
+      $("termsPrint").textContent = state.meta.paymentTerms || "â€"";
 
-      $("cNamePrint").textContent = state.company.name || "â€”";
-      $("cAddressPrint").textContent = state.company.address || "â€”";
-      $("cContactPrint").textContent = [state.company.email, state.company.phone].filter(Boolean).join(" â€¢ ") || "â€”";
-      $("cRegVatPrint").textContent = state.company.regVat || "â€”";
+      $("cNamePrint").textContent = state.company.name || "â€"";
+      $("cAddressPrint").textContent = state.company.address || "â€"";
+      $("cContactPrint").textContent = [state.company.email, state.company.phone].filter(Boolean).join(" â€¢ ") || "â€"";
+      $("cRegVatPrint").textContent = state.company.regVat || "â€"";
 
-      $("sNamePrint").textContent = state.supplier.name || "â€”";
-      $("sAddressPrint").textContent = state.supplier.address || "â€”";
+      $("sNamePrint").textContent = state.supplier.name || "â€"";
+      $("sAddressPrint").textContent = state.supplier.address || "â€"";
       const sContact = [state.supplier.contact, state.supplier.email, state.supplier.phone].filter(Boolean).join(" â€¢ ");
-      $("sContactPrint").textContent = sContact || "â€”";
+      $("sContactPrint").textContent = sContact || "â€"";
       const sVatLine = [state.supplier.vat ? ("VAT: "+state.supplier.vat) : "", state.supplier.code ? ("Code: "+state.supplier.code) : ""].filter(Boolean).join(" â€¢ ");
-      $("sVatPrint").textContent = sVatLine || "â€”";
+      $("sVatPrint").textContent = sVatLine || "â€"";
 
-      $("deliveryMethodPrint").textContent = state.meta.deliveryMethod || "â€”";
-      $("deliveryAddressPrint").textContent = state.meta.deliveryAddress || "â€”";
+      $("deliveryMethodPrint").textContent = state.meta.deliveryMethod || "â€"";
+      $("deliveryAddressPrint").textContent = state.meta.deliveryAddress || "â€"";
 
-      $("notesPrint").textContent = state.notes || "â€”";
-      $("termsBodyPrint").textContent = state.terms || "â€”";
+      $("notesPrint").textContent = state.notes || "â€"";
+      $("termsBodyPrint").textContent = state.terms || "â€"";
 
-      $("reqByPrint").textContent = state.approvals.requestedBy || "â€”";
-      $("appByPrint").textContent = state.approvals.approvedBy || "â€”";
+      $("reqByPrint").textContent = state.approvals.requestedBy || "â€"";
+      $("appByPrint").textContent = state.approvals.approvedBy || "â€"";
 
-      $("vatModePrint").textContent = state.meta.vatMode || "â€”";
+      $("vatModePrint").textContent = state.meta.vatMode || "â€"";
 
       // Items for print
       const pb = $("printItemsBody");
@@ -1509,8 +1509,8 @@
 
     function addDemoItems(){
       const items = [
-        {description:"Microsoft 365 Business Premium â€“ Monthly (12 months)", sku:"M365-BP-M", qty:25, unitPrice: 626.09, vat:true},
-        {description:"Professional Services â€“ Setup & Onboarding", sku:"PS-ONBOARD", qty:1, unitPrice: 2500.00, vat:true},
+        {description:"Microsoft 365 Business Premium â€" Monthly (12 months)", sku:"M365-BP-M", qty:25, unitPrice: 626.09, vat:true},
+        {description:"Professional Services â€" Setup & Onboarding", sku:"PS-ONBOARD", qty:1, unitPrice: 2500.00, vat:true},
         {description:"Delivery / Courier", sku:"SHIP", qty:1, unitPrice: 0.00, vat:false},
       ].map(x => ({id:cryptoRandomId(), ...x}));
       state.items = items;
@@ -1684,7 +1684,7 @@
       state.items.forEach((it, idx) => {
         const q = Number(it.qty||0);
         const u = Number(it.unitPrice||0);
-        lines.push(`${idx+1}. ${it.description || "(no description)"}${it.sku ? " (SKU: "+it.sku+")":""} â€” Qty ${q} @ ${money(u, cur)} â€” VAT ${it.vat ? "Yes":"No"}`);
+        lines.push(`${idx+1}. ${it.description || "(no description)"}${it.sku ? " (SKU: "+it.sku+")":""} â€" Qty ${q} @ ${money(u, cur)} â€" VAT ${it.vat ? "Yes":"No"}`);
       });
       lines.push("");
       lines.push(`Subtotal: ${money(totals.subtotal ?? 0, cur)}`);
@@ -1825,7 +1825,7 @@
           if(act === "load"){
             // Load template data into current state
             const loaded = normalizeState(entry.data || {});
-            // Keep current PO number unless user wants to overwrite â€” best practice: keep current PO number
+            // Keep current PO number unless user wants to overwrite â€" best practice: keep current PO number
             loaded.meta.poNumber = state.meta.poNumber;
             state = loaded;
 
