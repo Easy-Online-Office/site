@@ -9,10 +9,15 @@ on:
       - "partials/nav.html"
       - "scripts/sync-nav.js"
       - "scripts/verify-nav.js"
+      - ".github/workflows/sync-nav.yml"
   workflow_dispatch: {}
 
 permissions:
   contents: write
+
+concurrency:
+  group: sync-nav-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   sync-nav:
@@ -20,13 +25,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
-      # 1) Generate canonical nav + sync into all html + inject marker
+      # Optional: show what exists (helps debugging case/path issues on Linux runners)
+      - name: Sanity check repo paths
+        run: |
+          echo "PWD: $(pwd)"
+          echo "Top-level files:"
+          ls -la
+          echo "scripts/:"
+          ls -la scripts || true
+          echo "partials/:"
+          ls -la partials || true
+
+      - name: Ensure required scripts exist
+        run: |
+          test -f scripts/sync-nav.js || (echo "Missing scripts/sync-nav.js" && exit 1)
+          test -f scripts/verify-nav.js || (echo "Missing scripts/verify-nav.js" && exit 1)
+
+      # 1) Generate canonical nav + sync into all html (also injects NAV_SYNC marker)
       - name: Generate + sync nav
         run: node scripts/sync-nav.js
 
