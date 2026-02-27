@@ -1,4 +1,4 @@
-name: Sync Nav Across HTML (Auto)
+name: Sync Nav Across HTML (Auto + Verify)
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
       - "**/*.html"
       - "partials/nav.html"
       - "scripts/sync-nav.js"
+      - "scripts/verify-nav.js"
   workflow_dispatch: {}
 
 permissions:
@@ -25,9 +26,15 @@ jobs:
         with:
           node-version: "20"
 
+      # 1) Generate canonical nav + sync into all html + inject marker
       - name: Generate + sync nav
         run: node scripts/sync-nav.js
 
+      # 2) Verify every html has marker + nav markers + exact canonical nav
+      - name: Verify nav compliance
+        run: node scripts/verify-nav.js
+
+      # 3) Commit changes if sync-nav modified files
       - name: Commit changes (if any)
         run: |
           if git status --porcelain | grep -q .; then
