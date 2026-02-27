@@ -1,0 +1,108 @@
+name: Easy Suite Quality Gate + Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+
+    env:
+      # Set your GitHub Pages base URL here
+      PUBLIC_SITE_URL: https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO
+      # Optional strict Carbon mode:
+      # CARBON_STRICT: "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci || npm install
+
+      # 1) Enforce nav + sync-nav.js across all HTML
+      - name: Enforce navigation
+        run: npm run nav:enforce
+
+      # 2) Generate sitemap.xml and robots.txt
+      - name: Generate sitemap + robots
+        run: npm run sitemap:generate
+
+      # 3) Tailwind class consistency enforcement
+      #    If you want auto-fix, replace format:check with format:write
+      - name: Prettier check (Tailwind ordering)
+        run: npm run format:check
+
+      # 4) HTML lint
+      - name: HTMLHint validation
+        run: npm run html:validate
+
+      # 5) SEO meta validation
+      - name: SEO validation
+        run: npm run seo:validate
+
+      # 6) Carbon compliance validation
+      - name: Carbon compliance validation
+        run: npm run carbon:validate
+
+      # 7) Start local server and run broken link checks + Lighthouse
+      - name: Start server (background)
+        run: |
+          npx http-server -p 8080 -c-1 &
+          sleep 2
+
+      - name: Broken link detection
+        run: |
+          SITE_URL="http://localhost:8080/index.html" npm run links:check
+
+      - name: Lighthouse CI
+        run: npm run lhci
+
+      # 8) Commit auto-generated changes (nav + sitemap + robots) if needed
+      - name: Commit changes if modified
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name "easy-suite-bot"
+          git config --global user.email "bot@easy-suite.local"
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: enforce nav + regenerate sitemap"
+          git push
+
+      # Upload artifact for PR inspection
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: |
+            ./*.html
+            ./scripts
+            ./sitemap.xml
+            ./robots.txt
+
+  deploy:
+    needs: quality-gate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
