@@ -1,0 +1,11 @@
+{
+  "*.{html,css,js,json,md,yml,yaml}": [
+    "prettier -w"
+  ],
+  "*.js": [
+    "eslint --max-warnings=0"
+  ],
+  "*.html": [
+    "node tools/validate-html.js"
+  ]
+}
