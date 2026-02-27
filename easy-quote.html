@@ -39,11 +39,7 @@
   <div id="easyNavMount" class="no-print"></div>
   <div id="easyHeaderMount" class="no-print"></div>
 <!-- HEADER:START --><!-- HEADER:END --><!-- NAVIGATION -->
-<!-- NAV:START --><div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasyJC</h1>
-        <p class="text-sm text-gray-500">Job Card Manager</p>
-      </div>
-    </div>
+<!-- NAV:START --></div>
   </div>
 </div>
 <!-- NAV:END -->
@@ -73,7 +69,7 @@
     <select id="currency" onchange="calculate()" class="border px-2 py-1 rounded">
       <option value="R">ZAR (R)</option>
       <option value="$">USD ($)</option>
-      <option value="â‚¬">EUR (â‚¬)</option>
+      <option value="Ã¢â€šÂ¬">EUR (Ã¢â€šÂ¬)</option>
     </select>
   </div>
 </div>
@@ -195,7 +191,7 @@ function addRow(description="", qty=1, unit=0, disc=0) {
     </td>
     <td class="border p-1 text-right total">0.00</td>
     <td class="border p-1 text-center no-print">
-      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">Ã-</button>
+      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">Ãƒ-</button>
     </td>
   `;
 

@@ -4,7 +4,7 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyINSPECT â€" Site Inspection | Easy Suite</title>
+  <title>EasyINSPECT Ã¢â‚¬" Site Inspection | Easy Suite</title>
   
 
   <!-- Favicon -->
@@ -112,11 +112,7 @@
   <div id="easyNavMount" class="no-print"></div>
   <div id="easyHeaderMount" class="no-print"></div>
 <!-- HEADER:START --><!-- HEADER:END --><!-- Top Nav -->
-  <!-- NAV:START --><div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasyJC</h1>
-        <p class="text-sm text-gray-500">Job Card Manager</p>
-      </div>
-    </div>
+  <!-- NAV:START --></div>
   </div>
 </div>
 <!-- NAV:END -->
@@ -157,7 +153,7 @@
   <main class="container mx-auto px-4 py-6 print-wrap">
     <!-- Print title (only visible in print) -->
     <div class="print-title hidden">
-      <h1 class="text-2xl font-black">EasyINSPECT â€" Site Inspection Report</h1>
+      <h1 class="text-2xl font-black">EasyINSPECT Ã¢â‚¬" Site Inspection Report</h1>
       <p class="text-sm">Print-ready inspection report (manual style).</p>
       <div class="hr"></div>
     </div>
@@ -169,8 +165,8 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Site + inspection details â†' 2) Choose checklist â†' 3) Add findings + photos â†' 4) Assign corrective actions â†'
-            5) Capture signatures â†' 6) Print/export audit-ready report.
+            1) Site + inspection details Ã¢â€ ' 2) Choose checklist Ã¢â€ ' 3) Add findings + photos Ã¢â€ ' 4) Assign corrective actions Ã¢â€ '
+            5) Capture signatures Ã¢â€ ' 6) Print/export audit-ready report.
           </div>
         </div>
       </div>
@@ -189,7 +185,7 @@
           </div>
           <span class="badge no-print" title="Keyboard shortcuts">
             <i class="fa-solid fa-keyboard"></i>
-            <span class="mono">D</span> dark â€¢ <span class="mono">/</span> search â€¢ <span class="mono">Ctrl+S</span> templates
+            <span class="mono">D</span> dark Ã¢â‚¬Â¢ <span class="mono">/</span> search Ã¢â‚¬Â¢ <span class="mono">Ctrl+S</span> templates
           </span>
         </div>
         <div class="card-b grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -298,11 +294,11 @@
             <input id="search" class="input pl-9" placeholder="Search checklist + findings  /" />
           </div>
           <select id="checklistPreset" class="select w-full md:w-56" title="Checklist preset">
-            <option value="hse">HSE â€" General</option>
-            <option value="qa">QA â€" Workmanship</option>
-            <option value="snag">Snag â€" Practical</option>
-            <option value="electrical">Electrical â€" Basic</option>
-            <option value="fire">Fire â€" Basic</option>
+            <option value="hse">HSE Ã¢â‚¬" General</option>
+            <option value="qa">QA Ã¢â‚¬" Workmanship</option>
+            <option value="snag">Snag Ã¢â‚¬" Practical</option>
+            <option value="electrical">Electrical Ã¢â‚¬" Basic</option>
+            <option value="fire">Fire Ã¢â‚¬" Basic</option>
             <option value="custom">Custom</option>
           </select>
           <button class="btn btn-outline" id="btnLoadPreset"><i class="fa-solid fa-wand-magic-sparkles"></i> Load</button>
@@ -329,7 +325,7 @@
           Results: <span class="badge ok"><i class="fa-solid fa-check"></i> Pass</span>
           <span class="badge warn"><i class="fa-solid fa-minus"></i> N/A</span>
           <span class="badge bad"><i class="fa-solid fa-xmark"></i> Fail</span>
-          â€¢ Failing items can be linked to a finding for corrective action tracking.
+          Ã¢â‚¬Â¢ Failing items can be linked to a finding for corrective action tracking.
         </div>
       </div>
     </section>
@@ -429,7 +425,7 @@
           </div>
 
           <div class="help mt-3">
-            Tip: use findings for audit trails. â€œClosedâ€ should include closure evidence in photos or notes.
+            Tip: use findings for audit trails. Ã¢â‚¬Å“ClosedÃ¢â‚¬Â should include closure evidence in photos or notes.
           </div>
         </div>
       </div>
@@ -538,7 +534,7 @@
 
     <footer class="mt-10 mb-6 text-center text-xs text-gray-500 no-print">
       <div class="font-bold">EasyINSPECT</div>
-      <div>Offline-first inspections â€¢ Checklists â€¢ Findings â€¢ Photos â€¢ Signatures â€¢ Templates â€¢ Print-ready reports</div>
+      <div>Offline-first inspections Ã¢â‚¬Â¢ Checklists Ã¢â‚¬Â¢ Findings Ã¢â‚¬Â¢ Photos Ã¢â‚¬Â¢ Signatures Ã¢â‚¬Â¢ Templates Ã¢â‚¬Â¢ Print-ready reports</div>
     </footer>
   </main>
 
@@ -658,9 +654,9 @@
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
       const fmtShort = (iso)=>{
-        if(!iso) return "â€"";
+        if(!iso) return "Ã¢â‚¬"";
         const d = new Date(iso);
-        if(Number.isNaN(d.getTime())) return "â€"";
+        if(Number.isNaN(d.getTime())) return "Ã¢â‚¬"";
         return d.toLocaleDateString("en-ZA", { year:"numeric", month:"short", day:"2-digit" });
       };
 
@@ -876,7 +872,7 @@
         }).join("") || `<tr><td colspan="5" class="help">No checklist items match your search.</td></tr>`;
 
         // Linked checklist dropdown
-        const opts = [`<option value="">â€" None â€"</option>`]
+        const opts = [`<option value="">Ã¢â‚¬" None Ã¢â‚¬"</option>`]
           .concat(state.checklist.map(it=> `<option value="${it.id}">${escapeHtml(it.text)}</option>`));
         els.fLinkedChecklist.innerHTML = opts.join("");
 
@@ -902,15 +898,15 @@
         });
 
         els.findingsTbody.innerHTML = filtered.map(f=>{
-          const linked = f.linkedChecklistText ? f.linkedChecklistText : (f.linkedChecklistId ? "Linked item" : "â€"");
+          const linked = f.linkedChecklistText ? f.linkedChecklistText : (f.linkedChecklistId ? "Linked item" : "Ã¢â‚¬"");
           return `
             <tr>
               <td>
-                <div class="font-extrabold">${escapeHtml(f.title||"â€"")}</div>
+                <div class="font-extrabold">${escapeHtml(f.title||"Ã¢â‚¬"")}</div>
                 <div class="help">${escapeHtml(f.area||"")}</div>
               </td>
               <td>${riskBadge(f.risk)}</td>
-              <td>${escapeHtml(f.owner||"â€"")}</td>
+              <td>${escapeHtml(f.owner||"Ã¢â‚¬"")}</td>
               <td>${fmtShort(f.dueDate)}</td>
               <td>${escapeHtml(f.status||"Open")}</td>
               <td>${escapeHtml(linked)}</td>
@@ -1454,7 +1450,7 @@
             <tr>
               <td>
                 <div class="font-extrabold">${escapeHtml(t.name)}</div>
-                <div class="help">${escapeHtml(t.app||"EasyINSPECT")} â€¢ ${escapeHtml(t.version||"")}</div>
+                <div class="help">${escapeHtml(t.app||"EasyINSPECT")} Ã¢â‚¬Â¢ ${escapeHtml(t.version||"")}</div>
               </td>
               <td>${fmtShort(t.updatedAt)}</td>
               <td class="no-print">

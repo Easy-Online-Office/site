@@ -4,7 +4,7 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasySTAT â€" Statement Generator</title>
+  <title>EasySTAT Ã¢â‚¬" Statement Generator</title>
   
 
   <!-- Favicon -->
@@ -81,11 +81,7 @@
   <div id="easyNavMount" class="no-print"></div>
   <div id="easyHeaderMount" class="no-print"></div>
 <!-- HEADER:START --><!-- HEADER:END --><!-- NAV -->
-  <!-- NAV:START --><div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasyJC</h1>
-        <p class="text-sm text-gray-500">Job Card Manager</p>
-      </div>
-    </div>
+  <!-- NAV:START --></div>
   </div>
 </div>
 <!-- NAV:END -->
@@ -134,7 +130,7 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Company + customer â†' 2) Set statement period + opening balance â†' 3) Add/import transactions â†' 4) Review running balance + ageing â†' 5) Preview/print/export.
+            1) Company + customer Ã¢â€ ' 2) Set statement period + opening balance Ã¢â€ ' 3) Add/import transactions Ã¢â€ ' 4) Review running balance + ageing Ã¢â€ ' 5) Preview/print/export.
           </div>
         </div>
       </div>
@@ -291,8 +287,8 @@
               <select id="currency" class="w-full border border-gray-200 rounded-lg px-3 py-2">
                 <option value="ZAR" selected>ZAR (R)</option>
                 <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (â‚¬)</option>
-                <option value="GBP">GBP (Â£)</option>
+                <option value="EUR">EUR (Ã¢â€šÂ¬)</option>
+                <option value="GBP">GBP (Ã‚Â£)</option>
               </select>
               <p class="text-xs text-slate-500 mt-1">Formatting adapts; no FX conversion.</p>
             </div>
@@ -409,7 +405,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div class="lg:col-span-2">
           <h2 class="text-lg font-extrabold mb-2"><i class="fa-solid fa-chart-line text-blue-600 mr-2"></i>Summary</h2>
-          <p class="text-sm text-slate-500">Closing balance equals opening balance plus (debits âˆ' credits) within the period.</p>
+          <p class="text-sm text-slate-500">Closing balance equals opening balance plus (debits Ã¢Ë†' credits) within the period.</p>
 
           <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="border border-gray-200 rounded-lg p-4">
@@ -451,15 +447,15 @@
                   <span id="aCurrent" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">1â€"30</span>
+                  <span class="font-bold text-slate-700">1Ã¢â‚¬"30</span>
                   <span id="a30" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">31â€"60</span>
+                  <span class="font-bold text-slate-700">31Ã¢â‚¬"60</span>
                   <span id="a60" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">61â€"90</span>
+                  <span class="font-bold text-slate-700">61Ã¢â‚¬"90</span>
                   <span id="a90" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
@@ -629,9 +625,9 @@
             <div class="text-xs text-slate-500 font-black mb-2">AGEING SUMMARY (EST.)</div>
             <div class="text-sm space-y-2">
               <div class="flex justify-between"><span class="font-bold text-slate-700">Current</span><span id="tplACurrent" class="mono font-extrabold"></span></div>
-              <div class="flex justify-between"><span class="font-bold text-slate-700">1â€"30</span><span id="tplA30" class="mono font-extrabold"></span></div>
-              <div class="flex justify-between"><span class="font-bold text-slate-700">31â€"60</span><span id="tplA60" class="mono font-extrabold"></span></div>
-              <div class="flex justify-between"><span class="font-bold text-slate-700">61â€"90</span><span id="tplA90" class="mono font-extrabold"></span></div>
+              <div class="flex justify-between"><span class="font-bold text-slate-700">1Ã¢â‚¬"30</span><span id="tplA30" class="mono font-extrabold"></span></div>
+              <div class="flex justify-between"><span class="font-bold text-slate-700">31Ã¢â‚¬"60</span><span id="tplA60" class="mono font-extrabold"></span></div>
+              <div class="flex justify-between"><span class="font-bold text-slate-700">61Ã¢â‚¬"90</span><span id="tplA90" class="mono font-extrabold"></span></div>
               <div class="flex justify-between"><span class="font-bold text-slate-700">90+</span><span id="tplA120" class="mono font-extrabold"></span></div>
               <div class="flex justify-between border-t border-gray-200 pt-2 text-base"><span class="font-black text-slate-900">Total</span><span id="tplATotal" class="mono font-black"></span></div>
             </div>
@@ -647,7 +643,7 @@
         </div>
 
         <div class="mt-6 text-xs text-slate-500 text-center">
-          Generated with EasySTAT â€¢ Print-friendly output
+          Generated with EasySTAT Ã¢â‚¬Â¢ Print-friendly output
         </div>
       </div>
     </div>
@@ -669,8 +665,8 @@
   function symbolForCurrency(cur){
     switch(cur){
       case "USD": return "$";
-      case "EUR": return "â‚¬";
-      case "GBP": return "Â£";
+      case "EUR": return "Ã¢â€šÂ¬";
+      case "GBP": return "Ã‚Â£";
       case "ZAR":
       default: return "R";
     }
@@ -932,7 +928,7 @@
     const issues = [];
 
     if (txWB.length === 0 && Math.abs(opening) < 0.00001) {
-      issues.push({ type:"warn", text:"No transactions and opening balance is 0.00 â€" your statement will be empty." });
+      issues.push({ type:"warn", text:"No transactions and opening balance is 0.00 Ã¢â‚¬" your statement will be empty." });
     }
 
     // date sanity checks
@@ -1099,7 +1095,7 @@
 
     const pf = $("periodFrom").value;
     const pt = $("periodTo").value;
-    tpl.querySelector("#tplPeriod").textContent = (pf && pt) ? `${formatDateISO(pf)} â€" ${formatDateISO(pt)}` : "";
+    tpl.querySelector("#tplPeriod").textContent = (pf && pt) ? `${formatDateISO(pf)} Ã¢â‚¬" ${formatDateISO(pt)}` : "";
     tpl.querySelector("#tplStmtRef").textContent = $("statementReference").value || "";
 
     // client
