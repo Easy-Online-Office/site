@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en-ZA" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Easy Suite Dashboard | Quotes, Invoices, Orders, Receipts, CRM</title>
+  <meta name="description" content="Easy Suite dashboard for quotes, invoices, purchase orders, sales orders, receipts, statements, job cards, payroll, inventory, and CRM. Fast, responsive, local-first business tools." />
+  <meta name="keywords" content="Easy Suite, dashboard, quotes, invoices, purchase orders, sales orders, receipts, statements, job cards, payroll, inventory, CRM, local-first business tools" />
+  <meta name="author" content="Easy Suite" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline'; font-src 'self' https://cdnjs.cloudflare.com data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_ZA" />
+  <meta property="og:title" content="Easy Suite Dashboard" />
+  <meta property="og:description" content="Launch quotes, invoices, orders, receipts, payroll, inventory, CRM, and more from one fast, responsive dashboard." />
+  <meta property="og:image" content="logo.png" />
+  <meta property="og:image:alt" content="Easy Suite dashboard preview" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Easy Suite Dashboard" />
+  <meta name="twitter:description" content="Fast, responsive, local-first business document tools from one dashboard." />
+  <meta name="twitter:image" content="logo.png" />
+
+  <link rel="icon" href="icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" as="style" />
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --surface: rgba(255,255,255,.92);
+      --surface-strong: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --border: rgba(229,231,235,.95);
+      --primary: #2563eb;
+      --primary-strong: #1d4ed8;
+      --ring: rgba(37,99,235,.22);
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+    }
+
+    .dark {
+      --bg: #0b1220;
+      --surface: rgba(15,23,42,.86);
+      --surface-strong: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --border: rgba(148,163,184,.18);
+      --primary: #60a5fa;
+      --primary-strong: #93c5fd;
+      --ring: rgba(96,165,250,.2);
+      --shadow: 0 20px 55px rgba(2, 6, 23, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 28%), var(--bg);
+      color: var(--text);
+      text-rendering: optimizeLegibility;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -3rem;
+      z-index: 1000;
+      background: var(--primary);
+      color: #fff;
+      padding: .75rem 1rem;
+      border-radius: .75rem;
+      font-weight: 800;
+      transition: top .2s ease;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    .surface {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .module-card {
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      content-visibility: auto;
+      contain-intrinsic-size: 320px;
+    }
+    .module-card:hover,
+    .module-card:focus-within {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+    }
+
+    .dark .module-card:hover,
+    .dark .module-card:focus-within {
+      box-shadow: 0 20px 50px rgba(2, 6, 23, 0.45);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .75rem;
+      font-weight: 800;
+      padding: .3rem .65rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .text-adaptive { color: var(--text) !important; }
+    .muted-adaptive { color: var(--muted) !important; }
+    .surface-strong { background: var(--surface-strong) !important; }
+    .border-adaptive { border-color: var(--border) !important; }
+
+    .btn-ui,
+    .input-ui,
+    .tag-btn,
+    .pin-btn,
+    .action-link {
+      transition: background-color .16s ease, color .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+
+    .input-ui,
+    .btn-ui,
+    .tag-btn,
+    .pin-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-strong);
+      color: var(--text);
+    }
+
+    .input-ui::placeholder { color: var(--muted); }
+
+    .input-ui:focus,
+    .btn-ui:focus,
+    .tag-btn:focus,
+    .pin-btn:focus,
+    a:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    .primary-btn {
+      background: var(--primary);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .primary-btn:hover { background: var(--primary-strong); }
+    .pin-btn:hover,
+    .btn-ui:hover,
+    .tag-btn:hover { transform: translateY(-1px); }
+
+    .tag-btn[aria-pressed="true"] {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--ring);
+      color: var(--primary);
+      font-weight: 900;
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .result-count { min-height: 1.5rem; }
+
+    @media (max-width: 767px) {
+      .nav-links {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: .25rem;
+      }
+      .nav-links::-webkit-scrollbar { height: 6px; }
+      .nav-links::-webkit-scrollbar-thumb { background: rgba(255,255,255,.35); border-radius: 999px; }
+      .nav-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+      .nav-actions > * { flex: 1 1 auto; }
+      .nav-actions input { min-width: 0; }
+      .hero-actions { align-items: stretch; }
+      .hero-actions > * { width: 100%; justify-content: center; }
+      .hero-tip { margin-left: 0 !important; width: 100%; justify-content: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Easy Suite Dashboard",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "en-ZA",
+      "description": "Local-first dashboard for quotes, invoices, purchase orders, sales orders, receipts, statements, job cards, payroll, inventory, and CRM.",
+      "image": "logo.png",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "ZAR"
+      }
+    }
+  </script>
+</head>
+
+<body class="min-h-screen antialiased">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <script>
+    (() => {
+      try {
+        const storedTheme = localStorage.getItem('easySuite.theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = storedTheme || (prefersDark ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      } catch (_) {}
+    })();
+  </script>
+
+  <nav class="bg-blue-600 text-white py-4" aria-label="Primary navigation">
+    <div class="container mx-auto px-4 flex flex-wrap items-center gap-3 md:gap-4">
+      <a href="index.html" class="font-black text-xl mr-1 flex items-center gap-2" aria-label="Easy Suite dashboard home">
+        <span aria-hidden="true"><i class="fa-solid fa-grid-2"></i></span>
+        <span>Easy&nbsp;Suite</span>
+      </a>
+
+      <div class="nav-links flex items-center gap-4 text-sm sm:text-base font-bold" aria-label="Modules">
+        <a href="easy-quote.html" data-module-link="quote" class="hover:underline">Quote</a>
+        <a href="easy-invoice.html" data-module-link="invoice" class="hover:underline">Invoice</a>
+        <a href="easy-purchase-order.html" data-module-link="po" class="hover:underline">Purchase&nbsp;Order</a>
+        <a href="easy-sales-order.html" data-module-link="so" class="hover:underline">Sales&nbsp;Order</a>
+        <a href="easy-receipt.html" data-module-link="receipt" class="hover:underline">Receipt</a>
+        <a href="easy-statement.html" data-module-link="statement" class="hover:underline">Statement</a>
+        <a href="easy-job-card.html" data-module-link="job" class="hover:underline">Job&nbsp;Card</a>
+        <a href="easy-payroll.html" data-module-link="payroll" class="hover:underline">Payroll</a>
+        <a href="easy-inventory.html" data-module-link="inventory" class="hover:underline">Inventory</a>
+        <a href="easy-crm.html" data-module-link="crm" class="hover:underline">CRM</a>
+      </div>
+
+      <div class="nav-actions ml-auto flex flex-wrap items-center gap-2 w-full md:w-auto md:justify-end">
+        <span id="onlineBadge" class="badge bg-gray-100 text-gray-700" aria-live="polite"><i class="fa-solid fa-wifi"></i> Online</span>
+
+        <button id="themeBtn" class="btn-ui px-3 py-2 rounded-lg font-extrabold" type="button" title="Toggle colour theme" aria-label="Toggle colour theme"></button>
+
+        <label for="search" class="sr-only">Search modules</label>
+        <input id="search" type="search" inputmode="search" autocomplete="off" spellcheck="false"
+               placeholder="Search modules…  (/ or Ctrl+K)"
+               class="input-ui px-3 py-2 rounded-lg w-full md:w-72 max-w-full" />
+      </div>
+    </div>
+  </nav>
+
+  <header class="container mx-auto px-4 py-8 sm:py-10">
+    <section class="surface rounded-3xl p-6 sm:p-8 relative overflow-hidden" aria-labelledby="hero-title">
+      <div class="hero-orb -right-16 -top-16 h-64 w-64 bg-blue-100 opacity-70"></div>
+      <div class="hero-orb -left-20 -bottom-20 h-72 w-72 bg-indigo-100 opacity-70"></div>
+
+      <div class="relative">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <span class="badge bg-blue-100 text-blue-700">Local-first</span>
+          <span class="badge bg-gray-100 text-gray-700">Print-ready documents</span>
+          <span class="badge bg-green-100 text-green-700">Responsive dashboard</span>
+        </div>
+
+        <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-adaptive mb-3">Welcome to Easy Suite</h1>
+        <p class="muted-adaptive text-base sm:text-lg max-w-3xl">
+          Launch quotes, invoices, orders, receipts, statements, payroll, inventory, and CRM tools in seconds.
+          Search instantly, pin your favourites, and resume recent work without sending data to a server.
+        </p>
+
+        <div class="hero-actions mt-6 flex flex-wrap gap-3">
+          <a href="easy-quote.html" data-module-link="quote" class="action-link primary-btn px-5 py-3 rounded-xl font-black inline-flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i> New Quote
+          </a>
+          <a href="easy-invoice.html" data-module-link="invoice" class="action-link px-5 py-3 rounded-xl font-black inline-flex items-center gap-2 bg-green-600 text-white hover:bg-green-700">
+            <i class="fa-solid fa-plus"></i> New Invoice
+          </a>
+          <a href="easy-receipt.html" data-module-link="receipt" class="action-link px-5 py-3 rounded-xl font-black inline-flex items-center gap-2 bg-teal-600 text-white hover:bg-teal-700">
+            <i class="fa-solid fa-plus"></i> New Receipt
+          </a>
+
+          <div class="hero-tip ml-auto inline-flex items-center gap-2 muted-adaptive font-extrabold text-sm sm:text-base">
+            <span>Tip:</span>
+            <span class="px-2 py-1 rounded-lg border border-adaptive surface-strong">/</span>
+            <span>to search</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </header>
+
+  <main id="main-content" class="container mx-auto px-4 pb-12">
+    <section id="pinnedWrap" class="hidden mb-10" aria-labelledby="pinned-title">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+        <h2 id="pinned-title" class="text-2xl font-black text-adaptive">Pinned</h2>
+        <p class="muted-adaptive font-extrabold text-sm sm:text-base">Pin modules with the thumbtack button.</p>
+      </div>
+      <div id="pinnedGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <section id="recentWrap" class="hidden mb-10" aria-labelledby="recent-title">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <h2 id="recent-title" class="text-2xl font-black text-adaptive">Recently used</h2>
+        <button id="clearRecentBtn" class="btn-ui px-3 py-2 rounded-lg font-extrabold text-sm sm:text-base" type="button">Clear recent items</button>
+      </div>
+      <div id="recentList" class="flex flex-wrap gap-3"></div>
+    </section>
+
+    <section class="mb-6" aria-labelledby="tags-title">
+      <h2 id="tags-title" class="text-xl font-black text-adaptive mb-3">Filter by tags</h2>
+      <div id="tagBar" class="flex flex-wrap gap-2"></div>
+    </section>
+
+    <section aria-labelledby="modules-title">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+        <div>
+          <h2 id="modules-title" class="text-2xl font-black text-adaptive">All modules</h2>
+          <p id="resultCount" class="result-count muted-adaptive font-extrabold text-sm mt-1" aria-live="polite"></p>
+        </div>
+        <p class="muted-adaptive font-extrabold text-sm sm:text-base">Search by title, description, or tag.</p>
+      </div>
+
+      <div id="modulesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <footer class="mt-12 text-center muted-adaptive font-extrabold text-sm sm:text-base">
+      Easy Suite • Local-first tools • Designed for speed
+    </footer>
+  </main>
+
+  <script>
+    const LS_THEME = 'easySuite.theme';
+    const LS_PINNED = 'easySuite.pinnedModules';
+    const LS_RECENT = 'easySuite.recentModules';
+
+    const MODULES = [
+      { id:'quote', name:'Easy Quote', href:'easy-quote.html', icon:'fa-file-lines', color:'bg-blue-100 text-blue-600', tags:['sales','pricing','customer'], desc:'Create and manage quotes quickly with itemised line entries and totals.' },
+      { id:'invoice', name:'Easy Invoice', href:'easy-invoice.html', icon:'fa-file-invoice-dollar', color:'bg-green-100 text-green-600', tags:['billing','tax','vat'], desc:'Generate professional invoices with tax, discounts, templates, and export options.' },
+      { id:'po', name:'Easy Purchase Order', href:'easy-purchase-order.html', icon:'fa-shopping-cart', color:'bg-purple-100 text-purple-600', tags:['procurement','supplier'], desc:'Create purchase orders for suppliers and track purchasing activity.' },
+      { id:'so', name:'Easy Sales Order', href:'easy-sales-order.html', icon:'fa-shopping-bag', color:'bg-yellow-100 text-yellow-700', tags:['orders','fulfilment'], desc:'Record customer orders and manage fulfilment from one module.' },
+      { id:'receipt', name:'Easy Receipt', href:'easy-receipt.html', icon:'fa-receipt', color:'bg-teal-100 text-teal-700', tags:['payments','proof'], desc:'Issue receipts and maintain a record of payments received.' },
+      { id:'statement', name:'Easy Statement', href:'easy-statement.html', icon:'fa-file-contract', color:'bg-red-100 text-red-600', tags:['accounts','aging'], desc:'Generate account statements summarising transactions over a selected period.' },
+      { id:'job', name:'Easy Job Card', href:'easy-job-card.html', icon:'fa-briefcase', color:'bg-orange-100 text-orange-700', tags:['service','workshop'], desc:'Manage service jobs with tasks, materials, labour logs, and progress tracking.' },
+      { id:'payroll', name:'Easy Payroll', href:'easy-payroll.html', icon:'fa-money-bill-wave', color:'bg-indigo-100 text-indigo-700', tags:['hr','payslip'], desc:'Prepare payroll summaries including earnings, deductions, and net pay.' },
+      { id:'inventory', name:'Easy Inventory', href:'easy-inventory.html', icon:'fa-boxes-stacked', color:'bg-pink-100 text-pink-700', tags:['stock','warehouse'], desc:'Track stock levels, inventory value, categories, and product information.' },
+      { id:'crm', name:'Easy CRM', href:'easy-crm.html', icon:'fa-users', color:'bg-gray-100 text-gray-700', tags:['customers','pipeline'], desc:'Maintain customer relationships, contacts, follow-ups, and pipeline activity.' }
+    ];
+
+    function safeJsonParse(value, fallback = []) {
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function getPinned() {
+      return safeJsonParse(localStorage.getItem(LS_PINNED), []);
+    }
+
+    function setPinned(items) {
+      localStorage.setItem(LS_PINNED, JSON.stringify(items));
+    }
+
+    function getRecent() {
+      return safeJsonParse(localStorage.getItem(LS_RECENT), []);
+    }
+
+    function addRecent(id) {
+      const existing = getRecent().filter(item => item !== id);
+      const updated = [id, ...existing].slice(0, 6);
+      localStorage.setItem(LS_RECENT, JSON.stringify(updated));
+    }
+
+    function applyTheme(theme) {
+      const isDark = theme === 'dark';
+      document.documentElement.classList.toggle('dark', isDark);
+      localStorage.setItem(LS_THEME, isDark ? 'dark' : 'light');
+      const themeBtn = document.getElementById('themeBtn');
+      if (themeBtn) {
+        themeBtn.innerHTML = isDark
+          ? '<i class="fa-solid fa-sun"></i><span class="hidden sm:inline">Light</span>'
+          : '<i class="fa-solid fa-moon"></i><span class="hidden sm:inline">Dark</span>';
+      }
+    }
+
+    function toggleTheme() {
+      const current = localStorage.getItem(LS_THEME) || 'light';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    }
+
+    function moduleCard(module) {
+      const isPinned = new Set(getPinned()).has(module.id);
+
+      return `
+        <article class="module-card surface surface-strong rounded-2xl p-5 flex flex-col border-adaptive"
+                 data-name="${module.name.toLowerCase()}"
+                 data-desc="${module.desc.toLowerCase()}"
+                 data-tags="${module.tags.join(' ').toLowerCase()}">
+
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <div class="h-12 w-12 rounded-xl ${module.color} flex items-center justify-center shrink-0" aria-hidden="true">
+              <i class="fa-solid ${module.icon} fa-lg"></i>
+            </div>
+
+            <button class="pin-btn px-3 py-2 rounded-lg text-sm font-extrabold"
+                    type="button"
+                    title="${isPinned ? 'Unpin module' : 'Pin module'}"
+                    aria-label="${isPinned ? 'Unpin ' : 'Pin '}${module.name}"
+                    data-toggle-pin="${module.id}">
+              <i class="fa-solid fa-thumbtack ${isPinned ? '' : 'opacity-40'}"></i>
+            </button>
+          </div>
+
+          <h3 class="text-xl font-black text-adaptive mb-2">${module.name}</h3>
+          <p class="flex-1 muted-adaptive">${module.desc}</p>
+
+          <div class="mt-3 flex flex-wrap gap-2">
+            ${module.tags.map(tag => `<span class="badge bg-gray-100 text-gray-700">${tag}</span>`).join('')}
+          </div>
+
+          <a href="${module.href}"
+             data-module-link="${module.id}"
+             class="action-link mt-4 inline-flex items-center gap-2 text-blue-600 font-black hover:underline">
+            Open <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </article>
+      `;
+    }
+
+    function renderPinned() {
+      const pinnedIds = getPinned();
+      const list = pinnedIds.map(id => MODULES.find(module => module.id === id)).filter(Boolean);
+      const wrap = document.getElementById('pinnedWrap');
+      const grid = document.getElementById('pinnedGrid');
+      if (!wrap || !grid) return;
+
+      if (!list.length) {
+        wrap.classList.add('hidden');
+        grid.innerHTML = '';
+        return;
+      }
+
+      wrap.classList.remove('hidden');
+      grid.innerHTML = list.map(moduleCard).join('');
+    }
+
+    function renderRecent() {
+      const recentIds = getRecent();
+      const list = recentIds.map(id => MODULES.find(module => module.id === id)).filter(Boolean);
+      const wrap = document.getElementById('recentWrap');
+      const listEl = document.getElementById('recentList');
+      if (!wrap || !listEl) return;
+
+      if (!list.length) {
+        wrap.classList.add('hidden');
+        listEl.innerHTML = '';
+        return;
+      }
+
+      wrap.classList.remove('hidden');
+      listEl.innerHTML = list.map(module => `
+        <a href="${module.href}" data-module-link="${module.id}"
+           class="btn-ui px-3 py-2 rounded-lg font-extrabold inline-flex items-center gap-2">
+          <i class="fa-solid ${module.icon}"></i> ${module.name}
+        </a>
+      `).join('');
+    }
+
+    function renderTags() {
+      const tags = [...new Set(MODULES.flatMap(module => module.tags))].sort((a, b) => a.localeCompare(b));
+      const tagBar = document.getElementById('tagBar');
+      if (!tagBar) return;
+
+      tagBar.innerHTML = [
+        '<button class="tag-btn px-3 py-2 rounded-lg font-extrabold" type="button" data-tag="" aria-pressed="true">All</button>',
+        ...tags.map(tag => `<button class="tag-btn px-3 py-2 rounded-lg font-extrabold" type="button" data-tag="${tag}" aria-pressed="false">${tag}</button>`)
+      ].join('');
+    }
+
+    function renderAllModules() {
+      const grid = document.getElementById('modulesGrid');
+      if (!grid) return;
+      grid.innerHTML = MODULES.map(moduleCard).join('');
+    }
+
+    function updateResultCount(visibleCount, totalCount) {
+      const resultCount = document.getElementById('resultCount');
+      if (!resultCount) return;
+      resultCount.textContent = `${visibleCount} of ${totalCount} module${totalCount === 1 ? '' : 's'} shown`;
+    }
+
+    function filterCards() {
+      const query = (document.getElementById('search')?.value || '').trim().toLowerCase();
+      const activeTagBtn = document.querySelector('[data-tag][aria-pressed="true"]');
+      const activeTag = (activeTagBtn?.getAttribute('data-tag') || '').toLowerCase();
+      let visible = 0;
+
+      document.querySelectorAll('.module-card').forEach(card => {
+        const name = (card.getAttribute('data-name') || '').toLowerCase();
+        const desc = (card.getAttribute('data-desc') || '').toLowerCase();
+        const tags = (card.getAttribute('data-tags') || '').toLowerCase();
+
+        const matchText = !query || name.includes(query) || desc.includes(query) || tags.includes(query);
+        const matchTag = !activeTag || tags.includes(activeTag);
+        const show = matchText && matchTag;
+
+        card.classList.toggle('hidden', !show);
+        if (show) visible += 1;
+      });
+
+      updateResultCount(visible, document.querySelectorAll('.module-card').length);
+    }
+
+    function selectTag(tag) {
+      document.querySelectorAll('[data-tag]').forEach(button => {
+        const pressed = button.getAttribute('data-tag') === tag;
+        button.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+      });
+      filterCards();
+    }
+
+    function togglePinned(id) {
+      const pinned = new Set(getPinned());
+      if (pinned.has(id)) pinned.delete(id);
+      else pinned.add(id);
+      setPinned([...pinned]);
+      renderAll();
+    }
+
+    function updateOnlineBadge() {
+      const badge = document.getElementById('onlineBadge');
+      if (!badge) return;
+
+      if (navigator.onLine) {
+        badge.className = 'badge bg-green-100 text-green-700';
+        badge.innerHTML = '<i class="fa-solid fa-wifi"></i> Online';
+      } else {
+        badge.className = 'badge bg-yellow-100 text-yellow-800';
+        badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Offline';
+      }
+    }
+
+    function renderAll() {
+      renderPinned();
+      renderRecent();
+      renderTags();
+      renderAllModules();
+      filterCards();
+    }
+
+    function bindStaticEvents() {
+      document.getElementById('themeBtn')?.addEventListener('click', toggleTheme);
+      document.getElementById('search')?.addEventListener('input', filterCards);
+      document.getElementById('clearRecentBtn')?.addEventListener('click', () => {
+        localStorage.removeItem(LS_RECENT);
+        renderAll();
+      });
+
+      document.addEventListener('click', event => {
+        const pinButton = event.target.closest('[data-toggle-pin]');
+        if (pinButton) {
+          togglePinned(pinButton.getAttribute('data-toggle-pin'));
+          return;
+        }
+
+        const tagButton = event.target.closest('[data-tag]');
+        if (tagButton) {
+          selectTag(tagButton.getAttribute('data-tag') || '');
+          return;
+        }
+
+        const moduleLink = event.target.closest('[data-module-link]');
+        if (moduleLink) {
+          const moduleId = moduleLink.getAttribute('data-module-link');
+          if (moduleId) addRecent(moduleId);
+        }
+      });
+
+      document.addEventListener('keydown', event => {
+        const isEditable = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+
+        if (event.key === '/' && !event.ctrlKey && !event.metaKey && !isEditable) {
+          event.preventDefault();
+          document.getElementById('search')?.focus();
+        }
+
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+          event.preventDefault();
+          document.getElementById('search')?.focus();
+        }
+      });
+
+      window.addEventListener('online', updateOnlineBadge, { passive: true });
+      window.addEventListener('offline', updateOnlineBadge, { passive: true });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyTheme(localStorage.getItem(LS_THEME) || (document.documentElement.classList.contains('dark') ? 'dark' : 'light'));
+      bindStaticEvents();
+      renderAll();
+      updateOnlineBadge();
+    }, { once: true });
+  </script>
+</body>
+</html>
