@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en-ZA" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Easy Converter Enterprise | OCR PDF to DOCX, XLSX, CSV, TXT, JSON, XML</title>
+  <meta name="description" content="Enterprise-grade Easy Converter for browser-based PDF conversion with OCR, table extraction, structured exports, responsive performance, and local-first processing." />
+  <meta name="keywords" content="PDF OCR converter, PDF to DOCX, PDF to XLSX, PDF to CSV, PDF to JSON, PDF to XML, OCR PDF, table extraction, Easy Suite, Skunkworks" />
+  <meta name="author" content="Skunkworks" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https: 'wasm-unsafe-eval'; worker-src 'self' blob: https:; connect-src 'self' https: blob: data:; font-src 'self' data: https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_ZA" />
+  <meta property="og:title" content="Easy Converter Enterprise" />
+  <meta property="og:description" content="Convert PDF documents into DOCX, XLSX, CSV, TXT, JSON, and XML with OCR and better table extraction." />
+  <meta property="og:image" content="logo.png" />
+  <meta property="og:image:alt" content="Easy Converter Enterprise application preview" />
+  <meta property="og:url" content="easy-converter-enterprise.html" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Easy Converter Enterprise" />
+  <meta name="twitter:description" content="Enterprise-grade PDF conversion with OCR, structured exports, and responsive local-first processing." />
+  <meta name="twitter:image" content="logo.png" />
+
+  <link rel="icon" href="icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
+  <link rel="preload" as="image" href="logo.png" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.js" defer></script>
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: rgba(255,255,255,.9);
+      --surface-strong: #fff;
+      --surface-dark: #0f172a;
+      --text: #0f172a;
+      --muted: #475569;
+      --muted-soft: #64748b;
+      --border: rgba(148,163,184,.24);
+      --primary: #2563eb;
+      --primary-strong: #1d4ed8;
+      --primary-soft: rgba(37,99,235,.1);
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --shadow: 0 16px 45px rgba(15,23,42,.08);
+      --shadow-strong: 0 24px 60px rgba(15,23,42,.12);
+      --radius: 24px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #020617;
+        --surface: rgba(15,23,42,.85);
+        --surface-strong: #0f172a;
+        --text: #e2e8f0;
+        --muted: #cbd5e1;
+        --muted-soft: #94a3b8;
+        --border: rgba(148,163,184,.2);
+        --primary-soft: rgba(96,165,250,.16);
+        --shadow: 0 18px 50px rgba(2,6,23,.36);
+        --shadow-strong: 0 28px 70px rgba(2,6,23,.46);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(14,165,233,.12), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,.9), rgba(238,244,255,.9)),
+        var(--bg);
+    }
+    a { color: inherit; }
+    img { max-width: 100%; height: auto; }
+    button, input, select { font: inherit; }
+    .container { width: min(1280px, calc(100% - 2rem)); margin: 0 auto; }
+    .skip-link {
+      position: absolute; left: 1rem; top: -4rem; z-index: 1000;
+      background: var(--primary); color: white; padding: .85rem 1rem; border-radius: 16px; text-decoration: none;
+    }
+    .skip-link:focus { top: 1rem; }
+    .glass {
+      background: var(--surface);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .card {
+      border-radius: var(--radius);
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .shadow-strong { box-shadow: var(--shadow-strong); }
+    .badge {
+      display: inline-flex; align-items: center; gap: .55rem;
+      border-radius: 999px; padding: .6rem 1rem; font-size: .9rem; font-weight: 700;
+      background: var(--primary-soft); color: var(--primary);
+      border: 1px solid rgba(37,99,235,.12);
+    }
+    .dot { width: .65rem; height: .65rem; border-radius: 999px; background: var(--success); display: inline-block; }
+    .header {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px);
+      background: rgba(255,255,255,.8); border-bottom: 1px solid var(--border);
+    }
+    @media (prefers-color-scheme: dark) {
+      .header { background: rgba(2,6,23,.74); }
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0;
+    }
+    .brand { display: flex; align-items: center; gap: .85rem; min-width: 0; text-decoration: none; }
+    .brand-logo {
+      width: 44px; height: 44px; object-fit: contain; border-radius: 14px; background: white; box-shadow: 0 8px 24px rgba(15,23,42,.1);
+    }
+    .brand strong { display: block; font-size: 1rem; }
+    .brand span { display: block; font-size: .88rem; color: var(--muted-soft); }
+    .nav { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; }
+    .nav a {
+      text-decoration: none; color: var(--muted); font-weight: 600; padding: .65rem .85rem; border-radius: 14px;
+    }
+    .nav a:hover, .nav a:focus-visible { background: var(--primary-soft); color: var(--primary); outline: none; }
+    .hero {
+      padding: 2rem 0 1.25rem;
+      display: grid; grid-template-columns: 1.15fr .85fr; gap: 1.5rem;
+      align-items: stretch;
+    }
+    .hero-copy, .hero-side { padding: 1.5rem; border-radius: 32px; }
+    .hero-copy h1 {
+      margin: .9rem 0 1rem; font-size: clamp(2.15rem, 4vw, 4.4rem); line-height: 1.02; letter-spacing: -.04em;
+    }
+    .hero-copy p { margin: 0; color: var(--muted); font-size: 1.06rem; line-height: 1.8; max-width: 68ch; }
+    .chip-row { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.15rem; }
+    .chip {
+      padding: .72rem 1rem; border-radius: 999px; background: rgba(255,255,255,.8); border: 1px solid var(--border);
+      color: var(--muted); font-weight: 700; font-size: .9rem;
+    }
+    .stats-grid, .export-grid, .support-grid { display: grid; gap: 1rem; }
+    .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .support-grid { grid-template-columns: repeat(2, minmax(0,1fr)); margin-top: 1rem; }
+    .metric, .small-panel { padding: 1rem 1.1rem; border-radius: 22px; }
+    .metric label, .small-panel label { display: block; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-soft); font-weight: 800; }
+    .metric strong, .small-panel strong { display: block; margin-top: .5rem; font-size: 1.7rem; }
+    .section { padding: 1rem 0 1.4rem; }
+    .workspace { display: grid; grid-template-columns: 1.08fr .92fr; gap: 1.25rem; }
+    .panel { padding: 1.2rem; border-radius: 28px; }
+    .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+    .panel-head h2, .panel h2 { margin: 0; font-size: 1.4rem; }
+    .panel-head p, .panel p, .note-list { color: var(--muted); line-height: 1.7; }
+    .btn-row, .control-grid, .preview-tabs, .log-row { display: flex; flex-wrap: wrap; gap: .8rem; }
+    .btn, .format-btn, .tab-btn {
+      border: 0; cursor: pointer; border-radius: 18px; padding: .95rem 1.15rem; font-weight: 800; line-height: 1.1;
+      transition: transform .16s ease, background .16s ease, color .16s ease, opacity .16s ease, border-color .16s ease;
+    }
+    .btn:hover, .format-btn:hover, .tab-btn:hover { transform: translateY(-1px); }
+    .btn:focus-visible, .format-btn:focus-visible, .tab-btn:focus-visible, .dropzone:focus-visible, .field input:focus-visible, .field select:focus-visible {
+      outline: 3px solid rgba(37,99,235,.18); outline-offset: 2px;
+    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 16px 36px rgba(37,99,235,.24); }
+    .btn-primary:hover { background: var(--primary-strong); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--primary-soft); border-color: rgba(37,99,235,.2); }
+    .btn-soft { background: var(--surface-strong); color: var(--muted); border: 1px solid var(--border); }
+    .btn[disabled], .format-btn[disabled], .tab-btn[disabled] { cursor: not-allowed; opacity: .55; transform: none; }
+    .dropzone {
+      margin-top: 1rem; border-radius: 28px; min-height: 220px; border: 2px dashed rgba(37,99,235,.28);
+      display: grid; place-items: center; text-align: center; padding: 1.5rem; background: linear-gradient(180deg, rgba(255,255,255,.74), rgba(255,255,255,.52));
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .dropzone.dragover { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,.12); background: rgba(37,99,235,.08); }
+    .dropzone .icon {
+      width: 74px; height: 74px; margin: 0 auto 1rem; border-radius: 24px; display: grid; place-items: center;
+      background: var(--primary-soft); color: var(--primary); font-size: 2rem;
+    }
+    .field-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; margin-top: 1rem;
+    }
+    .field {
+      padding: .95rem 1rem; border: 1px solid var(--border); border-radius: 18px; background: rgba(255,255,255,.7);
+    }
+    .field label { display: flex; align-items: center; justify-content: space-between; gap: .7rem; font-size: .88rem; color: var(--muted); font-weight: 700; margin-bottom: .45rem; }
+    .field input, .field select {
+      width: 100%; border: 1px solid var(--border); border-radius: 14px; padding: .75rem .85rem; background: var(--surface-strong); color: var(--text);
+    }
+    .field small { display: block; margin-top: .45rem; color: var(--muted-soft); line-height: 1.55; }
+    .checkbox-list { display: grid; gap: .7rem; margin-top: .65rem; }
+    .checkbox {
+      display: flex; align-items: flex-start; gap: .7rem; padding: .85rem .95rem; border: 1px solid var(--border); border-radius: 16px; background: rgba(255,255,255,.65);
+    }
+    .checkbox input { margin-top: .25rem; transform: scale(1.05); }
+    .progress-wrap { margin-top: 1rem; }
+    .progress-track { height: 12px; border-radius: 999px; background: rgba(148,163,184,.18); overflow: hidden; }
+    .progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, #2563eb, #0ea5e9); transition: width .2s ease; }
+    .status-line { margin-top: .75rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem; color: var(--muted); font-size: .92rem; }
+    .preview-shell {
+      margin-top: 1rem; border-radius: 24px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-dark); color: #e2e8f0;
+    }
+    .preview-tabs { padding: .85rem; background: rgba(2,6,23,.45); border-bottom: 1px solid rgba(148,163,184,.18); }
+    .tab-btn { background: transparent; color: #cbd5e1; border: 1px solid transparent; }
+    .tab-btn.active { background: rgba(37,99,235,.18); color: white; border-color: rgba(96,165,250,.3); }
+    .preview-body {
+      padding: 1rem; max-height: 36rem; overflow: auto; white-space: pre-wrap; line-height: 1.7; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .table-wrap { overflow: auto; border-radius: 18px; border: 1px solid rgba(148,163,184,.2); }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { padding: .8rem .85rem; text-align: left; border-bottom: 1px solid rgba(148,163,184,.18); vertical-align: top; }
+    th { position: sticky; top: 0; background: rgba(15,23,42,.94); color: #e2e8f0; }
+    .export-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 1rem; }
+    .format-btn {
+      text-align: left; min-height: 150px; background: var(--surface-strong); color: var(--text); border: 1px solid var(--border); padding: 1.1rem;
+      display: flex; flex-direction: column; justify-content: space-between; gap: .8rem;
+    }
+    .format-btn.primary { background: var(--surface-dark); color: white; }
+    .format-btn span.icon { font-size: 1.8rem; }
+    .format-btn strong { font-size: 1.05rem; }
+    .format-btn p { margin: 0; color: inherit; opacity: .82; line-height: 1.55; font-weight: 500; }
+    .note-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 1.25rem; }
+    .note-list { padding-left: 1.1rem; }
+    .note-list li { margin: .55rem 0; }
+    .log-panel {
+      margin-top: 1rem; border: 1px solid var(--border); border-radius: 22px; background: rgba(15,23,42,.92); color: #cbd5e1; overflow: hidden;
+    }
+    .log-head { padding: .95rem 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; border-bottom: 1px solid rgba(148,163,184,.18); }
+    .log-body { max-height: 220px; overflow: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .85rem; padding: 1rem; line-height: 1.65; }
+    .footer { padding: 1.5rem 0 2.5rem; color: var(--muted-soft); }
+    .hidden { display: none !important; }
+    .visually-hidden {
+      position: absolute !important; height: 1px; width: 1px; overflow: hidden;
+      clip: rect(1px, 1px, 1px, 1px); white-space: nowrap;
+    }
+    .success { color: var(--success); }
+    .warning { color: var(--warning); }
+    .danger { color: var(--danger); }
+
+    @media (max-width: 1120px) {
+      .hero, .workspace, .note-grid { grid-template-columns: 1fr; }
+      .stats-grid, .export-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 760px) {
+      .container { width: min(100% - 1rem, 1280px); }
+      .header-inner { align-items: flex-start; flex-direction: column; }
+      .nav { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: .1rem; }
+      .hero-copy, .hero-side, .panel { padding: 1rem; }
+      .field-grid, .stats-grid, .support-grid, .export-grid { grid-template-columns: 1fr; }
+      .btn-row { flex-direction: column; }
+      .btn, .format-btn { width: 100%; }
+      .preview-body { max-height: 26rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Easy Converter Enterprise",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "Enterprise-grade browser-based PDF conversion with OCR, table extraction, and exports to DOCX, XLSX, CSV, TXT, JSON, and XML.",
+    "creator": {"@type": "Organization", "name": "Skunkworks"},
+    "featureList": [
+      "PDF text extraction",
+      "OCR for scanned PDFs",
+      "Table detection and export",
+      "DOCX, XLSX, CSV, TXT, JSON, XML export",
+      "Local-first browser processing"
+    ],
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Easy Suite dashboard">
+        <img class="brand-logo" src="logo.png" alt="Easy Suite logo" loading="eager" />
+        <div>
+          <strong>Easy Suite</strong>
+          <span>Easy Converter Enterprise</span>
+        </div>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#converter">Converter</a>
+        <a href="#export-formats">Export formats</a>
+        <a href="#conversion-notes">Notes</a>
+        <a href="easy-converter.html">Classic version</a>
+        <a href="index.html">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="container hero">
+      <article class="hero-copy glass shadow-strong">
+        <div class="badge"><span class="dot"></span> OCR + structured extraction pipeline</div>
+        <h1>Convert PDF files into usable business formats with OCR and smarter table extraction.</h1>
+        <p>
+          Upload a PDF, detect embedded text, automatically switch to OCR for scanned pages, infer table-like structures, and export the result to
+          <strong>DOCX</strong>, <strong>XLSX</strong>, <strong>CSV</strong>, <strong>TXT</strong>, <strong>JSON</strong>, or <strong>XML</strong>.
+          Processing stays in the browser in this static version.
+        </p>
+        <div class="chip-row" aria-label="Feature highlights">
+          <span class="chip">Local-first processing</span>
+          <span class="chip">Auto OCR fallback</span>
+          <span class="chip">Table-aware exports</span>
+          <span class="chip">Responsive enterprise UI</span>
+        </div>
+      </article>
+
+      <aside class="hero-side glass">
+        <h2 style="margin:0;font-size:1.35rem;">Supported output formats</h2>
+        <div class="support-grid" aria-label="Supported formats">
+          <div class="small-panel card"><label>Finalized</label><strong>PDF</strong></div>
+          <div class="small-panel card"><label>Editable</label><strong>DOCX</strong></div>
+          <div class="small-panel card"><label>Spreadsheet</label><strong>XLSX</strong></div>
+          <div class="small-panel card"><label>Flat file</label><strong>CSV</strong></div>
+          <div class="small-panel card"><label>Plain text</label><strong>TXT</strong></div>
+          <div class="small-panel card"><label>Structured</label><strong>JSON</strong></div>
+          <div class="small-panel card" style="grid-column:1 / -1;"><label>System exchange</label><strong>XML</strong></div>
+        </div>
+        <p style="margin-top:1rem;color:var(--muted);line-height:1.7;">The classic browser parser is now extended with OCR, confidence reporting, detected tables, and richer workbook exports.</p>
+      </aside>
+    </section>
+
+    <section class="container section">
+      <div class="stats-grid" aria-label="Conversion metrics">
+        <div class="metric card"><label>Pages</label><strong id="pageCount">0</strong></div>
+        <div class="metric card"><label>Characters</label><strong id="charCount">0</strong></div>
+        <div class="metric card"><label>Detected tables</label><strong id="tableCount">0</strong></div>
+        <div class="metric card"><label>OCR pages</label><strong id="ocrPageCount">0</strong></div>
+      </div>
+    </section>
+
+    <section id="converter" class="container section">
+      <div class="workspace">
+        <section class="panel glass">
+          <div class="panel-head">
+            <div>
+              <h2>PDF upload and extraction</h2>
+              <p>Drop a PDF into the workspace, choose your extraction strategy, and convert it into editable or structured outputs.</p>
+            </div>
+            <label class="btn btn-primary" style="display:inline-flex;align-items:center;justify-content:center;">
+              <input id="fileInput" type="file" accept="application/pdf" class="visually-hidden" />
+              Choose PDF
+            </label>
+          </div>
+
+          <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload PDF by drag and drop or click">
+            <div>
+              <div class="icon">📄</div>
+              <h3 style="margin:.2rem 0;font-size:1.35rem;">Drag and drop your PDF here</h3>
+              <p style="max-width:58ch;margin:.4rem auto 0;color:var(--muted);line-height:1.75;">Supports text-based and scanned PDFs. Enterprise mode adds OCR and table inference for stronger downstream exports.</p>
+              <p id="fileMeta" style="margin-top:1rem;font-weight:700;color:var(--text);">No file selected yet.</p>
+            </div>
+          </div>
+
+          <div class="field-grid" aria-label="Extraction settings">
+            <div class="field">
+              <label for="ocrMode">OCR mode <span id="ocrModeBadge" class="badge" style="padding:.35rem .7rem;font-size:.78rem;">Auto</span></label>
+              <select id="ocrMode">
+                <option value="auto">Auto detect low-text pages</option>
+                <option value="always">Always OCR every page</option>
+                <option value="never">Never OCR</option>
+              </select>
+              <small>Auto mode uses OCR on pages that appear scanned or have very low embedded text density.</small>
+            </div>
+            <div class="field">
+              <label for="ocrScale">OCR render scale</label>
+              <select id="ocrScale">
+                <option value="1.5">Balanced</option>
+                <option value="2" selected>High accuracy</option>
+                <option value="2.5">Best quality</option>
+              </select>
+              <small>Higher scale can improve OCR accuracy but will use more memory and CPU.</small>
+            </div>
+            <div class="field">
+              <label for="minWordsForTextLayer">Embedded text threshold</label>
+              <input id="minWordsForTextLayer" type="number" min="5" max="400" step="1" value="24" />
+              <small>Pages below this approximate word count are candidates for OCR in auto mode.</small>
+            </div>
+            <div class="field">
+              <label for="lineTolerance">Line grouping tolerance</label>
+              <input id="lineTolerance" type="number" min="2" max="12" step="1" value="4" />
+              <small>Controls how aggressively nearby text fragments are merged into lines.</small>
+            </div>
+          </div>
+
+          <div class="checkbox-list" aria-label="Processing options">
+            <label class="checkbox"><input id="detectTables" type="checkbox" checked /> <span><strong>Detect tables</strong><br><span style="color:var(--muted);">Infer row and column structure from positioned PDF text. Results improve XLSX, CSV, JSON, and XML exports.</span></span></label>
+            <label class="checkbox"><input id="includePageImages" type="checkbox" /> <span><strong>Include OCR page snapshots in JSON</strong><br><span style="color:var(--muted);">Adds data URI thumbnails to JSON output. Useful for debugging, but it increases file size substantially.</span></span></label>
+            <label class="checkbox"><input id="mergeSparseRows" type="checkbox" checked /> <span><strong>Merge sparse rows</strong><br><span style="color:var(--muted);">Helps stabilize table extraction when PDFs have inconsistent cell spacing or broken text fragments.</span></span></label>
+          </div>
+
+          <div class="btn-row" style="margin-top:1rem;">
+            <button id="analyzeBtn" class="btn btn-primary" type="button" disabled>Analyze and convert</button>
+            <button id="resetBtn" class="btn btn-secondary" type="button">Reset</button>
+            <button id="sampleBtn" class="btn btn-soft" type="button">Show conversion notes</button>
+          </div>
+
+          <div class="progress-wrap" aria-live="polite">
+            <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+            <div class="status-line">
+              <span id="statusText">Awaiting PDF upload</span>
+              <span id="statusMeta">Idle</span>
+            </div>
+          </div>
+
+          <div class="log-panel" aria-label="Processing log">
+            <div class="log-head">
+              <strong>Processing log</strong>
+              <button id="clearLogBtn" class="btn btn-soft" type="button" style="padding:.6rem .85rem;border-radius:14px;">Clear log</button>
+            </div>
+            <div id="logBody" class="log-body">System ready. Upload a PDF to begin.</div>
+          </div>
+        </section>
+
+        <section class="panel glass">
+          <div class="panel-head">
+            <div>
+              <h2>Preview and extracted structures</h2>
+              <p>Inspect the text view, detected tables, and document summary before you export.</p>
+            </div>
+          </div>
+
+          <div class="preview-shell">
+            <div class="preview-tabs" role="tablist" aria-label="Preview tabs">
+              <button class="tab-btn active" type="button" data-tab="text">Text</button>
+              <button class="tab-btn" type="button" data-tab="tables">Tables</button>
+              <button class="tab-btn" type="button" data-tab="summary">Summary</button>
+            </div>
+            <div id="previewText" class="preview-body" role="tabpanel">Upload a PDF to generate a preview.</div>
+            <div id="previewTables" class="preview-body hidden" role="tabpanel"></div>
+            <div id="previewSummary" class="preview-body hidden" role="tabpanel"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="export-formats" class="container section">
+      <section class="panel glass">
+        <div class="panel-head">
+          <div>
+            <h2>Export formats</h2>
+            <p>PDF returns the original upload. Other exports combine extracted text, metadata, and table structures when detected.</p>
+          </div>
+          <div id="exportHint" class="badge" style="font-size:.82rem;">Analyze a PDF to enable export</div>
+        </div>
+
+        <div class="export-grid">
+          <button class="format-btn primary" data-format="pdf" disabled><span class="icon">📕</span><strong>PDF</strong><p>Download the original PDF exactly as uploaded.</p></button>
+          <button class="format-btn" data-format="docx" disabled><span class="icon">📝</span><strong>DOCX</strong><p>Word document with page sections and detected tables.</p></button>
+          <button class="format-btn" data-format="xlsx" disabled><span class="icon">📊</span><strong>XLSX</strong><p>Workbook with summary, page lines, and table sheets.</p></button>
+          <button class="format-btn" data-format="csv" disabled><span class="icon">🧾</span><strong>CSV</strong><p>Flat export prioritizing detected tables, then page lines.</p></button>
+          <button class="format-btn" data-format="txt" disabled><span class="icon">📄</span><strong>TXT</strong><p>Readable plain-text export for notes and quick review.</p></button>
+          <button class="format-btn" data-format="json" disabled><span class="icon">🔗</span><strong>JSON</strong><p>Structured data with pages, tables, and OCR metadata.</p></button>
+          <button class="format-btn" data-format="xml" disabled><span class="icon">🧩</span><strong>XML</strong><p>System exchange export with table and page hierarchies.</p></button>
+        </div>
+      </section>
+    </section>
+
+    <section id="conversion-notes" class="container section">
+      <div class="note-grid">
+        <article class="panel glass">
+          <h2>Important conversion notes</h2>
+          <ul class="note-list">
+            <li><strong>Embedded text PDFs:</strong> These generally produce the fastest and cleanest results because the text layer can be read directly.</li>
+            <li><strong>Scanned PDFs:</strong> OCR improves recoverability, but accuracy depends on scan quality, skew, contrast, and language support. This version defaults to English OCR.</li>
+            <li><strong>Tables:</strong> The table engine uses spatial heuristics from PDF coordinates. It performs well on invoices, statements, schedules, and tabular reports, but irregular visual layouts may still require cleanup.</li>
+            <li><strong>Performance:</strong> OCR is CPU-intensive. Large or image-heavy PDFs can take significantly longer, especially on low-power devices.</li>
+            <li><strong>Privacy:</strong> Processing is local-first in this static implementation. No remote storage workflow is included here.</li>
+          </ul>
+        </article>
+        <article class="panel glass">
+          <h2>What makes this enterprise-grade</h2>
+          <ul class="note-list">
+            <li>Automatic OCR fallback for low-text pages</li>
+            <li>Richer confidence and source metadata per page</li>
+            <li>Table-aware XLSX, CSV, JSON, XML, and DOCX exports</li>
+            <li>Structured logging, progress tracking, and responsive preview panes</li>
+            <li>Tighter SEO, stronger security headers, and improved mobile usability</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <div class="glass" style="border-radius:24px;padding:1rem 1.2rem;display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;">
+      <span>Easy Converter Enterprise by Easy Suite.</span>
+      <span>Built for local-first OCR, structured extraction, and business-friendly export workflows.</span>
+    </div>
+  </footer>
+
+  <script type="module">
+    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.mjs';
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.worker.min.mjs';
+
+    const state = {
+      file: null,
+      fileBuffer: null,
+      parsed: null,
+      originalName: 'document.pdf',
+      previewTab: 'text',
+      ocrLibraryLoaded: false,
+      Tesseract: null
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const fileInput = $('fileInput');
+    const dropzone = $('dropzone');
+    const analyzeBtn = $('analyzeBtn');
+    const resetBtn = $('resetBtn');
+    const sampleBtn = $('sampleBtn');
+    const clearLogBtn = $('clearLogBtn');
+    const fileMeta = $('fileMeta');
+    const statusText = $('statusText');
+    const statusMeta = $('statusMeta');
+    const progressBar = $('progressBar');
+    const logBody = $('logBody');
+    const pageCount = $('pageCount');
+    const charCount = $('charCount');
+    const tableCount = $('tableCount');
+    const ocrPageCount = $('ocrPageCount');
+    const ocrMode = $('ocrMode');
+    const ocrScale = $('ocrScale');
+    const minWordsForTextLayer = $('minWordsForTextLayer');
+    const lineTolerance = $('lineTolerance');
+    const detectTables = $('detectTables');
+    const includePageImages = $('includePageImages');
+    const mergeSparseRows = $('mergeSparseRows');
+    const previewText = $('previewText');
+    const previewTables = $('previewTables');
+    const previewSummary = $('previewSummary');
+    const exportHint = $('exportHint');
+    const ocrModeBadge = $('ocrModeBadge');
+    const exportButtons = Array.from(document.querySelectorAll('[data-format]'));
+    const tabButtons = Array.from(document.querySelectorAll('[data-tab]'));
+
+    const xmlEscape = (value) => String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&apos;');
+
+    const formatBytes = (bytes) => {
+      if (!Number.isFinite(bytes) || bytes <= 0) return '0 B';
+      const units = ['B', 'KB', 'MB', 'GB'];
+      let size = bytes;
+      let index = 0;
+      while (size >= 1024 && index < units.length - 1) {
+        size /= 1024;
+        index += 1;
+      }
+      return `${size.toFixed(size >= 10 || index === 0 ? 0 : 2)} ${units[index]}`;
+    };
+
+    const baseName = () => (state.originalName || 'document.pdf').replace(/\.pdf$/i, '') || 'document';
+
+    const log = (message, tone = 'info') => {
+      const stamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const toneClass = tone === 'error' ? 'danger' : tone === 'warn' ? 'warning' : tone === 'success' ? 'success' : '';
+      const line = document.createElement('div');
+      line.innerHTML = `<span style="color:#94a3b8;">[${stamp}]</span> <span class="${toneClass}">${message}</span>`;
+      logBody.appendChild(line);
+      logBody.scrollTop = logBody.scrollHeight;
+    };
+
+    const setStatus = (message, meta = 'Idle', progress = null) => {
+      statusText.textContent = message;
+      statusMeta.textContent = meta;
+      if (progress !== null) progressBar.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+    };
+
+    const setMetricValues = (parsed) => {
+      pageCount.textContent = String(parsed?.pageCount ?? 0);
+      charCount.textContent = new Intl.NumberFormat().format(parsed?.characterCount ?? 0);
+      tableCount.textContent = String(parsed?.tableCount ?? 0);
+      ocrPageCount.textContent = String(parsed?.ocrPageCount ?? 0);
+    };
+
+    const resetState = () => {
+      state.file = null;
+      state.fileBuffer = null;
+      state.parsed = null;
+      state.originalName = 'document.pdf';
+      fileInput.value = '';
+      fileMeta.textContent = 'No file selected yet.';
+      previewText.textContent = 'Upload a PDF to generate a preview.';
+      previewTables.innerHTML = '';
+      previewSummary.textContent = '';
+      setMetricValues(null);
+      setStatus('Awaiting PDF upload', 'Idle', 0);
+      exportHint.textContent = 'Analyze a PDF to enable export';
+      exportButtons.forEach((btn) => btn.disabled = true);
+      analyzeBtn.disabled = true;
+      log('State reset. Ready for another document.');
+    };
+
+    const enableExports = () => {
+      exportButtons.forEach((btn) => btn.disabled = false);
+      exportHint.textContent = 'Exports enabled';
+    };
+
+    const setFile = async (file) => {
+      if (!file || file.type !== 'application/pdf') {
+        setStatus('Please upload a valid PDF.', 'Invalid file', 0);
+        log('Rejected file because it is not a PDF.', 'error');
+        return;
+      }
+      state.file = file;
+      state.originalName = file.name;
+      state.fileBuffer = await file.arrayBuffer();
+      state.parsed = null;
+      fileMeta.textContent = `${file.name} • ${formatBytes(file.size)}`;
+      analyzeBtn.disabled = false;
+      exportButtons.forEach((btn) => btn.disabled = true);
+      previewText.textContent = 'File loaded. Click “Analyze and convert” to extract content.';
+      previewTables.innerHTML = '';
+      previewSummary.textContent = '';
+      setMetricValues(null);
+      setStatus('PDF ready for analysis', 'Ready', 0);
+      log(`Loaded ${file.name} (${formatBytes(file.size)}).`, 'success');
+    };
+
+    const setPreviewTab = (tab) => {
+      state.previewTab = tab;
+      tabButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tab));
+      previewText.classList.toggle('hidden', tab !== 'text');
+      previewTables.classList.toggle('hidden', tab !== 'tables');
+      previewSummary.classList.toggle('hidden', tab !== 'summary');
+    };
+
+    tabButtons.forEach((btn) => btn.addEventListener('click', () => setPreviewTab(btn.dataset.tab)));
+
+    const chooseByX = (items, tolerance = 22) => {
+      const sorted = [...items].sort((a, b) => a.x - b.x);
+      const centers = [];
+      sorted.forEach((item) => {
+        const match = centers.find((center) => Math.abs(center.value - item.x) <= tolerance);
+        if (match) {
+          match.points.push(item.x);
+          match.value = match.points.reduce((sum, point) => sum + point, 0) / match.points.length;
+        } else {
+          centers.push({ value: item.x, points: [item.x] });
+        }
+      });
+      return centers.map((center) => center.value).sort((a, b) => a - b);
+    };
+
+    const normalizeCell = (text) => String(text || '').replace(/\s+/g, ' ').trim();
+
+    const groupTextRows = (items, tolerance = 4) => {
+      const rows = [];
+      const ordered = [...items]
+        .filter((item) => String(item.str || '').trim())
+        .map((item) => ({
+          str: String(item.str || '').trim(),
+          x: Math.round(item.transform[4] || 0),
+          y: Math.round(item.transform[5] || 0),
+          width: Number(item.width || 0),
+          height: Number(item.height || 0)
+        }))
+        .sort((a, b) => Math.abs(a.y - b.y) <= tolerance ? a.x - b.x : b.y - a.y);
+
+      ordered.forEach((item) => {
+        const row = rows.find((candidate) => Math.abs(candidate.y - item.y) <= tolerance);
+        if (row) {
+          row.items.push(item);
+          row.y = (row.y + item.y) / 2;
+        } else {
+          rows.push({ y: item.y, items: [item] });
+        }
+      });
+
+      rows.forEach((row) => row.items.sort((a, b) => a.x - b.x));
+      return rows;
+    };
+
+    const linesFromRows = (rows) => rows.map((row) => row.items.map((item) => item.str).join(' ').replace(/\s+/g, ' ').trim()).filter(Boolean);
+
+    const inferTablesFromRows = (rows, options = {}) => {
+      if (!rows.length) return [];
+      const mergeSparse = Boolean(options.mergeSparseRows);
+      const tableCandidates = [];
+      let current = [];
+
+      const flushCurrent = () => {
+        if (current.length >= 3) tableCandidates.push(current);
+        current = [];
+      };
+
+      rows.forEach((row) => {
+        const xPositions = chooseByX(row.items);
+        const looksTabular = row.items.length >= 2 && xPositions.length >= 2;
+        if (looksTabular) current.push({ ...row, xPositions });
+        else flushCurrent();
+      });
+      flushCurrent();
+
+      const tables = [];
+
+      tableCandidates.forEach((candidateRows, index) => {
+        const mergedColumns = chooseByX(candidateRows.flatMap((row) => row.items), 26);
+        if (mergedColumns.length < 2) return;
+
+        const matrix = candidateRows.map((row) => {
+          const cells = Array.from({ length: mergedColumns.length }, () => []);
+          row.items.forEach((item) => {
+            let bestIndex = 0;
+            let bestDistance = Number.POSITIVE_INFINITY;
+            mergedColumns.forEach((columnX, columnIndex) => {
+              const distance = Math.abs(columnX - item.x);
+              if (distance < bestDistance) {
+                bestDistance = distance;
+                bestIndex = columnIndex;
+              }
+            });
+            cells[bestIndex].push(item.str);
+          });
+          return cells.map((cell) => normalizeCell(cell.join(' ')));
+        });
+
+        const compacted = matrix.map((row) => {
+          const cleaned = mergeSparse ? row.map((cell, idx) => {
+            if (cell) return cell;
+            const prev = row[idx - 1] || '';
+            const next = row[idx + 1] || '';
+            if (!prev && next) return '';
+            return '';
+          }) : row;
+          return cleaned;
+        }).filter((row) => row.some(Boolean));
+
+        const nonEmptyCounts = compacted.map((row) => row.filter(Boolean).length);
+        const averageNonEmpty = nonEmptyCounts.reduce((sum, count) => sum + count, 0) / Math.max(nonEmptyCounts.length, 1);
+        if (averageNonEmpty < 2) return;
+
+        const headerRow = compacted[0].map((cell, idx) => cell || `Column ${idx + 1}`);
+        const bodyRows = compacted.slice(1).filter((row) => row.some(Boolean));
+        if (!bodyRows.length) return;
+
+        tables.push({
+          id: `table-${index + 1}`,
+          title: `Detected Table ${index + 1}`,
+          columnCount: headerRow.length,
+          rowCount: bodyRows.length,
+          headers: headerRow,
+          rows: bodyRows,
+          confidence: Math.max(0.4, Math.min(0.98, averageNonEmpty / Math.max(headerRow.length, 1)))
+        });
+      });
+
+      return tables;
+    };
+
+    const renderPageToCanvas = async (page, scale = 2) => {
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d', { willReadFrequently: true });
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      await page.render({ canvasContext: context, viewport }).promise;
+      return canvas;
+    };
+
+    const loadOcrLibrary = async () => {
+      if (state.ocrLibraryLoaded && state.Tesseract) return state.Tesseract;
+      setStatus('Loading OCR engine…', 'Initializing OCR', 5);
+      log('Loading Tesseract OCR runtime from CDN.');
+      await new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-ocr="true"]');
+        if (existing && window.Tesseract) return resolve();
+        if (existing) {
+          existing.addEventListener('load', () => resolve(), { once: true });
+          existing.addEventListener('error', () => reject(new Error('OCR library failed to load.')), { once: true });
+          return;
+        }
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+        script.async = true;
+        script.defer = true;
+        script.dataset.ocr = 'true';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('OCR library failed to load.'));
+        document.head.appendChild(script);
+      });
+      state.ocrLibraryLoaded = true;
+      state.Tesseract = window.Tesseract;
+      log('OCR engine loaded successfully.', 'success');
+      return state.Tesseract;
+    };
+
+    const textFromOcr = async (canvas, pageNumber, totalPages) => {
+      const Tesseract = await loadOcrLibrary();
+      const dataUrl = canvas.toDataURL('image/png');
+      const result = await Tesseract.recognize(dataUrl, 'eng', {
+        logger: (event) => {
+          if (event?.status) {
+            const pct = typeof event.progress === 'number' ? Math.round(event.progress * 100) : 0;
+            const globalProgress = Math.round((((pageNumber - 1) + (pct / 100)) / totalPages) * 100);
+            setStatus(`OCR processing page ${pageNumber}…`, `${event.status} • ${pct}%`, globalProgress);
+          }
+        }
+      });
+      const lines = String(result?.data?.text || '')
+        .split(/\n+/)
+        .map((line) => line.replace(/\s+/g, ' ').trim())
+        .filter(Boolean);
+      return {
+        text: lines.join('\n'),
+        lines,
+        confidence: Number(result?.data?.confidence || 0) / 100,
+        dataUrl
+      };
+    };
+
+    const shouldUseOcr = (rows, ocrPreference, minWords) => {
+      if (ocrPreference === 'always') return true;
+      if (ocrPreference === 'never') return false;
+      const lineText = linesFromRows(rows).join(' ');
+      const words = lineText.split(/\s+/).filter(Boolean).length;
+      return words < minWords;
+    };
+
+    const updateSummaryPreview = () => {
+      if (!state.parsed) {
+        previewSummary.textContent = 'No summary available yet.';
+        return;
+      }
+      const parsed = state.parsed;
+      const lines = [
+        `Source file: ${parsed.sourceFile}`,
+        `Pages: ${parsed.pageCount}`,
+        `Characters: ${parsed.characterCount}`,
+        `Detected tables: ${parsed.tableCount}`,
+        `OCR pages: ${parsed.ocrPageCount}`,
+        `Extracted at: ${new Date(parsed.extractedAt).toLocaleString()}`,
+        '',
+        'Per-page summary:'
+      ];
+      parsed.pages.forEach((page) => {
+        lines.push(`- Page ${page.pageNumber}: source=${page.source}, lines=${page.lines.length}, tables=${page.tables.length}, confidence=${Math.round((page.confidence || 0) * 100)}%`);
+      });
+      previewSummary.textContent = lines.join('\n');
+    };
+
+    const updateTablePreview = () => {
+      if (!state.parsed) {
+        previewTables.textContent = 'No tables available yet.';
+        return;
+      }
+      const allTables = state.parsed.pages.flatMap((page) => page.tables.map((table) => ({ pageNumber: page.pageNumber, ...table })));
+      if (!allTables.length) {
+        previewTables.innerHTML = '<div>No tables detected in this document.</div>';
+        return;
+      }
+      previewTables.innerHTML = allTables.map((table, index) => {
+        const headerHtml = table.headers.map((header) => `<th>${xmlEscape(header)}</th>`).join('');
+        const rowsHtml = table.rows.map((row) => `<tr>${row.map((cell) => `<td>${xmlEscape(cell)}</td>`).join('')}</tr>`).join('');
+        return `
+          <section style="margin-bottom:1.25rem;">
+            <div style="margin-bottom:.65rem;font-weight:700;">Page ${table.pageNumber} • ${table.title} • ${table.rowCount} rows • ${table.columnCount} columns • ${Math.round((table.confidence || 0) * 100)}% confidence</div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr>${headerHtml}</tr></thead>
+                <tbody>${rowsHtml}</tbody>
+              </table>
+            </div>
+          </section>
+        `;
+      }).join('');
+    };
+
+    const updateTextPreview = () => {
+      if (!state.parsed) {
+        previewText.textContent = 'Upload a PDF to generate a preview.';
+        return;
+      }
+      previewText.textContent = state.parsed.text.slice(0, 25000) || 'No text extracted.';
+    };
+
+    const buildParsedObject = async () => {
+      const loadingTask = pdfjsLib.getDocument({ data: state.fileBuffer });
+      const pdf = await loadingTask.promise;
+      const parsedPages = [];
+      const minWords = Number(minWordsForTextLayer.value) || 24;
+      const groupingTolerance = Number(lineTolerance.value) || 4;
+      const ocrPreference = ocrMode.value;
+      const renderScale = Number(ocrScale.value) || 2;
+      const shouldDetectTables = detectTables.checked;
+      const attachPageImages = includePageImages.checked;
+      const sparseRowMerge = mergeSparseRows.checked;
+
+      log(`Starting document analysis for ${pdf.numPages} page(s).`);
+      setStatus('Analyzing PDF structure…', `0 / ${pdf.numPages} pages`, 8);
+
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+        const page = await pdf.getPage(pageNumber);
+        const content = await page.getTextContent();
+        const rows = groupTextRows(content.items, groupingTolerance);
+        const embeddedLines = linesFromRows(rows);
+        const useOcr = shouldUseOcr(rows, ocrPreference, minWords);
+        let pageText = embeddedLines.join('\n');
+        let confidence = embeddedLines.length ? 0.96 : 0.75;
+        let source = 'embedded-text';
+        let imageData = null;
+
+        setStatus(`Processing page ${pageNumber} of ${pdf.numPages}…`, useOcr ? 'OCR candidate' : 'Reading text layer', Math.round((pageNumber - 1) / pdf.numPages * 100));
+        log(`Page ${pageNumber}: embedded rows=${rows.length}, OCR=${useOcr ? 'yes' : 'no'}.`);
+
+        if (useOcr) {
+          const canvas = await renderPageToCanvas(page, renderScale);
+          const ocrResult = await textFromOcr(canvas, pageNumber, pdf.numPages);
+          pageText = ocrResult.text;
+          confidence = ocrResult.confidence;
+          source = 'ocr';
+          if (attachPageImages) imageData = ocrResult.dataUrl;
+        }
+
+        const lines = pageText.split(/\n+/).map((line) => line.replace(/\s+/g, ' ').trim()).filter(Boolean);
+        const tables = shouldDetectTables && source !== 'ocr' ? inferTablesFromRows(rows, { mergeSparseRows: sparseRowMerge }) : [];
+
+        parsedPages.push({
+          pageNumber,
+          source,
+          confidence,
+          lines,
+          text: lines.join('\n'),
+          tables,
+          pageImageDataUrl: imageData,
+          stats: {
+            embeddedRows: rows.length,
+            embeddedTokens: embeddedLines.join(' ').split(/\s+/).filter(Boolean).length
+          }
+        });
+
+        setStatus(`Completed page ${pageNumber} of ${pdf.numPages}`, `${Math.round((pageNumber / pdf.numPages) * 100)}%`, Math.round((pageNumber / pdf.numPages) * 100));
+      }
+
+      const text = parsedPages.map((page) => `--- Page ${page.pageNumber} (${page.source}) ---\n${page.text}`).join('\n\n');
+      const allTables = parsedPages.flatMap((page) => page.tables.map((table) => ({ pageNumber: page.pageNumber, ...table })));
+      return {
+        sourceFile: state.originalName,
+        pageCount: parsedPages.length,
+        extractedAt: new Date().toISOString(),
+        ocrMode: ocrPreference,
+        pages: parsedPages,
+        tableCount: allTables.length,
+        ocrPageCount: parsedPages.filter((page) => page.source === 'ocr').length,
+        characterCount: text.length,
+        text,
+        tables: allTables
+      };
+    };
+
+    const exportTxt = () => {
+      const blob = new Blob([state.parsed.text], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, `${baseName()}.txt`);
+    };
+
+    const exportJson = () => {
+      const blob = new Blob([JSON.stringify(state.parsed, null, 2)], { type: 'application/json;charset=utf-8' });
+      saveAs(blob, `${baseName()}.json`);
+    };
+
+    const exportXml = () => {
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<document sourceFile="${xmlEscape(state.parsed.sourceFile)}" pageCount="${state.parsed.pageCount}" tableCount="${state.parsed.tableCount}" ocrPageCount="${state.parsed.ocrPageCount}" extractedAt="${xmlEscape(state.parsed.extractedAt)}">\n${state.parsed.pages.map((page) => `  <page number="${page.pageNumber}" source="${xmlEscape(page.source)}" confidence="${Math.round((page.confidence || 0) * 100)}">\n    <text>${xmlEscape(page.text)}</text>\n    <lines>\n${page.lines.map((line) => `      <line>${xmlEscape(line)}</line>`).join('\n')}\n    </lines>\n    <tables>\n${page.tables.map((table) => `      <table id="${xmlEscape(table.id)}" title="${xmlEscape(table.title)}" rowCount="${table.rowCount}" columnCount="${table.columnCount}" confidence="${Math.round((table.confidence || 0) * 100)}">\n        <headers>\n${table.headers.map((header) => `          <header>${xmlEscape(header)}</header>`).join('\n')}\n        </headers>\n        <rows>\n${table.rows.map((row) => `          <row>${row.map((cell) => `<cell>${xmlEscape(cell)}</cell>`).join('')}</row>`).join('\n')}\n        </rows>\n      </table>`).join('\n')}\n    </tables>\n  </page>`).join('\n')}\n</document>`;
+      const blob = new Blob([xml], { type: 'application/xml;charset=utf-8' });
+      saveAs(blob, `${baseName()}.xml`);
+    };
+
+    const exportCsv = () => {
+      const rows = [];
+      if (state.parsed.tables.length) {
+        rows.push(['page_number', 'table_id', 'table_title', 'row_index', ...Array.from({ length: Math.max(...state.parsed.tables.map((table) => table.headers.length), 1) }, (_, idx) => `column_${idx + 1}`)]);
+        state.parsed.tables.forEach((table) => {
+          table.rows.forEach((row, rowIndex) => {
+            rows.push([table.pageNumber, table.id, table.title, rowIndex + 1, ...row]);
+          });
+        });
+      } else {
+        rows.push(['page_number', 'line_number', 'source', 'line_text']);
+        state.parsed.pages.forEach((page) => {
+          page.lines.forEach((line, index) => rows.push([page.pageNumber, index + 1, page.source, line]));
+        });
+      }
+      const csv = rows.map((row) => row.map((cell) => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      saveAs(blob, `${baseName()}.csv`);
+    };
+
+    const exportXlsx = () => {
+      const wb = XLSX.utils.book_new();
+      const summaryRows = [{
+        source_file: state.parsed.sourceFile,
+        pages: state.parsed.pageCount,
+        characters: state.parsed.characterCount,
+        tables: state.parsed.tableCount,
+        ocr_pages: state.parsed.ocrPageCount,
+        extracted_at: state.parsed.extractedAt,
+        ocr_mode: state.parsed.ocrMode
+      }];
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summaryRows), 'Summary');
+
+      const pageRows = state.parsed.pages.map((page) => ({
+        page_number: page.pageNumber,
+        source: page.source,
+        confidence: Math.round((page.confidence || 0) * 100),
+        line_count: page.lines.length,
+        table_count: page.tables.length,
+        text: page.text
+      }));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(pageRows), 'Pages');
+
+      const lineRows = state.parsed.pages.flatMap((page) => page.lines.map((line, index) => ({
+        page_number: page.pageNumber,
+        source: page.source,
+        line_number: index + 1,
+        line_text: line
+      })));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(lineRows), 'Lines');
+
+      state.parsed.tables.forEach((table, idx) => {
+        const sheetRows = [Object.fromEntries(table.headers.map((header, headerIndex) => [header || `Column ${headerIndex + 1}`, header]))];
+        table.rows.forEach((row) => {
+          const record = {};
+          table.headers.forEach((header, colIndex) => { record[header || `Column ${colIndex + 1}`] = row[colIndex] || ''; });
+          sheetRows.push(record);
+        });
+        const worksheet = XLSX.utils.json_to_sheet(sheetRows, { skipHeader: true });
+        XLSX.utils.book_append_sheet(wb, worksheet, `Table${idx + 1}`.slice(0, 31));
+      });
+
+      XLSX.writeFile(wb, `${baseName()}.xlsx`);
+    };
+
+    const exportDocx = async () => {
+      const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = window.docx;
+      const children = [
+        new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun(`Converted from ${state.parsed.sourceFile}`)] }),
+        new Paragraph({ text: `Pages: ${state.parsed.pageCount}` }),
+        new Paragraph({ text: `Detected tables: ${state.parsed.tableCount}` }),
+        new Paragraph({ text: `OCR pages: ${state.parsed.ocrPageCount}` }),
+        new Paragraph({ text: `Extracted at: ${new Date(state.parsed.extractedAt).toLocaleString()}` })
+      ];
+
+      state.parsed.pages.forEach((page) => {
+        children.push(new Paragraph({ heading: HeadingLevel.HEADING_1, text: `Page ${page.pageNumber} (${page.source})` }));
+        children.push(new Paragraph({ text: `Confidence: ${Math.round((page.confidence || 0) * 100)}%` }));
+        page.lines.forEach((line) => children.push(new Paragraph({ text: line })));
+        page.tables.forEach((table) => {
+          children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, text: `${table.title}` }));
+          const rows = [
+            new TableRow({ children: table.headers.map((header) => new TableCell({ children: [new Paragraph({ text: header || 'Column' })] })) }),
+            ...table.rows.map((row) => new TableRow({ children: row.map((cell) => new TableCell({ children: [new Paragraph({ text: cell || '' })] })) }))
+          ];
+          children.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows }));
+        });
+      });
+
+      const doc = new Document({ sections: [{ children }] });
+      const blob = await Packer.toBlob(doc);
+      saveAs(blob, `${baseName()}.docx`);
+    };
+
+    const exportPdf = () => {
+      if (!state.file) return;
+      saveAs(state.file, state.originalName);
+    };
+
+    const runAnalysis = async () => {
+      if (!state.fileBuffer) return;
+      analyzeBtn.disabled = true;
+      exportButtons.forEach((btn) => btn.disabled = true);
+      exportHint.textContent = 'Analysis in progress';
+      setStatus('Starting analysis…', 'Preparing', 2);
+      log('Beginning analysis pipeline.');
+
+      try {
+        state.parsed = await buildParsedObject();
+        updateTextPreview();
+        updateTablePreview();
+        updateSummaryPreview();
+        setMetricValues(state.parsed);
+        setStatus('Analysis completed successfully', `${state.parsed.pageCount} page(s) processed`, 100);
+        enableExports();
+        log(`Analysis complete. Pages=${state.parsed.pageCount}, tables=${state.parsed.tableCount}, OCR pages=${state.parsed.ocrPageCount}.`, 'success');
+      } catch (error) {
+        console.error(error);
+        setStatus('Analysis failed', error?.message || 'Unknown error', 0);
+        previewText.textContent = 'The document could not be parsed. It may be encrypted, malformed, or too large for the current browser session.';
+        previewTables.innerHTML = '';
+        previewSummary.textContent = '';
+        log(`Analysis failed: ${error?.message || error}`, 'error');
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    };
+
+    exportButtons.forEach((button) => {
+      button.addEventListener('click', async () => {
+        const format = button.dataset.format;
+        if (format !== 'pdf' && !state.parsed) return;
+        try {
+          log(`Export requested: ${format.toUpperCase()}.`);
+          switch (format) {
+            case 'pdf': exportPdf(); break;
+            case 'docx': await exportDocx(); break;
+            case 'xlsx': exportXlsx(); break;
+            case 'csv': exportCsv(); break;
+            case 'txt': exportTxt(); break;
+            case 'json': exportJson(); break;
+            case 'xml': exportXml(); break;
+            default: break;
+          }
+          log(`${format.toUpperCase()} export completed.`, 'success');
+        } catch (error) {
+          console.error(error);
+          setStatus(`Export failed for ${format.toUpperCase()}`, error?.message || 'Export error');
+          log(`Export failed for ${format.toUpperCase()}: ${error?.message || error}`, 'error');
+        }
+      });
+    });
+
+    fileInput.addEventListener('change', async (event) => {
+      const [file] = event.target.files || [];
+      if (file) await setFile(file);
+    });
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        fileInput.click();
+      }
+    });
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach((eventName) => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropzone.classList.remove('dragover');
+      });
+    });
+    dropzone.addEventListener('drop', async (event) => {
+      const file = event.dataTransfer?.files?.[0];
+      if (file) await setFile(file);
+    });
+
+    analyzeBtn.addEventListener('click', runAnalysis);
+    resetBtn.addEventListener('click', resetState);
+    sampleBtn.addEventListener('click', () => document.getElementById('conversion-notes').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    clearLogBtn.addEventListener('click', () => { logBody.textContent = ''; log('Log cleared.'); });
+    ocrMode.addEventListener('change', () => { ocrModeBadge.textContent = ocrMode.options[ocrMode.selectedIndex].text.split(' ')[0]; });
+
+    resetState();
+    setPreviewTab('text');
+  </script>
+</body>
+</html>
