@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Easy Converter | PDF to DOCX, XLSX, CSV, TXT, JSON, XML</title>
+  <meta name="description" content="Easy Converter is a responsive client-side PDF converter that lets you upload a PDF and export its extracted content to DOCX, XLSX, CSV, TXT, JSON, and XML formats." />
+  <meta name="keywords" content="PDF converter, PDF to DOCX, PDF to XLSX, PDF to CSV, PDF to TXT, PDF to JSON, PDF to XML, Easy Suite, Skunkworks" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data: blob:; font-src 'self' https: data:; style-src 'self' https: 'unsafe-inline'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval' blob:; worker-src 'self' blob:; connect-src 'self' https: blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Easy Converter | PDF File Type Converter" />
+  <meta property="og:description" content="Upload a PDF and convert extracted content into DOCX, XLSX, CSV, TXT, JSON, and XML formats in your browser." />
+  <meta property="og:image" content="logo.png" />
+  <meta property="og:url" content="easy-converter.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Easy Converter | PDF File Type Converter" />
+  <meta name="twitter:description" content="Client-side PDF conversion for editable and structured export formats." />
+  <meta name="twitter:image" content="logo.png" />
+
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+  <link rel="preload" as="image" href="logo.png">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          boxShadow: {
+            soft: '0 20px 45px rgba(15, 23, 42, 0.08)',
+            glow: '0 12px 35px rgba(37, 99, 235, 0.18)'
+          }
+        }
+      }
+    };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.mjs" type="module"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.js" defer></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.12), transparent 30%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.10), transparent 24%),
+        linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+    }
+    .glass {
+      backdrop-filter: blur(14px);
+      background: rgba(255,255,255,0.78);
+    }
+    .dropzone.dragover {
+      border-color: #2563eb;
+      background: rgba(37,99,235,0.08);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
+    }
+    .format-card:hover {
+      transform: translateY(-4px);
+    }
+    .preview-panel {
+      max-height: 28rem;
+      overflow: auto;
+    }
+    .status-dot {
+      width: .625rem;
+      height: .625rem;
+      border-radius: 9999px;
+      display: inline-block;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Easy Converter",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "A browser-based PDF conversion tool that exports extracted PDF content to DOCX, XLSX, CSV, TXT, JSON, and XML.",
+    "creator": {
+      "@type": "Organization",
+      "name": "Skunkworks"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+</head>
+<body class="min-h-screen text-slate-900 antialiased">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:bg-white focus:text-blue-700 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow">Skip to main content</a>
+
+  <header class="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 min-w-0">
+        <img src="logo.png" alt="Easy Suite logo" class="h-10 w-10 rounded-xl object-contain bg-white shadow-sm" loading="eager" />
+        <div class="min-w-0">
+          <a href="index.html" class="block truncate text-lg font-extrabold tracking-tight text-slate-900">Easy Suite</a>
+          <p class="truncate text-sm text-slate-500">Easy Converter</p>
+        </div>
+      </div>
+      <nav aria-label="Primary" class="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600">
+        <a href="#converter" class="hover:text-blue-700">Converter</a>
+        <a href="#formats" class="hover:text-blue-700">Formats</a>
+        <a href="#notes" class="hover:text-blue-700">Notes</a>
+        <a href="index.html" class="inline-flex items-center rounded-full border border-slate-200 px-4 py-2 hover:border-blue-300 hover:text-blue-700">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="mx-auto max-w-7xl px-4 pb-8 pt-8 sm:px-6 lg:px-8 lg:pb-12 lg:pt-10">
+      <div class="grid items-start gap-8 lg:grid-cols-[1.15fr_.85fr] lg:gap-10">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700">
+            <span class="status-dot bg-emerald-500"></span>
+            Browser-based PDF conversion workflow
+          </div>
+          <h1 class="mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Convert PDF content into editable and structured formats.</h1>
+          <p class="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+            Upload a PDF, extract its readable content in the browser, preview the result, and export it to <strong>DOCX</strong>, <strong>XLSX</strong>, <strong>CSV</strong>, <strong>TXT</strong>, <strong>JSON</strong>, or <strong>XML</strong>. This works best for text-based PDFs.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3 text-sm text-slate-600">
+            <span class="rounded-full bg-white px-4 py-2 shadow-sm ring-1 ring-slate-200">Client-side workflow</span>
+            <span class="rounded-full bg-white px-4 py-2 shadow-sm ring-1 ring-slate-200">Responsive interface</span>
+            <span class="rounded-full bg-white px-4 py-2 shadow-sm ring-1 ring-slate-200">No sign-in required</span>
+          </div>
+        </div>
+
+        <aside class="glass rounded-3xl border border-white/70 p-6 shadow-soft">
+          <h2 class="text-xl font-bold text-slate-900">Supported output formats</h2>
+          <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+            <div class="rounded-2xl bg-slate-900 px-4 py-3 text-white">PDF</div>
+            <div class="rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200">DOCX</div>
+            <div class="rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200">XLSX</div>
+            <div class="rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200">CSV</div>
+            <div class="rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200">TXT</div>
+            <div class="rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200">JSON</div>
+            <div class="rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200 col-span-2">XML</div>
+          </div>
+          <p class="mt-5 text-sm leading-6 text-slate-500">
+            PDF export preserves the uploaded original. Other formats are generated from extracted content and page structure.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="converter" class="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+      <div class="grid gap-8 xl:grid-cols-[1.1fr_.9fr]">
+        <section class="glass rounded-3xl border border-white/70 p-5 shadow-soft sm:p-6 lg:p-8">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 class="text-2xl font-bold text-slate-950">PDF upload and conversion</h2>
+              <p class="mt-2 text-sm leading-6 text-slate-600">Drop a PDF into the workspace, parse its text content, then export in the format you need.</p>
+            </div>
+            <label class="inline-flex cursor-pointer items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-glow transition hover:bg-blue-700 focus-within:outline-none focus-within:ring-4 focus-within:ring-blue-200">
+              <input id="fileInput" type="file" accept="application/pdf" class="sr-only" />
+              Choose PDF
+            </label>
+          </div>
+
+          <div id="dropzone" class="dropzone mt-6 rounded-3xl border-2 border-dashed border-slate-300 bg-white/80 p-6 text-center transition sm:p-10">
+            <div class="mx-auto flex max-w-xl flex-col items-center">
+              <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-3xl">📄</div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">Drag and drop your PDF here</h3>
+              <p class="mt-2 text-sm leading-6 text-slate-500">Supports PDF upload for conversion into editable, flat-file, and structured export formats.</p>
+              <p id="fileMeta" class="mt-4 text-sm font-medium text-slate-700">No file selected yet.</p>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-4 sm:grid-cols-3">
+            <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Pages</p>
+              <p id="pageCount" class="mt-2 text-2xl font-black text-slate-950">0</p>
+            </div>
+            <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Characters</p>
+              <p id="charCount" class="mt-2 text-2xl font-black text-slate-950">0</p>
+            </div>
+            <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Status</p>
+              <p id="parseStatus" class="mt-2 text-base font-bold text-amber-600">Awaiting PDF</p>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button id="parseBtn" type="button" class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50" disabled>Extract content</button>
+            <button id="resetBtn" type="button" class="rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950">Reset</button>
+          </div>
+        </section>
+
+        <section class="glass rounded-3xl border border-white/70 p-5 shadow-soft sm:p-6 lg:p-8">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-bold text-slate-950">Extracted preview</h2>
+              <p class="mt-2 text-sm text-slate-600">Review the parsed output before you export it.</p>
+            </div>
+          </div>
+          <div id="previewPanel" class="preview-panel mt-5 rounded-3xl bg-slate-950 p-5 text-sm leading-7 text-slate-200 ring-1 ring-slate-800">
+            Upload a PDF to generate a preview.
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="formats" class="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+      <div class="glass rounded-3xl border border-white/70 p-5 shadow-soft sm:p-6 lg:p-8">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-950">Export formats</h2>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Choose a destination format. PDF keeps the original upload. The rest are generated from extracted text and page metadata.</p>
+          </div>
+          <p id="exportHint" class="text-sm font-medium text-slate-500">Parse a PDF to enable conversion.</p>
+        </div>
+
+        <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <button data-format="pdf" class="format-card rounded-3xl bg-slate-900 p-5 text-left text-white shadow-soft transition disabled:cursor-not-allowed disabled:opacity-50" disabled>
+            <div class="text-2xl">📕</div>
+            <h3 class="mt-4 text-lg font-bold">PDF</h3>
+            <p class="mt-2 text-sm text-slate-300">Download the original uploaded PDF file.</p>
+          </button>
+          <button data-format="docx" class="format-card rounded-3xl bg-white p-5 text-left ring-1 ring-slate-200 shadow-soft transition disabled:cursor-not-allowed disabled:opacity-50" disabled>
+            <div class="text-2xl">📝</div>
+            <h3 class="mt-4 text-lg font-bold text-slate-950">DOCX</h3>
+            <p class="mt-2 text-sm text-slate-600">Editable Word document with page headings and extracted text.</p>
+          </button>
+          <button data-format="xlsx" class="format-card rounded-3xl bg-white p-5 text-left ring-1 ring-slate-200 shadow-soft transition disabled:cursor-not-allowed disabled:opacity-50" disabled>
+            <div class="text-2xl">📊</div>
+            <h3 class="mt-4 text-lg font-bold text-slate-950">XLSX</h3>
+            <p class="mt-2 text-sm text-slate-600">Spreadsheet workbook with page-level rows and raw line items.</p>
+          </button>
+          <button data-format="csv" class="format-card rounded-3xl bg-white p-5 text-left ring-1 ring-slate-200 shadow-soft transition disabled:cursor-not-allowed disabled:opacity-50" disabled>
+            <div class="text-2xl">🧾</div>
+            <h3 class="mt-4 text-lg font-bold text-slate-950">CSV</h3>
+            <p class="mt-2 text-sm text-slate-600">Universal flat-file export of parsed page and line data.</p>
+          </button>
+          <button data-format="txt" class="format-card rounded-3xl bg-white p-5 text-left ring-1 ring-slate-200 shadow-soft transition disabled:cursor-not-allowed disabled:opacity-50" disabled>
+            <div class="text-2xl">📄</div>
+            <h3 class="mt-4 text-lg font-bold text-slate-950">TXT</h3>
+            <p class="mt-2 text-sm text-slate-600">Clean plain-text output for notes, analysis, or copying.</p>
+          </button>
+          <button data-format="json" class="format-card rounded-3xl bg-white p-5 text-left ring-1 ring-slate-200 shadow-soft transition disabled:cursor-not-allowed disabled:opacity-50" disabled>
+            <div class="text-2xl">🔗</div>
+            <h3 class="mt-4 text-lg font-bold text-slate-950">JSON</h3>
+            <p class="mt-2 text-sm text-slate-600">Structured export for integrations, APIs, and downstream systems.</p>
+          </button>
+          <button data-format="xml" class="format-card rounded-3xl bg-white p-5 text-left ring-1 ring-slate-200 shadow-soft transition disabled:cursor-not-allowed disabled:opacity-50" disabled>
+            <div class="text-2xl">🧩</div>
+            <h3 class="mt-4 text-lg font-bold text-slate-950">XML</h3>
+            <p class="mt-2 text-sm text-slate-600">System-to-system export using a simple XML document structure.</p>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="notes" class="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
+      <div class="grid gap-6 lg:grid-cols-3">
+        <article class="glass rounded-3xl border border-white/70 p-6 shadow-soft lg:col-span-2">
+          <h2 class="text-2xl font-bold text-slate-950">Important conversion notes</h2>
+          <div class="mt-5 space-y-4 text-sm leading-7 text-slate-600">
+            <p><strong>Text-based PDFs:</strong> Best results come from PDFs that already contain embedded selectable text.</p>
+            <p><strong>Scanned PDFs:</strong> Image-only or scanned documents usually need OCR to produce strong DOCX, XLSX, CSV, JSON, or XML outputs. This page does not perform OCR.</p>
+            <p><strong>Spreadsheet outputs:</strong> XLSX and CSV exports preserve extracted lines and page structure, but they do not automatically rebuild complex table geometry from every PDF layout.</p>
+            <p><strong>Privacy model:</strong> This page is designed for browser-based processing. No authentication or remote storage workflow is included in this static version.</p>
+          </div>
+        </article>
+        <article class="glass rounded-3xl border border-white/70 p-6 shadow-soft">
+          <h2 class="text-2xl font-bold text-slate-950">Recommended next step</h2>
+          <p class="mt-4 text-sm leading-7 text-slate-600">
+            If you want enterprise-grade fidelity, the next phase should add OCR, table detection, and server-side conversion services for higher-quality DOCX, XLSX, and XML outputs.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200/80 bg-white/80">
+    <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-sm text-slate-500 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+      <p>Easy Converter by Easy Suite.</p>
+      <p>Designed for responsive, lightweight, browser-based PDF export workflows.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.mjs';
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.worker.min.mjs';
+
+    const state = {
+      file: null,
+      fileBuffer: null,
+      parsed: null,
+      originalName: 'document.pdf'
+    };
+
+    const fileInput = document.getElementById('fileInput');
+    const dropzone = document.getElementById('dropzone');
+    const fileMeta = document.getElementById('fileMeta');
+    const pageCount = document.getElementById('pageCount');
+    const charCount = document.getElementById('charCount');
+    const parseStatus = document.getElementById('parseStatus');
+    const parseBtn = document.getElementById('parseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const previewPanel = document.getElementById('previewPanel');
+    const exportHint = document.getElementById('exportHint');
+    const exportButtons = Array.from(document.querySelectorAll('[data-format]'));
+
+    const escapeXml = (unsafe) => unsafe
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&apos;');
+
+    const setStatus = (message, tone = 'amber') => {
+      const palette = {
+        amber: 'text-amber-600',
+        green: 'text-emerald-600',
+        red: 'text-red-600',
+        blue: 'text-blue-600'
+      };
+      parseStatus.className = `mt-2 text-base font-bold ${palette[tone] || palette.amber}`;
+      parseStatus.textContent = message;
+    };
+
+    const setFile = async (file) => {
+      if (!file || file.type !== 'application/pdf') {
+        setStatus('Please choose a valid PDF file.', 'red');
+        return;
+      }
+      state.file = file;
+      state.originalName = file.name;
+      state.fileBuffer = await file.arrayBuffer();
+      state.parsed = null;
+      fileMeta.textContent = `${file.name} • ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+      previewPanel.textContent = 'File loaded. Click “Extract content” to parse the PDF.';
+      pageCount.textContent = '0';
+      charCount.textContent = '0';
+      parseBtn.disabled = false;
+      exportButtons.forEach(btn => btn.disabled = true);
+      exportHint.textContent = 'Parse a PDF to enable conversion.';
+      setStatus('PDF ready for extraction', 'blue');
+    };
+
+    fileInput.addEventListener('change', async (event) => {
+      const [file] = event.target.files;
+      if (file) await setFile(file);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropzone.classList.remove('dragover');
+      });
+    });
+    dropzone.addEventListener('drop', async (event) => {
+      const file = event.dataTransfer?.files?.[0];
+      if (file) await setFile(file);
+    });
+
+    parseBtn.addEventListener('click', async () => {
+      if (!state.fileBuffer) return;
+      parseBtn.disabled = true;
+      setStatus('Parsing PDF content…', 'blue');
+      previewPanel.textContent = 'Parsing in progress…';
+
+      try {
+        const loadingTask = pdfjsLib.getDocument({ data: state.fileBuffer });
+        const pdf = await loadingTask.promise;
+        const pages = [];
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+          const page = await pdf.getPage(pageNumber);
+          const content = await page.getTextContent();
+          const strings = content.items
+            .map(item => ('str' in item ? String(item.str).trim() : ''))
+            .filter(Boolean);
+
+          const lines = [];
+          let previousY = null;
+          let buffer = [];
+
+          for (const item of content.items) {
+            if (!('str' in item) || !String(item.str).trim()) continue;
+            const currentY = Math.round(item.transform[5]);
+            if (previousY !== null && Math.abs(previousY - currentY) > 3 && buffer.length) {
+              lines.push(buffer.join(' ').replace(/\s+/g, ' ').trim());
+              buffer = [];
+            }
+            buffer.push(String(item.str).trim());
+            previousY = currentY;
+          }
+          if (buffer.length) {
+            lines.push(buffer.join(' ').replace(/\s+/g, ' ').trim());
+          }
+
+          const pageText = lines.join('\n').trim() || strings.join(' ').replace(/\s+/g, ' ').trim();
+          pages.push({
+            pageNumber,
+            lines: lines.filter(Boolean),
+            text: pageText
+          });
+        }
+
+        const combinedText = pages.map(p => `--- Page ${p.pageNumber} ---\n${p.text}`).join('\n\n');
+        state.parsed = {
+          sourceFile: state.originalName,
+          pageCount: pages.length,
+          extractedAt: new Date().toISOString(),
+          pages,
+          text: combinedText,
+          lineCount: pages.reduce((sum, p) => sum + p.lines.length, 0),
+          characterCount: combinedText.length
+        };
+
+        pageCount.textContent = String(state.parsed.pageCount);
+        charCount.textContent = new Intl.NumberFormat().format(state.parsed.characterCount);
+        previewPanel.textContent = combinedText.slice(0, 6000) || 'No readable text was extracted.';
+        exportButtons.forEach(btn => btn.disabled = false);
+        exportHint.textContent = 'Conversion enabled. Choose an export format.';
+        setStatus('Content extracted successfully', 'green');
+      } catch (error) {
+        console.error(error);
+        previewPanel.textContent = 'Could not parse this PDF. It may be encrypted, image-only, or malformed.';
+        setStatus('PDF parsing failed', 'red');
+      } finally {
+        parseBtn.disabled = false;
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      state.file = null;
+      state.fileBuffer = null;
+      state.parsed = null;
+      state.originalName = 'document.pdf';
+      fileInput.value = '';
+      fileMeta.textContent = 'No file selected yet.';
+      previewPanel.textContent = 'Upload a PDF to generate a preview.';
+      pageCount.textContent = '0';
+      charCount.textContent = '0';
+      exportButtons.forEach(btn => btn.disabled = true);
+      exportHint.textContent = 'Parse a PDF to enable conversion.';
+      parseBtn.disabled = true;
+      setStatus('Awaiting PDF', 'amber');
+    });
+
+    const baseName = () => (state.originalName || 'document.pdf').replace(/\.pdf$/i, '') || 'document';
+
+    const exportTxt = () => {
+      const blob = new Blob([state.parsed.text], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, `${baseName()}.txt`);
+    };
+
+    const exportJson = () => {
+      const blob = new Blob([JSON.stringify(state.parsed, null, 2)], { type: 'application/json;charset=utf-8' });
+      saveAs(blob, `${baseName()}.json`);
+    };
+
+    const exportXml = () => {
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<pdfDocument sourceFile="${escapeXml(state.parsed.sourceFile)}" pageCount="${state.parsed.pageCount}" extractedAt="${escapeXml(state.parsed.extractedAt)}">\n${state.parsed.pages.map(page => `  <page number="${page.pageNumber}">\n${page.lines.map(line => `    <line>${escapeXml(line)}</line>`).join('\n')}\n    <text>${escapeXml(page.text)}</text>\n  </page>`).join('\n')}\n</pdfDocument>`;
+      const blob = new Blob([xml], { type: 'application/xml;charset=utf-8' });
+      saveAs(blob, `${baseName()}.xml`);
+    };
+
+    const exportCsv = () => {
+      const rows = [['page_number', 'line_number', 'line_text']];
+      state.parsed.pages.forEach(page => {
+        if (page.lines.length === 0) rows.push([page.pageNumber, '', page.text]);
+        page.lines.forEach((line, index) => rows.push([page.pageNumber, index + 1, line]));
+      });
+      const csv = rows.map(row => row.map(value => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      saveAs(blob, `${baseName()}.csv`);
+    };
+
+    const exportXlsx = () => {
+      const wb = XLSX.utils.book_new();
+      const pageRows = state.parsed.pages.map(page => ({
+        page_number: page.pageNumber,
+        character_count: page.text.length,
+        line_count: page.lines.length,
+        text: page.text
+      }));
+      const lineRows = [];
+      state.parsed.pages.forEach(page => {
+        if (!page.lines.length) {
+          lineRows.push({ page_number: page.pageNumber, line_number: '', line_text: page.text });
+        }
+        page.lines.forEach((line, idx) => {
+          lineRows.push({ page_number: page.pageNumber, line_number: idx + 1, line_text: line });
+        });
+      });
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(pageRows), 'Pages');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(lineRows), 'Lines');
+      XLSX.writeFile(wb, `${baseName()}.xlsx`);
+    };
+
+    const exportDocx = async () => {
+      const { Document, Packer, Paragraph, HeadingLevel, TextRun } = window.docx;
+      const children = [
+        new Paragraph({
+          heading: HeadingLevel.TITLE,
+          children: [new TextRun(`Converted from ${state.parsed.sourceFile}`)]
+        }),
+        new Paragraph({ text: `Pages: ${state.parsed.pageCount}` }),
+        new Paragraph({ text: `Extracted: ${new Date(state.parsed.extractedAt).toLocaleString()}` })
+      ];
+      state.parsed.pages.forEach(page => {
+        children.push(new Paragraph({ heading: HeadingLevel.HEADING_1, text: `Page ${page.pageNumber}` }));
+        (page.lines.length ? page.lines : [page.text]).forEach(line => {
+          children.push(new Paragraph({ text: line || ' ' }));
+        });
+      });
+      const doc = new Document({ sections: [{ children }] });
+      const blob = await Packer.toBlob(doc);
+      saveAs(blob, `${baseName()}.docx`);
+    };
+
+    const exportPdf = () => {
+      if (!state.file) return;
+      saveAs(state.file, state.originalName);
+    };
+
+    exportButtons.forEach(button => {
+      button.addEventListener('click', async () => {
+        if (!state.parsed && button.dataset.format !== 'pdf') return;
+        try {
+          switch (button.dataset.format) {
+            case 'pdf': exportPdf(); break;
+            case 'txt': exportTxt(); break;
+            case 'json': exportJson(); break;
+            case 'xml': exportXml(); break;
+            case 'csv': exportCsv(); break;
+            case 'xlsx': exportXlsx(); break;
+            case 'docx': await exportDocx(); break;
+            default: break;
+          }
+        } catch (error) {
+          console.error(error);
+          setStatus(`Export failed for ${button.dataset.format?.toUpperCase() || 'selected format'}`, 'red');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
