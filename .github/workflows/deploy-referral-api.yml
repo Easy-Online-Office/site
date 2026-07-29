@@ -22,26 +22,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify deployment configuration
-        shell: bash
+      - name: Report unconfigured deployment
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME == '' || env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE == '' }}
         run: |
-          test -n "$AZURE_FUNCTIONAPP_NAME" || (echo "Set repository variable AZURE_FUNCTIONAPP_NAME" && exit 1)
-          test -n "$AZURE_FUNCTIONAPP_PUBLISH_PROFILE" || (echo "Set repository secret AZURE_FUNCTIONAPP_PUBLISH_PROFILE" && exit 1)
+          echo "Referral API deployment is not configured yet."
+          echo "Set repository variable AZURE_FUNCTIONAPP_NAME and secret AZURE_FUNCTIONAPP_PUBLISH_PROFILE."
 
       - name: Setup Node.js
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
       - name: Install production dependencies
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
         working-directory: referral-api
         run: npm install --omit=dev
 
       - name: Validate referral API
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
         working-directory: referral-api
         run: npm run check
 
       - name: Deploy Azure Function App
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
