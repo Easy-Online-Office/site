@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="easyfile-banner.png" alt="EasyFile — Simple. Fast. Professional business tools" width="100%">
+  <img src="easyfile-banner.svg" alt="EasyFile — Simple. Fast. Professional business tools" width="100%">
 
   # EasyFile
 
