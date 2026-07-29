@@ -2,7 +2,8 @@
 (function () {
   const BRAND = Object.freeze({
     name: "EasyFile",
-    logo: "icon.png"
+    logoOnDark: "logo-w.png",
+    logoOnLight: "logo-b.png"
   });
 
   const navMount = document.getElementById("easyNavMount");
@@ -23,7 +24,7 @@
       { k: "easy-payroll",        badge: "P",  title: "EasyPAY",   subtitle: "Payroll Manager" },
       { k: "easy-inventory",      badge: "IV", title: "EasyINVTR", subtitle: "Inventory Manager" },
       { k: "easy-crm",            badge: "C",  title: "EasyCRM",   subtitle: "CRM Manager" },
-      { k: "index",               badge: "EF", title: "EasyFile",  subtitle: "Easy Suite Dashboard" }
+      { k: "index",               badge: "EF", title: "EasyFile",  subtitle: "Practical business tools" }
     ];
 
     for (const module of map) {
@@ -40,8 +41,48 @@
     mount.innerHTML = await response.text();
   }
 
-  function brandLogoMarkup() {
-    return `<img src="${BRAND.logo}" alt="" width="40" height="40" decoding="async" class="h-10 w-10 rounded-xl object-contain bg-white bg-opacity-10" data-easyfile-logo><span>${BRAND.name}</span>`;
+  function brandLogoMarkup(variant = "on-dark") {
+    const source = variant === "on-light" ? BRAND.logoOnLight : BRAND.logoOnDark;
+    return `<img src="${source}" alt="" width="40" height="40" decoding="async" class="h-10 w-10 object-contain" data-easyfile-logo data-logo-variant="${variant}"><span>${BRAND.name}</span>`;
+  }
+
+  function replaceIdentityWithLogo(identity, source = BRAND.logoOnLight) {
+    if (!identity) return;
+
+    identity.textContent = "";
+    identity.classList.remove("bg-blue-600", "text-white", "font-black");
+
+    const image = document.createElement("img");
+    image.src = source;
+    image.alt = "";
+    image.width = 40;
+    image.height = 40;
+    image.decoding = "async";
+    image.className = "h-10 w-10 object-contain";
+    image.dataset.easyfileLogo = "";
+    image.dataset.logoVariant = "on-light";
+    identity.appendChild(image);
+  }
+
+  function ensureFavicons() {
+    document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]').forEach((link) => link.remove());
+
+    const definitions = [
+      { rel: "icon", href: BRAND.logoOnLight, type: "image/png" },
+      { rel: "icon", href: BRAND.logoOnLight, type: "image/png", media: "(prefers-color-scheme: light)" },
+      { rel: "icon", href: BRAND.logoOnDark, type: "image/png", media: "(prefers-color-scheme: dark)" },
+      { rel: "apple-touch-icon", href: BRAND.logoOnLight }
+    ];
+
+    definitions.forEach((definition) => {
+      const link = document.createElement("link");
+      link.rel = definition.rel;
+      link.href = definition.href;
+      if (definition.type) link.type = definition.type;
+      if (definition.media) link.media = definition.media;
+      link.dataset.easyfileFavicon = "";
+      document.head.appendChild(link);
+    });
   }
 
   function applyBranding() {
@@ -49,26 +90,24 @@
       if (!/easy\s*(suite|file)/i.test(anchor.textContent || "")) return;
       anchor.classList.add("inline-flex", "items-center", "gap-2");
       anchor.setAttribute("aria-label", `${BRAND.name} home`);
-      anchor.innerHTML = brandLogoMarkup();
+      anchor.innerHTML = brandLogoMarkup("on-dark");
     });
 
-    document.querySelectorAll("h1").forEach((heading) => {
-      if (!/^easy\s*suite$/i.test((heading.textContent || "").trim())) return;
-      heading.textContent = BRAND.name;
+    document.querySelectorAll("header h1").forEach((heading) => {
+      const headingText = (heading.textContent || "").trim();
+      if (!/^easy/i.test(headingText)) return;
+
+      if (/^easy\s*suite$/i.test(headingText)) heading.textContent = BRAND.name;
 
       const identity = heading.parentElement?.previousElementSibling;
-      if (!identity) return;
+      if (!identity || !identity.matches(".h-10.w-10")) return;
+      replaceIdentityWithLogo(identity, BRAND.logoOnLight);
+    });
 
-      identity.textContent = "";
-      const image = document.createElement("img");
-      image.src = BRAND.logo;
-      image.alt = "";
-      image.width = 40;
-      image.height = 40;
-      image.decoding = "async";
-      image.className = "h-10 w-10 rounded-xl object-contain";
-      image.dataset.easyfileLogo = "";
-      identity.appendChild(image);
+    document.querySelectorAll("img[data-easyfile-logo]").forEach((image) => {
+      const inNavigation = Boolean(image.closest("nav"));
+      image.src = inNavigation ? BRAND.logoOnDark : BRAND.logoOnLight;
+      image.dataset.logoVariant = inNavigation ? "on-dark" : "on-light";
     });
   }
 
@@ -82,10 +121,18 @@
       const title = document.getElementById("easyTitle");
       const subtitle = document.getElementById("easySubtitle");
 
-      if (badge) badge.textContent = config.badge || "EF";
+      if (badge) {
+        if (badge.tagName === "IMG") {
+          badge.src = BRAND.logoOnLight;
+          badge.alt = "";
+        } else {
+          replaceIdentityWithLogo(badge, BRAND.logoOnLight);
+        }
+      }
       if (title) title.textContent = config.title || BRAND.name;
       if (subtitle) subtitle.textContent = config.subtitle || "Practical business tools";
 
+      ensureFavicons();
       applyBranding();
     } catch (error) {
       console.warn("EasyFile core load warning:", error);
