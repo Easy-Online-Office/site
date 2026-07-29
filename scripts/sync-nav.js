@@ -5,6 +5,21 @@ document.addEventListener("DOMContentLoaded", () => {
     logoOnLight: "logo-b.png"
   });
 
+  const MODULE_FILES = new Set([
+    "easy-quote.html",
+    "easy-invoice.html",
+    "easy-purchase-order.html",
+    "easy-sales-order.html",
+    "easy-receipt.html",
+    "easy-statement.html",
+    "easy-job-card.html",
+    "easy-payroll.html",
+    "easy-inventory.html",
+    "easy-crm.html",
+    "easy-asset-management.html",
+    "easy-site-inspection.html"
+  ]);
+
   const links = document.querySelectorAll("nav a");
   const current = location.pathname.split("/").pop() || "index.html";
 
@@ -64,4 +79,12 @@ document.addEventListener("DOMContentLoaded", () => {
     link.dataset.easyfileFavicon = "";
     document.head.appendChild(link);
   });
+
+  if (MODULE_FILES.has(current.toLowerCase()) && !document.querySelector('script[data-easyfile-module-actions]')) {
+    const actionsScript = document.createElement("script");
+    actionsScript.src = "assets/js/easyfile-module-actions.js";
+    actionsScript.defer = true;
+    actionsScript.dataset.easyfileModuleActions = "";
+    document.head.appendChild(actionsScript);
+  }
 });
