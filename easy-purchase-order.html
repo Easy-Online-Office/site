@@ -9,8 +9,8 @@
   
 
   <!-- Favicon -->
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
+  
+  
 <meta name="description" content="Create professional purchase orders with suppliers, items, approvals, VAT, attachments, exports (PDF/CSV/JSON), and offline templates." />
 
   <!-- Favicon --><!-- Tailwind CSS -->
@@ -90,6 +90,11 @@
   </style>
   <link rel="stylesheet" href="assets/css/easy-print.css" />
   <script defer src="assets/js/easy-suite-core.js"></script>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 
 <body class="min-h-screen flex flex-col" data-theme="light">
@@ -97,7 +102,7 @@
 <nav class="bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
   <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
     <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
-      <img src="icon.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 rounded-xl object-contain bg-white bg-opacity-10" data-easyfile-logo />
+      <img src="logo-w.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 object-contain" data-easyfile-logo data-logo-variant="on-dark" />
       <span>EasyFile</span>
     </a>
     <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
@@ -112,8 +117,7 @@
     <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
   </div>
 </nav>
-
-  <!-- Easy Suite mounts (injected) -->
+<!-- Easy Suite mounts (injected) -->
   <header class="bg-white border-b border-gray-200 no-print">
   <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
     <div class="flex items-center gap-3">

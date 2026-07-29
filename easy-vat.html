@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EasyVAT – VAT201 Assistant</title>
   <meta name="description" content="Summarise VAT Output/Input for a period and export reports." />
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
+  
+  
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -32,13 +32,18 @@ body{background:var(--bg); color:var(--text);}
 @media print{ .no-print{display:none !important;} body{background:#fff !important;} .card{box-shadow:none !important; border:none !important;} }
 
   </style>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 <body class="min-h-screen">
 <!-- NAV_SYNC -->
 <nav class="bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
   <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
     <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
-      <img src="icon.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 rounded-xl object-contain bg-white bg-opacity-10" data-easyfile-logo />
+      <img src="logo-w.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 object-contain" data-easyfile-logo data-logo-variant="on-dark" />
       <span>EasyFile</span>
     </a>
     <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
@@ -53,7 +58,6 @@ body{background:var(--bg); color:var(--text);}
     <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
   </div>
 </nav>
-
 <main class="container mx-auto px-4 py-8">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
     <div>
