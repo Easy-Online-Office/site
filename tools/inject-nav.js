@@ -43,6 +43,26 @@ function applyEncodingFixups(content) {
   return output;
 }
 
+function stripNonStructuralBlocks(html) {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, "")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi, "");
+}
+
+function replaceLastClosingTag(content, tagName, replacement) {
+  const expression = new RegExp(`</${tagName}\\s*>`, "gi");
+  let match;
+  let lastMatch = null;
+
+  while ((match = expression.exec(content)) !== null) {
+    lastMatch = { index: match.index, length: match[0].length };
+  }
+
+  if (!lastMatch) return content;
+  return `${content.slice(0, lastMatch.index)}${replacement}${content.slice(lastMatch.index + lastMatch.length)}`;
+}
+
 function removeLegacyNavigation(content) {
   let output = content;
 
@@ -72,13 +92,14 @@ function collapseAdjacentMainElements(content) {
 }
 
 function ensureMainPairs(content) {
-  const opens = (content.match(/<main\b/gi) || []).length;
-  const closes = (content.match(/<\/main\s*>/gi) || []).length;
+  const structural = stripNonStructuralBlocks(content);
+  const opens = (structural.match(/<main\b/gi) || []).length;
+  const closes = (structural.match(/<\/main\s*>/gi) || []).length;
 
-  if (opens <= closes || !/<\/body\s*>/i.test(content)) return content;
+  if (opens <= closes) return content;
 
   const missing = Array.from({ length: opens - closes }, () => "</main>").join("\n");
-  return content.replace(/<\/body\s*>/i, `${missing}\n</body>`);
+  return replaceLastClosingTag(content, "body", `${missing}\n</body>`);
 }
 
 function injectNavigation(content, navigation) {
@@ -90,7 +111,7 @@ function injectNavigation(content, navigation) {
   output = collapseAdjacentMainElements(output);
   output = output.replace(/<body\b[^>]*>/i, (bodyTag) => `${bodyTag}\n${navigation}`);
   output = ensureMainPairs(output);
-  output = output.replace(/<\/body\s*>/i, `${SYNC_SCRIPT}\n</body>`);
+  output = replaceLastClosingTag(output, "body", `${SYNC_SCRIPT}\n</body>`);
   return output;
 }
 
