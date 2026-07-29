@@ -1,0 +1,67 @@
+/* EasyFile canonical footer — visually paired with the primary navigation */
+.easyfile-footer {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, .16) !important;
+  background: linear-gradient(110deg, var(--easyfile-blue-strong, #1d4ed8), var(--easyfile-blue, #2563eb));
+  color: #fff;
+  box-shadow: 0 -10px 28px rgba(30, 64, 175, .16);
+}
+
+.easyfile-footer > .container,
+.easyfile-footer > div {
+  width: min(100%, 80rem);
+  margin-inline: auto;
+}
+
+.easyfile-footer p,
+.easyfile-footer a,
+.easyfile-footer .muted-adaptive {
+  color: #fff !important;
+}
+
+.easyfile-footer p:first-child {
+  font-weight: 800;
+}
+
+.easyfile-footer p:last-child {
+  color: rgba(255, 255, 255, .78) !important;
+}
+
+.easyfile-footer a {
+  border-radius: .5rem;
+  padding: .35rem .5rem;
+  text-decoration: none;
+  transition: background-color .15s ease;
+}
+
+.easyfile-footer a:hover,
+.easyfile-footer a:focus-visible {
+  background: rgba(255, 255, 255, .13);
+}
+
+@media (max-width: 640px) {
+  .easyfile-footer > .container,
+  .easyfile-footer > div {
+    align-items: flex-start !important;
+    text-align: left;
+  }
+}
+
+@media print {
+  .easyfile-footer {
+    border-top: 1px solid #cbd5e1 !important;
+    background: #fff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+
+  .easyfile-footer p,
+  .easyfile-footer a,
+  .easyfile-footer .muted-adaptive {
+    color: #0f172a !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .easyfile-footer a { transition: none; }
+}
