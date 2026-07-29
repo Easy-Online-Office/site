@@ -35,6 +35,11 @@ function checkPair(errors, file, source, tag, options = {}) {
   }
 }
 
+function scriptType(attributes) {
+  const match = attributes.match(/\btype\s*=\s*["']([^"']+)["']/i);
+  return match ? match[1].trim().toLowerCase() : "";
+}
+
 function validateScripts(errors, file, html) {
   const scriptExpression = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
   let match;
@@ -43,9 +48,11 @@ function validateScripts(errors, file, html) {
   while ((match = scriptExpression.exec(html)) !== null) {
     const attributes = match[1] || "";
     const body = match[2] || "";
+    const type = scriptType(attributes);
 
     if (/\bsrc\s*=/i.test(attributes)) continue;
-    if (/\btype\s*=\s*["']application\/ld\+json["']/i.test(attributes)) continue;
+    if (type === "application/ld+json") continue;
+    if (type === "module") continue;
     if (!body.trim()) continue;
 
     inlineIndex += 1;
