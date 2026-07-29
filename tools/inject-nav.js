@@ -46,31 +46,29 @@ function applyEncodingFixups(content) {
 function removeLegacyNavigation(content) {
   let output = content;
 
-  // Remove historical marker blocks, including their orphaned closing elements.
   output = output.replace(/<!--\s*NAV:START\s*-->[\s\S]*?<!--\s*NAV:END\s*-->\s*/gi, "");
-
-  // Remove the canonical injected block before inserting the current partial.
   output = output.replace(/<!--\s*NAV_SYNC\s*-->[\s\S]*?<\/nav>\s*/gi, "");
-
-  // Remove older standalone blue navigation bars that pre-date NAV_SYNC.
   output = output.replace(
     /<nav\b[^>]*class=(["'])[^"']*\bbg-blue-600\b[^"']*\1[^>]*>[\s\S]*?<\/nav>\s*/gi,
     ""
   );
-
-  // Remove the legacy dynamic mount so the page cannot render two global navigations.
   output = output.replace(
     /<div\b[^>]*id=(["'])easyNavMount\1[^>]*>\s*<\/div>\s*/gi,
     ""
   );
-
-  // Remove duplicate sync-script references; one canonical reference is added later.
   output = output.replace(
     /<script\b[^>]*src=(["'])(?:\.\/)?scripts\/sync-nav\.js\1[^>]*>\s*<\/script>\s*/gi,
     ""
   );
 
   return output;
+}
+
+function collapseAdjacentMainElements(content) {
+  return content.replace(
+    /<main\b[^>]*>\s*(?:<!--[\s\S]*?-->\s*)*<main\b/gi,
+    (match) => match.slice(match.toLowerCase().lastIndexOf("<main"))
+  );
 }
 
 function ensureMainPairs(content) {
@@ -89,6 +87,7 @@ function injectNavigation(content, navigation) {
   }
 
   let output = removeLegacyNavigation(content);
+  output = collapseAdjacentMainElements(output);
   output = output.replace(/<body\b[^>]*>/i, (bodyTag) => `${bodyTag}\n${navigation}`);
   output = ensureMainPairs(output);
   output = output.replace(/<\/body\s*>/i, `${SYNC_SCRIPT}\n</body>`);
