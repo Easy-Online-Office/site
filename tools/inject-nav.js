@@ -8,6 +8,13 @@ const ROOT = process.cwd();
 const PARTIAL_PATH = path.join(ROOT, "partials", "easy-nav.html");
 const SYNC_SCRIPT = '<script defer src="scripts/sync-nav.js"></script>';
 const EXCLUDED_DIRECTORIES = new Set([".git", "node_modules", "partials", "brand"]);
+const FAVICON_MARKUP = [
+  "  <!-- EASYFILE_FAVICONS -->",
+  '  <link rel="icon" href="logo-b.png" type="image/png">',
+  '  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">',
+  '  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">',
+  '  <link rel="apple-touch-icon" href="logo-b.png">'
+].join("\n");
 
 const ENCODING_FIXUPS = new Map([
   ["â€”", "—"],
@@ -43,10 +50,26 @@ function applyEncodingFixups(content) {
 
   // Repair a legacy malformed double-quote key in the statement HTML escape map.
   output = output
-    .split(String.raw`"\\"":"&quot;"`)
+    .split(String.raw`"\\\"":"&quot;"`)
     .join(String.raw`"\"":"&quot;"`);
 
   return output;
+}
+
+function ensureBrandHead(content) {
+  const closingHead = /<\/head\s*>/i.exec(content);
+  if (!closingHead) return content;
+
+  let head = content.slice(0, closingHead.index);
+  const tail = content.slice(closingHead.index);
+
+  head = head.replace(/<!--\s*EASYFILE_FAVICONS\s*-->\s*/gi, "");
+  head = head.replace(/<link\b[^>]*>/gi, (tag) => {
+    const rel = tag.match(/\brel\s*=\s*["']([^"']+)["']/i)?.[1]?.toLowerCase() || "";
+    return rel.includes("icon") ? "" : tag;
+  });
+
+  return `${head.trimEnd()}\n${FAVICON_MARKUP}\n${tail}`;
 }
 
 function stripNonStructuralBlocks(html) {
@@ -144,7 +167,8 @@ function listHtmlFiles(directory) {
 function processFile(filePath, navigation) {
   const before = stripBom(fs.readFileSync(filePath, "utf8"));
   const repaired = applyEncodingFixups(before);
-  const after = injectNavigation(repaired, navigation);
+  const branded = ensureBrandHead(repaired);
+  const after = injectNavigation(branded, navigation);
 
   if (after === before) return false;
   fs.writeFileSync(filePath, after, "utf8");
