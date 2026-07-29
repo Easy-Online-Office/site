@@ -20,13 +20,52 @@ document.addEventListener("DOMContentLoaded", () => {
     "easy-site-inspection.html"
   ]);
 
-  const links = document.querySelectorAll("nav a");
-  const current = location.pathname.split("/").pop() || "index.html";
+  const SHARED_STYLES = Object.freeze([
+    "assets/css/easyfile-brand-tokens.css",
+    "assets/css/easyfile-site.css"
+  ]);
 
+  const current = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+
+  function ensureSharedStyles() {
+    SHARED_STYLES.forEach((href) => {
+      const existing = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+        .find((link) => (link.getAttribute("href") || "").endsWith(href));
+      if (existing) return;
+
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = href;
+      link.dataset.easyfileSharedStyle = "";
+      document.head.appendChild(link);
+    });
+  }
+
+  function applyLayoutHooks() {
+    document.body.classList.add("easyfile-app");
+
+    document.querySelectorAll('nav[aria-label="Primary navigation"], nav.bg-blue-600').forEach((nav) => {
+      nav.classList.add("easyfile-nav");
+    });
+
+    const main = document.querySelector("main");
+    if (main) main.classList.add("easyfile-main");
+
+    const pageHeader = document.querySelector("body > header, main > header");
+    if (pageHeader) pageHeader.classList.add("easyfile-page-header");
+  }
+
+  ensureSharedStyles();
+  applyLayoutHooks();
+
+  const links = document.querySelectorAll("nav a");
   links.forEach((link) => {
-    const href = link.getAttribute("href");
+    const href = (link.getAttribute("href") || "").split("#")[0].toLowerCase();
     if (href === current) {
       link.classList.add("underline", "font-extrabold");
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
     }
   });
 
@@ -38,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     link.setAttribute("aria-label", `${BRAND.name} home`);
     link.innerHTML = [
       `<img src="${BRAND.logoOnDark}" alt="" width="40" height="40" decoding="async"`,
-      ' class="h-10 w-10 object-contain" data-easyfile-logo data-logo-variant="on-dark">',
+      ' class="h-10 w-10 object-contain easyfile-brand-logo" data-easyfile-logo data-logo-variant="on-dark">',
       `<span>${BRAND.name}</span>`
     ].join("");
   });
@@ -54,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     identity.textContent = "";
     identity.classList.remove("bg-blue-600", "text-white", "font-black");
-    identity.innerHTML = `<img src="${BRAND.logoOnLight}" alt="" width="40" height="40" decoding="async" class="h-10 w-10 object-contain" data-easyfile-logo data-logo-variant="on-light">`;
+    identity.innerHTML = `<img src="${BRAND.logoOnLight}" alt="" width="40" height="40" decoding="async" class="h-10 w-10 object-contain easyfile-brand-logo" data-easyfile-logo data-logo-variant="on-light">`;
   });
 
   document.querySelectorAll("img[data-easyfile-logo]").forEach((image) => {
@@ -80,10 +119,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.head.appendChild(link);
   });
 
-  if (MODULE_FILES.has(current.toLowerCase()) && !document.querySelector('script[data-easyfile-module-actions]')) {
+  if (MODULE_FILES.has(current) && !document.querySelector('script[data-easyfile-module-actions]')) {
     const actionsScript = document.createElement("script");
     actionsScript.src = "assets/js/easyfile-module-actions.js";
-    actionsScript.defer = true;
     actionsScript.dataset.easyfileModuleActions = "";
     document.head.appendChild(actionsScript);
   }
