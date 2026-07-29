@@ -25,10 +25,13 @@ jobs:
       - name: Enforce canonical navigation
         run: node tools/inject-nav.js
 
+      - name: Validate document structure and inline scripts
+        run: node tools/validate-html.js
+
       - name: Install HTMLHint
         run: npm install --global htmlhint
 
-      - name: Validate root HTML documents
+      - name: Validate HTML conventions
         run: htmlhint --config .htmlhintrc ./*.html
 
       - name: Validate JavaScript syntax
