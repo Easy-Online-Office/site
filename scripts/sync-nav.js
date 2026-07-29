@@ -147,6 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (referralEnabledPage) {
+    ensureScript("assets/js/easyfile-referral-compat.js", "easyfileReferralCompat");
     const configScript = ensureScript("assets/js/easyfile-referral-config.js", "easyfileReferralConfig");
     const loadReferralGate = () => ensureScript("assets/js/easyfile-referrals.js", "easyfileReferrals");
     if (window.EASYFILE_REFERRAL_CONFIG) loadReferralGate();
