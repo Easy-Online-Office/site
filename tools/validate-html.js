@@ -40,6 +40,11 @@ function scriptType(attributes) {
   return match ? match[1].trim().toLowerCase() : "";
 }
 
+function formatScriptError(error) {
+  const stack = String(error && error.stack ? error.stack : error && error.message ? error.message : error);
+  return stack.split("\n").slice(0, 4).join(" | ");
+}
+
 function validateScripts(errors, file, html) {
   const scriptExpression = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
   let match;
@@ -59,7 +64,7 @@ function validateScripts(errors, file, html) {
     try {
       new vm.Script(body, { filename: `${file}:inline-script-${inlineIndex}` });
     } catch (error) {
-      errors.push(`${file}: inline JavaScript ${inlineIndex} is invalid: ${error.message}`);
+      errors.push(`${file}: inline JavaScript ${inlineIndex} is invalid: ${formatScriptError(error)}`);
     }
   }
 }
