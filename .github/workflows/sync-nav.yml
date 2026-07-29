@@ -19,7 +19,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          # Pull requests are validation-only and use the immutable head SHA.
+          # Push events must check out the actual branch so generated changes
+          # can be committed and pushed without a detached-HEAD failure.
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -45,11 +49,14 @@ jobs:
             echo "Navigation is already synchronized."
             exit 0
           fi
+
           git config user.name "easyfile-bot"
           git config user.email "bot@easyfile.local"
           git add -- '*.html'
           git commit -m "chore: synchronize EasyFile navigation"
-          git push
+
+          # Use an explicit destination ref as an additional safeguard.
+          git push origin HEAD:main
 
   deploy:
     needs: enforce-navigation
