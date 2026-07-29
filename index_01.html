@@ -258,37 +258,26 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen">
+<!-- NAV_SYNC -->
+<nav class="bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
+      <img src="icon.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 rounded-xl object-contain bg-white bg-opacity-10" data-easyfile-logo />
+      <span>EasyFile</span>
+    </a>
+    <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
+    <a data-safe-link href="easy-invoice.html" class="hover:underline">Invoice</a>
+    <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
+    <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
+    <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
+    <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
+    <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
+    <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
+    <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
+    <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
+  </div>
+</nav>
   <!-- Navigation Bar -->
-  <nav class="bg-blue-600 text-white py-4">
-    <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
-      <a href="index.html" class="font-black text-xl mr-2">Easy&nbsp;Suite</a>
-
-      <a href="easy-quote.html" class="hover:underline" onclick="addRecent('quote')">Quote</a>
-      <a href="easy-invoice.html" class="hover:underline" onclick="addRecent('invoice')">Invoice</a>
-      <a href="easy-purchase-order.html" class="hover:underline" onclick="addRecent('po')">Purchase&nbsp;Order</a>
-      <a href="easy-sales-order.html" class="hover:underline" onclick="addRecent('so')">Sales&nbsp;Order</a>
-      <a href="easy-receipt.html" class="hover:underline" onclick="addRecent('receipt')">Receipt</a>
-      <a href="easy-statement.html" class="hover:underline" onclick="addRecent('statement')">Statement</a>
-      <a href="easy-job-card.html" class="hover:underline" onclick="addRecent('job')">Job&nbsp;Card</a>
-      <a href="easy-payroll.html" class="hover:underline" onclick="addRecent('payroll')">Payroll</a>
-      <a href="easy-inventory.html" class="hover:underline" onclick="addRecent('inventory')">Inventory</a>
-      <a href="easy-crm.html" class="hover:underline" onclick="addRecent('crm')">CRM</a>
-
-      <span class="ml-auto flex items-center gap-2">
-        <span id="onlineBadge" class="badge bg-gray-100 text-gray-700"><i class="fa-solid fa-wifi"></i> Online</span>
-
-        <button id="themeBtn" class="px-3 py-2 rounded-lg bg-white text-blue-700 font-extrabold hover:bg-blue-50"
-                onclick="toggleTheme()" title="Toggle theme">
-          <i class="fa-solid fa-moon"></i><span class="hidden sm:inline">Dark</span>
-        </button>
-
-        <input id="search" type="text" placeholder="Search modules…  ( / or Ctrl+K )"
-               oninput="filterCards()"
-               class="px-3 py-2 rounded-lg text-gray-800 border border-gray-200 w-64 max-w-full" />
-      </span>
-    </div>
-  </nav>
-
   <!-- Hero -->
   <header class="container mx-auto px-4 py-10">
     <div class="rounded-2xl border border-gray-200 shadow bg-white p-8 relative overflow-hidden">
@@ -371,5 +360,6 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+<script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>

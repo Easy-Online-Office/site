@@ -4,7 +4,7 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasySTAT â€" Statement Generator</title>
+  <title>EasySTAT — Statement Generator</title>
   
 
   <!-- Favicon -->
@@ -76,10 +76,28 @@
 </head>
 
 <body class="min-h-screen flex flex-col">
+<!-- NAV_SYNC -->
+<nav class="bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
+      <img src="icon.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 rounded-xl object-contain bg-white bg-opacity-10" data-easyfile-logo />
+      <span>EasyFile</span>
+    </a>
+    <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
+    <a data-safe-link href="easy-invoice.html" class="hover:underline">Invoice</a>
+    <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
+    <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
+    <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
+    <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
+    <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
+    <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
+    <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
+    <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
+  </div>
+</nav>
 
   <!-- Easy Suite mounts (injected) -->
-  <div id="easyNavMount" class="no-print"></div>
-<header class="bg-white border-b border-gray-200 no-print">
+  <header class="bg-white border-b border-gray-200 no-print">
   <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">S</div>
@@ -96,14 +114,7 @@
     </div>
   </div>
 </header><!-- HEADER:START --><!-- HEADER:END --><!-- NAV -->
-  <!-- NAV:START --></div>
-  </div>
-</div>
-<!-- NAV:END -->
-
-  <main class="container mx-auto px-4 py-8">
-
-  <!-- Header --><main class="flex-grow container mx-auto px-4 py-6 md:py-8">
+  <main class="flex-grow container mx-auto px-4 py-6 md:py-8">
 
     <!-- Tips -->
     <div class="card p-4 mb-6 no-print">
@@ -429,15 +440,15 @@
                   <span id="aCurrent" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">1â€"30</span>
+                  <span class="font-bold text-slate-700">1—30</span>
                   <span id="a30" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">31â€"60</span>
+                  <span class="font-bold text-slate-700">31—60</span>
                   <span id="a60" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-bold text-slate-700">61â€"90</span>
+                  <span class="font-bold text-slate-700">61—90</span>
                   <span id="a90" class="font-extrabold mono">R0.00</span>
                 </div>
                 <div class="flex justify-between">
@@ -607,9 +618,9 @@
             <div class="text-xs text-slate-500 font-black mb-2">AGEING SUMMARY (EST.)</div>
             <div class="text-sm space-y-2">
               <div class="flex justify-between"><span class="font-bold text-slate-700">Current</span><span id="tplACurrent" class="mono font-extrabold"></span></div>
-              <div class="flex justify-between"><span class="font-bold text-slate-700">1â€"30</span><span id="tplA30" class="mono font-extrabold"></span></div>
-              <div class="flex justify-between"><span class="font-bold text-slate-700">31â€"60</span><span id="tplA60" class="mono font-extrabold"></span></div>
-              <div class="flex justify-between"><span class="font-bold text-slate-700">61â€"90</span><span id="tplA90" class="mono font-extrabold"></span></div>
+              <div class="flex justify-between"><span class="font-bold text-slate-700">1—30</span><span id="tplA30" class="mono font-extrabold"></span></div>
+              <div class="flex justify-between"><span class="font-bold text-slate-700">31—60</span><span id="tplA60" class="mono font-extrabold"></span></div>
+              <div class="flex justify-between"><span class="font-bold text-slate-700">61—90</span><span id="tplA90" class="mono font-extrabold"></span></div>
               <div class="flex justify-between"><span class="font-bold text-slate-700">90+</span><span id="tplA120" class="mono font-extrabold"></span></div>
               <div class="flex justify-between border-t border-gray-200 pt-2 text-base"><span class="font-black text-slate-900">Total</span><span id="tplATotal" class="mono font-black"></span></div>
             </div>
@@ -640,7 +651,7 @@
 
   function escapeHtml(str){
     return String(str ?? "").replace(/[&<>"']/g, m => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","'":"&#039;"
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
     }[m]));
   }
 
@@ -910,7 +921,7 @@
     const issues = [];
 
     if (txWB.length === 0 && Math.abs(opening) < 0.00001) {
-      issues.push({ type:"warn", text:"No transactions and opening balance is 0.00 â€" your statement will be empty." });
+      issues.push({ type:"warn", text:"No transactions and opening balance is 0.00 — your statement will be empty." });
     }
 
     // date sanity checks
@@ -1077,7 +1088,7 @@
 
     const pf = $("periodFrom").value;
     const pt = $("periodTo").value;
-    tpl.querySelector("#tplPeriod").textContent = (pf && pt) ? `${formatDateISO(pf)} â€" ${formatDateISO(pt)}` : "";
+    tpl.querySelector("#tplPeriod").textContent = (pf && pt) ? `${formatDateISO(pf)} — ${formatDateISO(pt)}` : "";
     tpl.querySelector("#tplStmtRef").textContent = $("statementReference").value || "";
 
     // client
@@ -1563,6 +1574,7 @@
   document.addEventListener("DOMContentLoaded", ()=>{ bind(); init(); });
 </script>
 
+<script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
 
