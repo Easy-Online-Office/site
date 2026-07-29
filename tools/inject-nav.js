@@ -63,6 +63,8 @@ function ensureBrandHead(content) {
   let head = content.slice(0, closingHead.index);
   const tail = content.slice(closingHead.index);
 
+  // Replace legacy brand-image references used by Open Graph, Twitter and JSON-LD.
+  head = head.replace(/(["'])(?:icon|logo)\.png\1/gi, "$1logo-b.png$1");
   head = head.replace(/<!--\s*EASYFILE_FAVICONS\s*-->\s*/gi, "");
   head = head.replace(/<link\b[^>]*>/gi, (tag) => {
     const rel = tag.match(/\brel\s*=\s*["']([^"']+)["']/i)?.[1]?.toLowerCase() || "";
