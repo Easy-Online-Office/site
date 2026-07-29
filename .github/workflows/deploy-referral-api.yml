@@ -32,8 +32,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: referral-api/package.json
 
       - name: Install production dependencies
         working-directory: referral-api
