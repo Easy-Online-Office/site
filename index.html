@@ -1,251 +1,197 @@
 <!DOCTYPE html>
 <html lang="en-ZA" class="scroll-smooth">
 <head>
-  <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Easy Suite Dashboard | Quotes, Invoices, Orders, Receipts, CRM</title>
-  <meta name="description" content="Easy Suite dashboard for quotes, invoices, purchase orders, sales orders, receipts, statements, job cards, payroll, inventory, and CRM. Fast, responsive, local-first business tools." />
-  <meta name="keywords" content="Easy Suite, dashboard, quotes, invoices, purchase orders, sales orders, receipts, statements, job cards, payroll, inventory, CRM, local-first business tools" />
-  <meta name="author" content="Easy Suite" />
+  <title>EasyFile | Local-first business tools for quotes, invoices, CRM and more</title>
+  <meta name="description" content="EasyFile is a local-first suite of practical business tools for quotes, invoices, orders, receipts, statements, job cards, payroll, inventory, CRM, assets and inspections." />
+  <meta name="keywords" content="EasyFile, business tools, quotes, invoices, purchase orders, sales orders, receipts, statements, payroll, inventory, CRM, asset management, site inspections" />
+  <meta name="author" content="EasyFile" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline'; font-src 'self' https://cdnjs.cloudflare.com data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
-  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()" />
-  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="en_ZA" />
-  <meta property="og:title" content="Easy Suite Dashboard" />
-  <meta property="og:description" content="Launch quotes, invoices, orders, receipts, payroll, inventory, CRM, and more from one fast, responsive dashboard." />
-  <meta property="og:image" content="logo.png" />
-  <meta property="og:image:alt" content="Easy Suite dashboard preview" />
+  <meta property="og:title" content="EasyFile | Business paperwork, made easier" />
+  <meta property="og:description" content="Launch practical, local-first business tools for documents, customers, stock, payroll, assets and inspections." />
+  <meta property="og:image" content="logo-b.png" />
+  <meta property="og:image:alt" content="EasyFile logo" />
 
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Easy Suite Dashboard" />
-  <meta name="twitter:description" content="Fast, responsive, local-first business document tools from one dashboard." />
-  <meta name="twitter:image" content="logo.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="EasyFile | Business paperwork, made easier" />
+  <meta name="twitter:description" content="Fast, responsive and local-first business administration tools." />
+  <meta name="twitter:image" content="logo-b.png" />
 
-  <link rel="icon" href="icon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="icon.png" />
+  
+  
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" as="style" />
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css" />
 
   <style>
     :root {
-      --bg: #f3f4f6;
-      --surface: rgba(255,255,255,.92);
+      --page-bg: #f3f4f6;
+      --surface: rgba(255, 255, 255, 0.94);
       --surface-strong: #ffffff;
       --text: #111827;
       --muted: #4b5563;
-      --border: rgba(229,231,235,.95);
+      --border: rgba(209, 213, 219, 0.9);
       --primary: #2563eb;
       --primary-strong: #1d4ed8;
-      --ring: rgba(37,99,235,.22);
-      --shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+      --focus: rgba(37, 99, 235, 0.25);
+      --shadow: 0 18px 50px rgba(15, 23, 42, 0.09);
     }
 
     .dark {
-      --bg: #0b1220;
-      --surface: rgba(15,23,42,.86);
+      --page-bg: #0b1220;
+      --surface: rgba(15, 23, 42, 0.9);
       --surface-strong: #0f172a;
       --text: #e5e7eb;
       --muted: #94a3b8;
-      --border: rgba(148,163,184,.18);
+      --border: rgba(148, 163, 184, 0.2);
       --primary: #60a5fa;
       --primary-strong: #93c5fd;
-      --ring: rgba(96,165,250,.2);
+      --focus: rgba(96, 165, 250, 0.25);
       --shadow: 0 20px 55px rgba(2, 6, 23, 0.42);
     }
 
     * { box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; }
+
     body {
-      background: radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 28%), var(--bg);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 92% 4%, rgba(37, 99, 235, 0.13), transparent 28rem),
+        var(--page-bg);
       color: var(--text);
       text-rendering: optimizeLegibility;
     }
-
-    .skip-link {
-      position: absolute;
-      left: 1rem;
-      top: -3rem;
-      z-index: 1000;
-      background: var(--primary);
-      color: #fff;
-      padding: .75rem 1rem;
-      border-radius: .75rem;
-      font-weight: 800;
-      transition: top .2s ease;
-    }
-    .skip-link:focus { top: 1rem; }
 
     .surface {
       background: var(--surface);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
     }
 
-    .module-card {
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-      content-visibility: auto;
-      contain-intrinsic-size: 320px;
+    .surface-strong { background: var(--surface-strong); }
+    .text-adaptive { color: var(--text) !important; }
+    .muted-adaptive { color: var(--muted) !important; }
+    .border-adaptive { border-color: var(--border) !important; }
+
+    .skip-link {
+      position: fixed;
+      top: -5rem;
+      left: 1rem;
+      z-index: 100;
+      border-radius: 0.75rem;
+      background: var(--primary);
+      color: #fff;
+      padding: 0.75rem 1rem;
+      font-weight: 800;
     }
+
+    .skip-link:focus { top: 1rem; }
+
+    .module-card {
+      content-visibility: auto;
+      contain-intrinsic-size: 21rem;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+
     .module-card:hover,
     .module-card:focus-within {
       transform: translateY(-3px);
-      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
-    }
-
-    .dark .module-card:hover,
-    .dark .module-card:focus-within {
-      box-shadow: 0 20px 50px rgba(2, 6, 23, 0.45);
+      box-shadow: 0 22px 50px rgba(15, 23, 42, 0.14);
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: .4rem;
-      font-size: .75rem;
-      font-weight: 800;
-      padding: .3rem .65rem;
+      gap: 0.4rem;
       border-radius: 999px;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 800;
       white-space: nowrap;
     }
 
-    .text-adaptive { color: var(--text) !important; }
-    .muted-adaptive { color: var(--muted) !important; }
-    .surface-strong { background: var(--surface-strong) !important; }
-    .border-adaptive { border-color: var(--border) !important; }
-
-    .btn-ui,
-    .input-ui,
-    .tag-btn,
-    .pin-btn,
-    .action-link {
-      transition: background-color .16s ease, color .16s ease, border-color .16s ease, box-shadow .16s ease, transform .16s ease;
-    }
-
-    .input-ui,
-    .btn-ui,
-    .tag-btn,
-    .pin-btn {
+    .control {
       border: 1px solid var(--border);
       background: var(--surface-strong);
       color: var(--text);
+      transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
     }
 
-    .input-ui::placeholder { color: var(--muted); }
+    .control:hover { transform: translateY(-1px); }
 
-    .input-ui:focus,
-    .btn-ui:focus,
-    .tag-btn:focus,
-    .pin-btn:focus,
-    a:focus {
+    .control:focus,
+    a:focus,
+    button:focus,
+    input:focus {
       outline: none;
-      box-shadow: 0 0 0 4px var(--ring);
+      box-shadow: 0 0 0 4px var(--focus);
     }
 
-    .primary-btn {
+    .primary-action {
       background: var(--primary);
       color: #fff;
-      border-color: transparent;
     }
 
-    .primary-btn:hover { background: var(--primary-strong); }
-    .pin-btn:hover,
-    .btn-ui:hover,
-    .tag-btn:hover { transform: translateY(-1px); }
+    .primary-action:hover { background: var(--primary-strong); }
 
-    .tag-btn[aria-pressed="true"] {
+    .tag-button[aria-pressed="true"] {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--ring);
       color: var(--primary);
-      font-weight: 900;
+      box-shadow: 0 0 0 3px var(--focus);
     }
 
     .hero-orb {
       position: absolute;
       border-radius: 999px;
-      filter: blur(2px);
       pointer-events: none;
     }
-
-    .result-count { min-height: 1.5rem; }
 
     @media (max-width: 767px) {
       .nav-links {
         order: 3;
         width: 100%;
         overflow-x: auto;
+        padding-bottom: 0.25rem;
         white-space: nowrap;
-        padding-bottom: .25rem;
       }
-      .nav-links::-webkit-scrollbar { height: 6px; }
-      .nav-links::-webkit-scrollbar-thumb { background: rgba(255,255,255,.35); border-radius: 999px; }
+
       .nav-actions {
         width: 100%;
-        justify-content: stretch;
       }
-      .nav-actions > * { flex: 1 1 auto; }
-      .nav-actions input { min-width: 0; }
-      .hero-actions { align-items: stretch; }
-      .hero-actions > * { width: 100%; justify-content: center; }
-      .hero-tip { margin-left: 0 !important; width: 100%; justify-content: flex-start; }
+
+      .nav-actions > * {
+        flex: 1 1 auto;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after {
+        scroll-behavior: auto !important;
         animation: none !important;
         transition: none !important;
       }
     }
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Easy Suite Dashboard</title>
-  
-
-  <!-- Favicon -->
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
-<meta name="description" content="Easy Suite dashboard â€" Quotes, Invoices, Purchase Orders, Sales Orders, Receipts, Statements, Job Cards, Payroll, Inventory, CRM, Asset Management, Site Inspections." />
-
-  <!-- Favicon (local) --><!-- TailwindCSS -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <style>
-    .module-card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
-    .module-card:hover { transform: translateY(-3px); }
-    .dark body { background:#0b1220; color:#e5e7eb; }
-    .dark .card { background:#0f172a !important; border-color: rgba(148,163,184,.18) !important; box-shadow:none !important; }
-    .dark .text-gray-800 { color:#e5e7eb !important; }
-    .dark .text-gray-600 { color:#94a3b8 !important; }
-    .dark .bg-white { background:#0f172a !important; }
-    .dark .bg-gray-100 { background:#0b1220 !important; }
-    .dark .border-gray-200 { border-color: rgba(148,163,184,.18) !important; }
-    .dark input { background:#0f172a !important; color:#e5e7eb !important; border-color: rgba(148,163,184,.18) !important; }
-    .badge { font-size:.75rem; font-weight:800; padding:.2rem .55rem; border-radius:999px; }
   </style>
 
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Easy Suite Dashboard",
+      "name": "EasyFile",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
       "inLanguage": "en-ZA",
-      "description": "Local-first dashboard for quotes, invoices, purchase orders, sales orders, receipts, statements, job cards, payroll, inventory, and CRM.",
-      "image": "logo.png",
+      "description": "Local-first business tools for quotes, invoices, orders, receipts, statements, job cards, payroll, inventory, CRM, asset management and site inspections.",
+      "image": "logo-b.png",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -253,99 +199,98 @@
       }
     }
   </script>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 
-<body class="min-h-screen antialiased">
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-
-  <script>
-    (() => {
-      try {
-        const storedTheme = localStorage.getItem('easySuite.theme');
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = storedTheme || (prefersDark ? 'dark' : 'light');
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-      } catch (_) {}
-    })();
-  </script>
-
-  <nav class="bg-blue-600 text-white py-4" aria-label="Primary navigation">
-    <div class="container mx-auto px-4 flex flex-wrap items-center gap-3 md:gap-4">
-      <a href="index.html" class="font-black text-xl mr-1 flex items-center gap-2" aria-label="Easy Suite dashboard home">
-        <span aria-hidden="true"><i class="fa-solid fa-grid-2"></i></span>
-        <span>Easy&nbsp;Suite</span>
-      </a>
-
-      <div class="nav-links flex items-center gap-4 text-sm sm:text-base font-bold" aria-label="Modules">
-        <a href="easy-quote.html" data-module-link="quote" class="hover:underline">Quote</a>
-        <a href="easy-invoice.html" data-module-link="invoice" class="hover:underline">Invoice</a>
-        <a href="easy-purchase-order.html" data-module-link="po" class="hover:underline">Purchase&nbsp;Order</a>
-        <a href="easy-sales-order.html" data-module-link="so" class="hover:underline">Sales&nbsp;Order</a>
-        <a href="easy-receipt.html" data-module-link="receipt" class="hover:underline">Receipt</a>
-        <a href="easy-statement.html" data-module-link="statement" class="hover:underline">Statement</a>
-        <a href="easy-job-card.html" data-module-link="job" class="hover:underline">Job&nbsp;Card</a>
-        <a href="easy-payroll.html" data-module-link="payroll" class="hover:underline">Payroll</a>
-        <a href="easy-inventory.html" data-module-link="inventory" class="hover:underline">Inventory</a>
-        <a href="easy-crm.html" data-module-link="crm" class="hover:underline">CRM</a>
-      </div>
-
-      <div class="nav-actions ml-auto flex flex-wrap items-center gap-2 w-full md:w-auto md:justify-end">
-        <span id="onlineBadge" class="badge bg-gray-100 text-gray-700" aria-live="polite"><i class="fa-solid fa-wifi"></i> Online</span>
-
-        <button id="themeBtn" class="btn-ui px-3 py-2 rounded-lg font-extrabold" type="button" title="Toggle colour theme" aria-label="Toggle colour theme"></button>
-
-        <label for="search" class="sr-only">Search modules</label>
-        <input id="search" type="search" inputmode="search" autocomplete="off" spellcheck="false"
-               placeholder="Search modules…  (/ or Ctrl+K)"
-               class="input-ui px-3 py-2 rounded-lg w-full md:w-72 max-w-full" />
-      </div>
-    </div>
-  </nav>
+<body class="antialiased">
+<!-- NAV_SYNC -->
+<nav class="easyfile-nav bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
+      <img src="logo-w.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 object-contain easyfile-brand-logo" data-easyfile-logo data-logo-variant="on-dark" />
+      <span>EasyFile</span>
+    </a>
+    <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
+    <a data-safe-link href="easy-invoice.html" class="hover:underline">Invoice</a>
+    <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
+    <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
+    <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
+    <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
+    <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
+    <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
+    <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
+    <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
+    <a data-safe-link href="easy-asset-management.html" class="hover:underline">Assets</a>
+    <a data-safe-link href="easy-site-inspection.html" class="hover:underline">Inspections</a>
+  </div>
+</nav>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
   <header class="container mx-auto px-4 py-8 sm:py-10">
-    <section class="surface rounded-3xl p-6 sm:p-8 relative overflow-hidden" aria-labelledby="hero-title">
+    <section class="surface rounded-3xl p-6 sm:p-9 relative overflow-hidden" aria-labelledby="hero-title">
       <div class="hero-orb -right-16 -top-16 h-64 w-64 bg-blue-100 opacity-70"></div>
-      <div class="hero-orb -left-20 -bottom-20 h-72 w-72 bg-indigo-100 opacity-70"></div>
+      <div class="hero-orb -left-20 -bottom-20 h-72 w-72 bg-indigo-100 opacity-60"></div>
 
-      <div class="relative">
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-          <span class="badge bg-blue-100 text-blue-700">Local-first</span>
-          <span class="badge bg-gray-100 text-gray-700">Print-ready documents</span>
-          <span class="badge bg-green-100 text-green-700">Responsive dashboard</span>
+      <div class="relative grid gap-8 lg:grid-cols-3 lg:items-center">
+        <div class="lg:col-span-2">
+          <div class="flex flex-wrap items-center gap-3 mb-4">
+            <span class="badge bg-blue-100 text-blue-700">Local-first</span>
+            <span class="badge bg-gray-100 text-gray-700">Print-ready</span>
+            <span class="badge bg-green-100 text-green-700">Offline-friendly</span>
+          </div>
+
+          <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-adaptive mb-4">
+            Business paperwork, made easier.
+          </h1>
+          <p class="muted-adaptive text-base sm:text-lg max-w-3xl">
+            EasyFile brings quotes, invoices, orders, receipts, customer records, stock, payroll, assets and inspections into one practical browser-based toolkit.
+          </p>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="easy-quote.html" data-module-link="quote" class="primary-action px-5 py-3 rounded-xl font-black inline-flex items-center gap-2">
+              <i class="fa-solid fa-plus" aria-hidden="true"></i> New quote
+            </a>
+            <a href="easy-invoice.html" data-module-link="invoice" class="px-5 py-3 rounded-xl bg-green-600 text-white font-black inline-flex items-center gap-2 hover:bg-green-700">
+              <i class="fa-solid fa-plus" aria-hidden="true"></i> New invoice
+            </a>
+            <a href="#modules" class="control px-5 py-3 rounded-xl font-black inline-flex items-center gap-2">
+              Explore modules <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+            </a>
+          </div>
         </div>
 
-        <h1 id="hero-title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-adaptive mb-3">Welcome to Easy Suite</h1>
-        <p class="muted-adaptive text-base sm:text-lg max-w-3xl">
-          Launch quotes, invoices, orders, receipts, statements, payroll, inventory, and CRM tools in seconds.
-          Search instantly, pin your favourites, and resume recent work without sending data to a server.
-        </p>
-
-        <div class="hero-actions mt-6 flex flex-wrap gap-3">
-          <a href="easy-quote.html" data-module-link="quote" class="action-link primary-btn px-5 py-3 rounded-xl font-black inline-flex items-center gap-2">
-            <i class="fa-solid fa-plus"></i> New Quote
-          </a>
-          <a href="easy-invoice.html" data-module-link="invoice" class="action-link px-5 py-3 rounded-xl font-black inline-flex items-center gap-2 bg-green-600 text-white hover:bg-green-700">
-            <i class="fa-solid fa-plus"></i> New Invoice
-          </a>
-          <a href="easy-receipt.html" data-module-link="receipt" class="action-link px-5 py-3 rounded-xl font-black inline-flex items-center gap-2 bg-teal-600 text-white hover:bg-teal-700">
-            <i class="fa-solid fa-plus"></i> New Receipt
-          </a>
-
-          <div class="hero-tip ml-auto inline-flex items-center gap-2 muted-adaptive font-extrabold text-sm sm:text-base">
-            <span>Tip:</span>
-            <span class="px-2 py-1 rounded-lg border border-adaptive surface-strong">/</span>
-            <span>to search</span>
+        <div class="surface-strong border border-adaptive rounded-2xl p-5">
+          <div class="flex items-center gap-3">
+            <img src="icon.png" alt="EasyFile" width="72" height="72" class="h-16 w-16 rounded-2xl object-contain" />
+            <div>
+              <p class="font-black text-xl text-adaptive">EasyFile</p>
+              <p class="muted-adaptive text-sm">Fast tools for everyday business administration.</p>
+            </div>
+          </div>
+          <div class="mt-5">
+            <label for="search" class="block text-sm font-extrabold text-adaptive mb-2">Find a module</label>
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 muted-adaptive" aria-hidden="true"></i>
+              <input id="search" type="search" autocomplete="off" spellcheck="false"
+                class="control w-full rounded-xl py-3 pl-10 pr-3"
+                placeholder="Search invoices, stock, CRM..." />
+            </div>
+            <p class="muted-adaptive text-xs mt-2">Press <kbd class="control rounded px-1.5 py-0.5">/</kbd> or Ctrl+K to focus search.</p>
           </div>
         </div>
       </div>
     </section>
   </header>
 
-  <main id="main-content" class="container mx-auto px-4 pb-12">
+  <main id="main-content" class="container mx-auto px-4 pb-14">
     <section id="pinnedWrap" class="hidden mb-10" aria-labelledby="pinned-title">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-        <h2 id="pinned-title" class="text-2xl font-black text-adaptive">Pinned</h2>
-        <p class="muted-adaptive font-extrabold text-sm sm:text-base">Pin modules with the thumbtack button.</p>
+        <h2 id="pinned-title" class="text-2xl font-black text-adaptive">Pinned modules</h2>
+        <p class="muted-adaptive text-sm font-bold">Pin the tools you use most.</p>
       </div>
       <div id="pinnedGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
@@ -353,412 +298,319 @@
     <section id="recentWrap" class="hidden mb-10" aria-labelledby="recent-title">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <h2 id="recent-title" class="text-2xl font-black text-adaptive">Recently used</h2>
-        <button id="clearRecentBtn" class="btn-ui px-3 py-2 rounded-lg font-extrabold text-sm sm:text-base" type="button">Clear recent items</button>
+        <button id="clearRecentBtn" type="button" class="control px-3 py-2 rounded-lg font-extrabold text-sm">Clear recent items</button>
       </div>
       <div id="recentList" class="flex flex-wrap gap-3"></div>
     </section>
 
-    <section class="mb-6" aria-labelledby="tags-title">
-      <h2 id="tags-title" class="text-xl font-black text-adaptive mb-3">Filter by tags</h2>
-      <div id="tagBar" class="flex flex-wrap gap-2"></div>
+    <section class="mb-6" aria-labelledby="filter-title">
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h2 id="filter-title" class="text-xl font-black text-adaptive">Filter by capability</h2>
+          <p class="muted-adaptive text-sm mt-1">Search by module name, description or tag.</p>
+        </div>
+        <p id="resultCount" class="muted-adaptive text-sm font-extrabold" aria-live="polite"></p>
+      </div>
+      <div id="tagBar" class="flex flex-wrap gap-2 mt-4"></div>
     </section>
 
-    <section aria-labelledby="modules-title">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-        <div>
-          <h2 id="modules-title" class="text-2xl font-black text-adaptive">All modules</h2>
-          <p id="resultCount" class="result-count muted-adaptive font-extrabold text-sm mt-1" aria-live="polite"></p>
-        </div>
-        <p class="muted-adaptive font-extrabold text-sm sm:text-base">Search by title, description, or tag.</p>
-      </div>
-
+    <section id="modules" aria-labelledby="modules-title">
+      <h2 id="modules-title" class="sr-only">EasyFile modules</h2>
       <div id="modulesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
 
-    <footer class="mt-12 text-center muted-adaptive font-extrabold text-sm sm:text-base">
-      Easy Suite • Local-first tools • Designed for speed
-    </footer>
+    <section class="surface rounded-3xl p-6 sm:p-8 mt-12" aria-labelledby="privacy-title">
+      <div class="grid gap-6 md:grid-cols-3">
+        <div>
+          <div class="h-11 w-11 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-laptop-file" aria-hidden="true"></i>
+          </div>
+          <h2 id="privacy-title" class="font-black text-lg text-adaptive">Local-first by design</h2>
+          <p class="muted-adaptive mt-2">Core tools can retain working data in your browser, helping you continue without a permanent server connection.</p>
+        </div>
+        <div>
+          <div class="h-11 w-11 rounded-xl bg-green-100 text-green-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-print" aria-hidden="true"></i>
+          </div>
+          <h2 class="font-black text-lg text-adaptive">Ready to print and export</h2>
+          <p class="muted-adaptive mt-2">Create practical records and business documents that are easy to preview, print and share.</p>
+        </div>
+        <div>
+          <div class="h-11 w-11 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+          </div>
+          <h2 class="font-black text-lg text-adaptive">One consistent toolkit</h2>
+          <p class="muted-adaptive mt-2">Move between sales, operations, finance and customer-management tools through one responsive dashboard.</p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="mt-8 rounded-2xl border border-yellow-200 bg-yellow-50 p-5 text-yellow-900" aria-label="Independence notice">
+      <p class="font-extrabold">Independent product notice</p>
+      <p class="text-sm mt-1">EasyFile is an independent business-software product and is not affiliated with, endorsed by or operated by the South African Revenue Service or SARS e@syFile.</p>
+    </aside>
   </main>
 
+  <footer class="border-t border-adaptive">
+    <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p class="muted-adaptive text-sm font-bold">EasyFile · Business paperwork, made easier.</p>
+      <p class="muted-adaptive text-sm">Local-first tools · Responsive interface · South African context</p>
+    </div>
+  </footer>
+
   <script>
-    const LS_THEME = 'easySuite.theme';
-    const LS_PINNED = 'easySuite.pinnedModules';
-    const LS_RECENT = 'easySuite.recentModules';
+    "use strict";
 
-    const MODULES = [
-      { id:'quote', name:'Easy Quote', href:'easy-quote.html', icon:'fa-file-lines', color:'bg-blue-100 text-blue-600', tags:['sales','pricing','customer'], desc:'Create and manage quotes quickly with itemised line entries and totals.' },
-      { id:'invoice', name:'Easy Invoice', href:'easy-invoice.html', icon:'fa-file-invoice-dollar', color:'bg-green-100 text-green-600', tags:['billing','tax','vat'], desc:'Generate professional invoices with tax, discounts, templates, and export options.' },
-      { id:'po', name:'Easy Purchase Order', href:'easy-purchase-order.html', icon:'fa-shopping-cart', color:'bg-purple-100 text-purple-600', tags:['procurement','supplier'], desc:'Create purchase orders for suppliers and track purchasing activity.' },
-      { id:'so', name:'Easy Sales Order', href:'easy-sales-order.html', icon:'fa-shopping-bag', color:'bg-yellow-100 text-yellow-700', tags:['orders','fulfilment'], desc:'Record customer orders and manage fulfilment from one module.' },
-      { id:'receipt', name:'Easy Receipt', href:'easy-receipt.html', icon:'fa-receipt', color:'bg-teal-100 text-teal-700', tags:['payments','proof'], desc:'Issue receipts and maintain a record of payments received.' },
-      { id:'statement', name:'Easy Statement', href:'easy-statement.html', icon:'fa-file-contract', color:'bg-red-100 text-red-600', tags:['accounts','aging'], desc:'Generate account statements summarising transactions over a selected period.' },
-      { id:'job', name:'Easy Job Card', href:'easy-job-card.html', icon:'fa-briefcase', color:'bg-orange-100 text-orange-700', tags:['service','workshop'], desc:'Manage service jobs with tasks, materials, labour logs, and progress tracking.' },
-      { id:'payroll', name:'Easy Payroll', href:'easy-payroll.html', icon:'fa-money-bill-wave', color:'bg-indigo-100 text-indigo-700', tags:['hr','payslip'], desc:'Prepare payroll summaries including earnings, deductions, and net pay.' },
-      { id:'inventory', name:'Easy Inventory', href:'easy-inventory.html', icon:'fa-boxes-stacked', color:'bg-pink-100 text-pink-700', tags:['stock','warehouse'], desc:'Track stock levels, inventory value, categories, and product information.' },
-      { id:'crm', name:'Easy CRM', href:'easy-crm.html', icon:'fa-users', color:'bg-gray-100 text-gray-700', tags:['customers','pipeline'], desc:'Maintain customer relationships, contacts, follow-ups, and pipeline activity.' }
-      { id:"quote", name:"Easy Quote", href:"easy-quote.html", icon:"fa-file-lines", color:"bg-blue-100 text-blue-600", tags:["sales","pricing","customer"] , desc:"Create and manage quotes quickly, with itemised line entries and totals." },
-      { id:"invoice", name:"Easy Invoice", href:"easy-invoice.html", icon:"fa-file-invoice-dollar", color:"bg-green-100 text-green-600", tags:["billing","tax","vat"], desc:"Generate professional invoices with tax, discounts and export options." },
-      { id:"po", name:"Easy Purchase Order", href:"easy-purchase-order.html", icon:"fa-shopping-cart", color:"bg-purple-100 text-purple-600", tags:["procurement","supplier"], desc:"Create purchase orders for suppliers and track purchasing activity." },
-      { id:"so", name:"Easy Sales Order", href:"easy-sales-order.html", icon:"fa-shopping-bag", color:"bg-yellow-100 text-yellow-700", tags:["orders","fulfillment"], desc:"Record customer orders and manage fulfilment from a single module." },
-      // âœ… correct spelling
-      { id:"receipt", name:"Easy Receipt", href:"easy-receipt.html", icon:"fa-receipt", color:"bg-teal-100 text-teal-700", tags:["payments","proof"], desc:"Issue receipts and maintain a record of payments received." },
-      { id:"statement", name:"Easy Statement", href:"easy-statement.html", icon:"fa-file-contract", color:"bg-red-100 text-red-600", tags:["accounts","aging"], desc:"Generate account statements summarising transactions over a period." },
-      { id:"job", name:"Easy Job Card", href:"easy-job-card.html", icon:"fa-briefcase", color:"bg-orange-100 text-orange-700", tags:["service","workshop"], desc:"Manage service jobs with tasks, materials and labour logs." },
-      { id:"payroll", name:"Easy Payroll", href:"easy-payroll.html", icon:"fa-money-bill-wave", color:"bg-indigo-100 text-indigo-700", tags:["hr","payslip"], desc:"Prepare payroll summaries including earnings, deductions and net pay." },
-      { id:"inventory", name:"Easy Inventory", href:"easy-inventory.html", icon:"fa-boxes-stacked", color:"bg-pink-100 text-pink-700", tags:["stock","warehouse"], desc:"Track stock levels and product information to stay organised." },
-      { id:"crm", name:"Easy CRM", href:"easy-crm.html", icon:"fa-users", color:"bg-gray-100 text-gray-700", tags:["customers","pipeline"], desc:"Maintain customer relationships, contacts and follow-ups." },
+    const STORAGE = Object.freeze({
+      theme: "easySuite.theme",
+      pinned: "easySuite.pinnedModules",
+      recent: "easySuite.recentModules"
+    });
 
-      // âœ… added
-      { id:"assets", name:"Easy Asset Management", href:"easy-asset-management.html", icon:"fa-screwdriver-wrench", color:"bg-slate-100 text-slate-700", tags:["assets","tracking","register"], desc:"Track company assets, assignments, service history and depreciation-ready records." },
-      { id:"inspection", name:"Easy Site Inspection", href:"easy-site-inspection.html", icon:"fa-clipboard-check", color:"bg-cyan-100 text-cyan-700", tags:["inspection","checklist","compliance"], desc:"Run site inspections with checklists, findings, actions, and printable reports." }
-    ];
+    const MODULES = Object.freeze([
+      { id: "quote", name: "Easy Quote", href: "easy-quote.html", icon: "fa-file-lines", colour: "bg-blue-100 text-blue-700", tags: ["sales", "pricing", "customer"], description: "Create itemised quotes with customer details, pricing and totals." },
+      { id: "invoice", name: "Easy Invoice", href: "easy-invoice.html", icon: "fa-file-invoice-dollar", colour: "bg-green-100 text-green-700", tags: ["billing", "tax", "vat"], description: "Generate professional invoices with VAT, discounts, payments and export options." },
+      { id: "po", name: "Easy Purchase Order", href: "easy-purchase-order.html", icon: "fa-cart-shopping", colour: "bg-purple-100 text-purple-700", tags: ["procurement", "supplier"], description: "Prepare supplier purchase orders and maintain purchasing records." },
+      { id: "so", name: "Easy Sales Order", href: "easy-sales-order.html", icon: "fa-bag-shopping", colour: "bg-yellow-100 text-yellow-800", tags: ["orders", "fulfilment"], description: "Record customer orders and support the fulfilment workflow." },
+      { id: "receipt", name: "Easy Receipt", href: "easy-receipt.html", icon: "fa-receipt", colour: "bg-teal-100 text-teal-700", tags: ["payments", "proof"], description: "Issue clear payment receipts and retain proof-of-payment records." },
+      { id: "statement", name: "Easy Statement", href: "easy-statement.html", icon: "fa-file-contract", colour: "bg-red-100 text-red-700", tags: ["accounts", "ageing"], description: "Build customer statements with transactions, balances and ageing." },
+      { id: "job", name: "Easy Job Card", href: "easy-job-card.html", icon: "fa-briefcase", colour: "bg-orange-100 text-orange-700", tags: ["service", "workshop"], description: "Track service work, labour, materials, tasks and completion status." },
+      { id: "payroll", name: "Easy Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", colour: "bg-indigo-100 text-indigo-700", tags: ["hr", "payslip"], description: "Prepare earnings, deductions, payroll summaries and payslips." },
+      { id: "inventory", name: "Easy Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", colour: "bg-pink-100 text-pink-700", tags: ["stock", "warehouse"], description: "Track products, stock levels, costs, values and low-stock conditions." },
+      { id: "crm", name: "Easy CRM", href: "easy-crm.html", icon: "fa-users", colour: "bg-gray-100 text-gray-700", tags: ["customers", "pipeline"], description: "Manage contacts, opportunities, follow-ups and customer activity." },
+      { id: "assets", name: "Easy Asset Management", href: "easy-asset-management.html", icon: "fa-screwdriver-wrench", colour: "bg-slate-100 text-slate-700", tags: ["assets", "tracking", "register"], description: "Maintain asset registers, assignments, warranties and service history." },
+      { id: "inspection", name: "Easy Site Inspection", href: "easy-site-inspection.html", icon: "fa-clipboard-check", colour: "bg-cyan-100 text-cyan-700", tags: ["inspection", "checklist", "compliance"], description: "Capture checklists, findings, actions, evidence and inspection reports." }
+    ]);
 
-    function safeJsonParse(value, fallback = []) {
+    function readList(key) {
       try {
-        const parsed = JSON.parse(value);
-        return Array.isArray(parsed) ? parsed : fallback;
+        const parsed = JSON.parse(localStorage.getItem(key) || "[]");
+        return Array.isArray(parsed) ? parsed : [];
       } catch {
-        return fallback;
+        return [];
       }
     }
 
-    function getPinned() {
-      return safeJsonParse(localStorage.getItem(LS_PINNED), []);
+    function writeList(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch {
+        // Local storage may be unavailable in hardened browser contexts.
+      }
     }
 
-    function setPinned(items) {
-      localStorage.setItem(LS_PINNED, JSON.stringify(items));
-    }
-
-    function getRecent() {
-      return safeJsonParse(localStorage.getItem(LS_RECENT), []);
+    function moduleById(id) {
+      return MODULES.find((module) => module.id === id);
     }
 
     function addRecent(id) {
-      const existing = getRecent().filter(item => item !== id);
-      const updated = [id, ...existing].slice(0, 6);
-      localStorage.setItem(LS_RECENT, JSON.stringify(updated));
+      const updated = [id, ...readList(STORAGE.recent).filter((item) => item !== id)].slice(0, 6);
+      writeList(STORAGE.recent, updated);
     }
 
-    function applyTheme(theme) {
-      const isDark = theme === 'dark';
-      document.documentElement.classList.toggle('dark', isDark);
-      localStorage.setItem(LS_THEME, isDark ? 'dark' : 'light');
-      const themeBtn = document.getElementById('themeBtn');
-      if (themeBtn) {
-        themeBtn.innerHTML = isDark
-          ? '<i class="fa-solid fa-sun"></i><span class="hidden sm:inline">Light</span>'
-          : '<i class="fa-solid fa-moon"></i><span class="hidden sm:inline">Dark</span>';
-      }
-    }
-
-    function toggleTheme() {
-      const current = localStorage.getItem(LS_THEME) || 'light';
-      applyTheme(current === 'dark' ? 'light' : 'dark');
+    function togglePinned(id) {
+      const pinned = new Set(readList(STORAGE.pinned));
+      if (pinned.has(id)) pinned.delete(id);
+      else pinned.add(id);
+      writeList(STORAGE.pinned, [...pinned]);
+      renderAll();
     }
 
     function moduleCard(module) {
-      const isPinned = new Set(getPinned()).has(module.id);
+      const pinned = new Set(readList(STORAGE.pinned));
+      const isPinned = pinned.has(module.id);
 
       return `
         <article class="module-card surface surface-strong rounded-2xl p-5 flex flex-col border-adaptive"
-                 data-name="${module.name.toLowerCase()}"
-                 data-desc="${module.desc.toLowerCase()}"
-                 data-tags="${module.tags.join(' ').toLowerCase()}">
-
+          data-name="${module.name.toLowerCase()}"
+          data-description="${module.description.toLowerCase()}"
+          data-tags="${module.tags.join(" ").toLowerCase()}">
           <div class="flex items-start justify-between gap-3 mb-3">
-            <div class="h-12 w-12 rounded-xl ${module.color} flex items-center justify-center shrink-0" aria-hidden="true">
+            <div class="h-12 w-12 rounded-xl ${module.colour} flex items-center justify-center" aria-hidden="true">
               <i class="fa-solid ${module.icon} fa-lg"></i>
             </div>
-
-            <button class="pin-btn px-3 py-2 rounded-lg text-sm font-extrabold"
-                    type="button"
-                    title="${isPinned ? 'Unpin module' : 'Pin module'}"
-                    aria-label="${isPinned ? 'Unpin ' : 'Pin '}${module.name}"
-                    data-toggle-pin="${module.id}">
-              <i class="fa-solid fa-thumbtack ${isPinned ? '' : 'opacity-40'}"></i>
+            <button type="button" class="control pin-button px-3 py-2 rounded-lg text-sm font-extrabold"
+              data-pin="${module.id}" aria-label="${isPinned ? "Unpin" : "Pin"} ${module.name}"
+              title="${isPinned ? "Unpin module" : "Pin module"}">
+              <i class="fa-solid fa-thumbtack ${isPinned ? "" : "opacity-40"}" aria-hidden="true"></i>
             </button>
           </div>
-
           <h3 class="text-xl font-black text-adaptive mb-2">${module.name}</h3>
-          <p class="flex-1 muted-adaptive">${module.desc}</p>
-
-          <div class="mt-3 flex flex-wrap gap-2">
-            ${module.tags.map(tag => `<span class="badge bg-gray-100 text-gray-700">${tag}</span>`).join('')}
+          <p class="muted-adaptive flex-1">${module.description}</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            ${module.tags.map((tag) => `<span class="badge bg-gray-100 text-gray-700">${tag}</span>`).join("")}
           </div>
-
-          <a href="${module.href}"
-             data-module-link="${module.id}"
-             class="action-link mt-4 inline-flex items-center gap-2 text-blue-600 font-black hover:underline">
-            Open <i class="fa-solid fa-arrow-right"></i>
+          <a href="${module.href}" data-module-link="${module.id}"
+            class="mt-5 inline-flex items-center gap-2 text-blue-600 font-black hover:underline">
+            Open module <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
           </a>
         </article>
       `;
     }
 
     function renderPinned() {
-      const pinnedIds = getPinned();
-      const list = pinnedIds.map(id => MODULES.find(module => module.id === id)).filter(Boolean);
-      const wrap = document.getElementById('pinnedWrap');
-      const grid = document.getElementById('pinnedGrid');
+      const wrap = document.getElementById("pinnedWrap");
+      const grid = document.getElementById("pinnedGrid");
+      const items = readList(STORAGE.pinned).map(moduleById).filter(Boolean);
+
       if (!wrap || !grid) return;
-
-      if (!list.length) {
-        wrap.classList.add('hidden');
-        grid.innerHTML = '';
-        return;
-      }
-
-      wrap.classList.remove('hidden');
-      grid.innerHTML = list.map(moduleCard).join('');
-      if (!list.length) { wrap.classList.add("hidden"); return; }
-      wrap.classList.remove("hidden");
-      el.innerHTML = list.map(moduleCard).join("");
+      wrap.classList.toggle("hidden", items.length === 0);
+      grid.innerHTML = items.map(moduleCard).join("");
     }
 
     function renderRecent() {
-      const recentIds = getRecent();
-      const list = recentIds.map(id => MODULES.find(module => module.id === id)).filter(Boolean);
-      const wrap = document.getElementById('recentWrap');
-      const listEl = document.getElementById('recentList');
-      if (!wrap || !listEl) return;
+      const wrap = document.getElementById("recentWrap");
+      const list = document.getElementById("recentList");
+      const items = readList(STORAGE.recent).map(moduleById).filter(Boolean);
 
-      if (!list.length) {
-        wrap.classList.add('hidden');
-        listEl.innerHTML = '';
-        return;
-      }
-
-      wrap.classList.remove('hidden');
-      listEl.innerHTML = list.map(module => `
+      if (!wrap || !list) return;
+      wrap.classList.toggle("hidden", items.length === 0);
+      list.innerHTML = items.map((module) => `
         <a href="${module.href}" data-module-link="${module.id}"
-           class="btn-ui px-3 py-2 rounded-lg font-extrabold inline-flex items-center gap-2">
-          <i class="fa-solid ${module.icon}"></i> ${module.name}
-      if (!list.length) { wrap.classList.add("hidden"); return; }
-      wrap.classList.remove("hidden");
-      el.innerHTML = list.map(m => `
-        <a href="${m.href}" onclick="addRecent('${m.id}')"
-           class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 font-extrabold">
-          <i class="fa-solid ${m.icon}"></i> ${m.name}
+          class="control px-3 py-2 rounded-lg font-extrabold inline-flex items-center gap-2">
+          <i class="fa-solid ${module.icon}" aria-hidden="true"></i> ${module.name}
         </a>
-      `).join('');
+      `).join("");
     }
 
     function renderTags() {
-      const tags = [...new Set(MODULES.flatMap(module => module.tags))].sort((a, b) => a.localeCompare(b));
-      const tagBar = document.getElementById('tagBar');
-      if (!tagBar) return;
+      const bar = document.getElementById("tagBar");
+      if (!bar) return;
 
-      tagBar.innerHTML = [
-        '<button class="tag-btn px-3 py-2 rounded-lg font-extrabold" type="button" data-tag="" aria-pressed="true">All</button>',
-        ...tags.map(tag => `<button class="tag-btn px-3 py-2 rounded-lg font-extrabold" type="button" data-tag="${tag}" aria-pressed="false">${tag}</button>`)
-      ].join('');
+      const tags = [...new Set(MODULES.flatMap((module) => module.tags))].sort((a, b) => a.localeCompare(b));
+      bar.innerHTML = [
+        '<button type="button" class="control tag-button px-3 py-2 rounded-lg font-extrabold" data-tag="" aria-pressed="true">All</button>',
+        ...tags.map((tag) => `<button type="button" class="control tag-button px-3 py-2 rounded-lg font-extrabold" data-tag="${tag}" aria-pressed="false">${tag}</button>`)
+      ].join("");
     }
 
-    function renderAllModules() {
-      const grid = document.getElementById('modulesGrid');
-      if (!grid) return;
-      grid.innerHTML = MODULES.map(moduleCard).join('');
+    function renderModules() {
+      const grid = document.getElementById("modulesGrid");
+      if (grid) grid.innerHTML = MODULES.map(moduleCard).join("");
     }
 
-    function updateResultCount(visibleCount, totalCount) {
-      const resultCount = document.getElementById('resultCount');
-      if (!resultCount) return;
-      resultCount.textContent = `${visibleCount} of ${totalCount} module${totalCount === 1 ? '' : 's'} shown`;
-    }
-
-    function filterCards() {
-      const query = (document.getElementById('search')?.value || '').trim().toLowerCase();
-      const activeTagBtn = document.querySelector('[data-tag][aria-pressed="true"]');
-      const activeTag = (activeTagBtn?.getAttribute('data-tag') || '').toLowerCase();
+    function applyFilters() {
+      const query = (document.getElementById("search")?.value || "").trim().toLowerCase();
+      const activeTag = document.querySelector("[data-tag][aria-pressed='true']")?.getAttribute("data-tag") || "";
+      const cards = [...document.querySelectorAll(".module-card")];
       let visible = 0;
 
-      document.querySelectorAll('.module-card').forEach(card => {
-        const name = (card.getAttribute('data-name') || '').toLowerCase();
-        const desc = (card.getAttribute('data-desc') || '').toLowerCase();
-        const tags = (card.getAttribute('data-tags') || '').toLowerCase();
+      cards.forEach((card) => {
+        const searchable = [
+          card.getAttribute("data-name"),
+          card.getAttribute("data-description"),
+          card.getAttribute("data-tags")
+        ].join(" ").toLowerCase();
 
-        const matchText = !query || name.includes(query) || desc.includes(query) || tags.includes(query);
-        const matchTag = !activeTag || tags.includes(activeTag);
-        const show = matchText && matchTag;
-
-        card.classList.toggle('hidden', !show);
+        const matchesText = !query || searchable.includes(query);
+        const matchesTag = !activeTag || (card.getAttribute("data-tags") || "").split(" ").includes(activeTag);
+        const show = matchesText && matchesTag;
+        card.classList.toggle("hidden", !show);
         if (show) visible += 1;
       });
 
-      updateResultCount(visible, document.querySelectorAll('.module-card').length);
+      const count = document.getElementById("resultCount");
+      if (count) count.textContent = `${visible} of ${cards.length} modules shown`;
     }
 
     function selectTag(tag) {
-      document.querySelectorAll('[data-tag]').forEach(button => {
-        const pressed = button.getAttribute('data-tag') === tag;
-        button.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+      document.querySelectorAll("[data-tag]").forEach((button) => {
+        button.setAttribute("aria-pressed", button.getAttribute("data-tag") === tag ? "true" : "false");
       });
-      filterCards();
-      updateOnlineBadge();
+      applyFilters();
     }
 
-    function togglePinned(id) {
-      const pinned = new Set(getPinned());
-      if (pinned.has(id)) pinned.delete(id);
-      else pinned.add(id);
-      setPinned([...pinned]);
-      renderAll();
-    }
+    function applyTheme(theme) {
+      const isDark = theme === "dark";
+      document.documentElement.classList.toggle("dark", isDark);
 
-    function updateOnlineBadge() {
-      const badge = document.getElementById('onlineBadge');
-      if (!badge) return;
+      try {
+        localStorage.setItem(STORAGE.theme, isDark ? "dark" : "light");
+      } catch {
+        // Theme remains active for the current page.
+      }
 
-      if (navigator.onLine) {
-        badge.className = 'badge bg-green-100 text-green-700';
-        badge.innerHTML = '<i class="fa-solid fa-wifi"></i> Online';
-      } else {
-        badge.className = 'badge bg-yellow-100 text-yellow-800';
-        badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Offline';
+      const button = document.getElementById("themeBtn");
+      if (button) {
+        button.innerHTML = isDark
+          ? '<i class="fa-solid fa-sun" aria-hidden="true"></i><span class="ml-2">Light</span>'
+          : '<i class="fa-solid fa-moon" aria-hidden="true"></i><span class="ml-2">Dark</span>';
       }
     }
 
-    // ====== INIT ======
-    window.addEventListener("DOMContentLoaded", () => {
-      applyTheme(localStorage.getItem(LS_THEME) || "light");
+    function updateOnlineBadge() {
+      const badge = document.getElementById("onlineBadge");
+      if (!badge) return;
 
-      renderAll();
-      window.addEventListener("online", updateOnlineBadge);
-      window.addEventListener("offline", updateOnlineBadge);
+      if (navigator.onLine) {
+        badge.className = "badge bg-green-100 text-green-700";
+        badge.innerHTML = '<i class="fa-solid fa-wifi" aria-hidden="true"></i> Online';
+      } else {
+        badge.className = "badge bg-yellow-100 text-yellow-800";
+        badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Offline';
+      }
+    }
 
-      // Keyboard shortcuts: "/" and Ctrl/Cmd+K focus search
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "/" && !e.ctrlKey && !e.metaKey) {
-          e.preventDefault();
-          document.getElementById("search")?.focus();
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
-          e.preventDefault();
-          document.getElementById("search")?.focus();
-        }
+    function renderAll() {
+      renderModules();
+      renderPinned();
+      renderRecent();
+      applyFilters();
+    }
+
+    function bindEvents() {
+      document.getElementById("search")?.addEventListener("input", applyFilters);
+      document.getElementById("themeBtn")?.addEventListener("click", () => {
+        applyTheme(document.documentElement.classList.contains("dark") ? "light" : "dark");
       });
-    });
-  </script>
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
-  <script defer src="assets/js/easy-suite-core.js"></script>
-</head>
+      document.getElementById("clearRecentBtn")?.addEventListener("click", () => {
+        writeList(STORAGE.recent, []);
+        renderRecent();
+      });
 
-<body class="bg-gray-100 min-h-screen">
-  
-  <!-- Easy Suite mounts (injected) -->
-  <div id="easyNavMount" class="no-print"></div>
-<header class="bg-white border-b border-gray-200 no-print">
-  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">ES</div>
-      <div>
-        <h1 class="text-2xl font-extrabold text-blue-700">Easy Suite</h1>
-        <p class="text-sm text-gray-500">Feature-Rich Document Generator Dashboard</p>
-      </div>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-2">
-      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
-        <i class="fa-solid fa-gauge"></i> Dashboard
-      </a>
-    </div>
-  </div>
-</header><!-- Navigation Bar -->
-  <!-- NAV:START --></div>
-  </div>
-</div>
-<!-- NAV:END -->
-
-  <!-- Hero -->
-  <header class="container mx-auto px-4 py-10">
-    <div class="card rounded-2xl border border-gray-200 shadow bg-white p-8 relative overflow-hidden">
-      <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-blue-100 opacity-70"></div>
-      <div class="absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-indigo-100 opacity-70"></div>
-
-      <div class="relative">
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-          <span class="badge bg-blue-100 text-blue-700">Offline-friendly</span>
-          <span class="badge bg-gray-100 text-gray-700">Print-ready documents</span>
-          <span class="badge bg-green-100 text-green-700">Fast workflows</span>
-        </div>
-
-        <h1 class="text-3xl sm:text-4xl font-black text-gray-800 mb-3">Welcome to Easy Suite</h1>
-        <p class="text-gray-600 text-lg max-w-3xl">
-          Launch any module in seconds â€" Quotes, Invoices, Orders, Receipts, Statements and more.
-          Use search, pin your favourites, and pick up where you left off.
-        </p>
-
-        <div class="mt-6 flex flex-wrap gap-3">
-          <a href="easy-quote.html" onclick="addRecent('quote')"
-             class="px-5 py-3 rounded-xl bg-blue-600 text-white font-black hover:bg-blue-700">
-            <i class="fa-solid fa-plus"></i> New Quote
-          </a>
-          <a href="easy-invoice.html" onclick="addRecent('invoice')"
-             class="px-5 py-3 rounded-xl bg-green-600 text-white font-black hover:bg-green-700">
-            <i class="fa-solid fa-plus"></i> New Invoice
-          </a>
-          <a href="easy-receipt.html" onclick="addRecent('receipt')"
-             class="px-5 py-3 rounded-xl bg-teal-600 text-white font-black hover:bg-teal-700">
-            <i class="fa-solid fa-plus"></i> New Receipt
-          </a>
-          <a href="easy-asset-management.html" onclick="addRecent('assets')"
-             class="px-5 py-3 rounded-xl bg-gray-800 text-white font-black hover:bg-gray-900">
-            <i class="fa-solid fa-plus"></i> New Asset
-          </a>
-          <a href="easy-site-inspection.html" onclick="addRecent('inspection')"
-             class="px-5 py-3 rounded-xl bg-cyan-600 text-white font-black hover:bg-cyan-700">
-            <i class="fa-solid fa-plus"></i> New Inspection
-          </a>
-
-          <span class="ml-auto inline-flex items-center gap-2 text-gray-600 font-extrabold">
-            Tip: press <span class="px-2 py-1 rounded-lg border border-gray-200 bg-gray-50">/</span> to search
-          </span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-        const tagButton = event.target.closest('[data-tag]');
-        if (tagButton) {
-          selectTag(tagButton.getAttribute('data-tag') || '');
+      document.addEventListener("click", (event) => {
+        const pinButton = event.target.closest("[data-pin]");
+        if (pinButton) {
+          togglePinned(pinButton.getAttribute("data-pin"));
           return;
         }
 
-        const moduleLink = event.target.closest('[data-module-link]');
-        if (moduleLink) {
-          const moduleId = moduleLink.getAttribute('data-module-link');
-          if (moduleId) addRecent(moduleId);
+        const tagButton = event.target.closest("[data-tag]");
+        if (tagButton) {
+          selectTag(tagButton.getAttribute("data-tag") || "");
+          return;
+        }
+
+        const moduleLink = event.target.closest("[data-module-link]");
+        if (moduleLink) addRecent(moduleLink.getAttribute("data-module-link"));
+      });
+
+      document.addEventListener("keydown", (event) => {
+        const editable = ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName);
+        if (event.key === "/" && !editable) {
+          event.preventDefault();
+          document.getElementById("search")?.focus();
+        }
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+          event.preventDefault();
+          document.getElementById("search")?.focus();
         }
       });
 
-      document.addEventListener('keydown', event => {
-        const isEditable = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
-
-        if (event.key === '/' && !event.ctrlKey && !event.metaKey && !isEditable) {
-          event.preventDefault();
-          document.getElementById('search')?.focus();
-        }
-
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
-          event.preventDefault();
-          document.getElementById('search')?.focus();
-        }
-      });
-
-      window.addEventListener('online', updateOnlineBadge, { passive: true });
-      window.addEventListener('offline', updateOnlineBadge, { passive: true });
+      window.addEventListener("online", updateOnlineBadge, { passive: true });
+      window.addEventListener("offline", updateOnlineBadge, { passive: true });
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      applyTheme(localStorage.getItem(LS_THEME) || (document.documentElement.classList.contains('dark') ? 'dark' : 'light'));
-      bindStaticEvents();
+    window.addEventListener("DOMContentLoaded", () => {
+      const storedTheme = localStorage.getItem(STORAGE.theme);
+      const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      applyTheme(storedTheme || preferredTheme);
+      renderTags();
       renderAll();
+      bindEvents();
       updateOnlineBadge();
     }, { once: true });
   </script>
+  <script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
-
-
-

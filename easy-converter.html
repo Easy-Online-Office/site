@@ -17,20 +17,20 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Easy Converter | PDF File Type Converter" />
   <meta property="og:description" content="Upload a PDF and convert extracted content into DOCX, XLSX, CSV, TXT, JSON, and XML formats in your browser." />
-  <meta property="og:image" content="logo.png" />
+  <meta property="og:image" content="logo-b.png" />
   <meta property="og:url" content="easy-converter.html" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Easy Converter | PDF File Type Converter" />
   <meta name="twitter:description" content="Client-side PDF conversion for editable and structured export formats." />
-  <meta name="twitter:image" content="logo.png" />
+  <meta name="twitter:image" content="logo-b.png" />
 
-  <link rel="icon" type="image/png" href="logo.png" />
-  <link rel="apple-touch-icon" href="logo.png" />
+  
+  
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
   <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
-  <link rel="preload" as="image" href="logo.png">
+  <link rel="preload" as="image" href="logo-b.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -109,9 +109,35 @@
     }
   }
   </script>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 <body class="min-h-screen text-slate-900 antialiased">
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:bg-white focus:text-blue-700 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow">Skip to main content</a>
+<!-- NAV_SYNC -->
+<nav class="easyfile-nav bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
+      <img src="logo-w.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 object-contain easyfile-brand-logo" data-easyfile-logo data-logo-variant="on-dark" />
+      <span>EasyFile</span>
+    </a>
+    <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
+    <a data-safe-link href="easy-invoice.html" class="hover:underline">Invoice</a>
+    <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
+    <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
+    <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
+    <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
+    <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
+    <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
+    <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
+    <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
+    <a data-safe-link href="easy-asset-management.html" class="hover:underline">Assets</a>
+    <a data-safe-link href="easy-site-inspection.html" class="hover:underline">Inspections</a>
+  </div>
+</nav>
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:bg-white focus:text-blue-700 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow">Skip to main content</a>
 
   <header class="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur">
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
@@ -748,5 +774,6 @@
     resetState();
     setPreviewTab('text');
   </script>
+<script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>

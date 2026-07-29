@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referral Access | EasyFile</title>
+  <meta name="description" content="Track EasyFile referral progress, copy your referral link and unlock continued access after three people use EasyFile.">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-referrals.css">
+  <link rel="icon" href="logo-b.png" type="image/png">
+</head>
+<body class="easyfile-app">
+<!-- NAV_SYNC -->
+<nav class="easyfile-nav bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
+      <img src="logo-w.png" alt="" width="40" height="40" class="h-10 w-10 object-contain easyfile-brand-logo">
+      <span>EasyFile</span>
+    </a>
+    <a href="index.html#modules">Modules</a>
+    <a href="referrals.html" aria-current="page">Referrals</a>
+  </div>
+</nav>
+
+<main class="easyfile-main container mx-auto px-4 py-8 sm:py-12">
+  <header class="easyfile-page-header rounded-3xl p-6 sm:p-9 mb-8">
+    <div class="max-w-3xl">
+      <span class="inline-flex items-center gap-2 rounded-full bg-blue-100 text-blue-700 px-3 py-1 text-sm font-extrabold">
+        <i class="fa-solid fa-user-group" aria-hidden="true"></i> EasyFile referral access
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl font-black">Use EasyFile once. Refer three people to continue.</h1>
+      <p class="mt-4 text-lg text-gray-600">
+        Every user receives one free qualifying use across the EasyFile module suite. Continued access unlocks after three different people follow the user’s referral link and complete an EasyFile module use.
+      </p>
+    </div>
+  </header>
+
+  <section class="grid gap-6 lg:grid-cols-3" aria-label="Referral account summary">
+    <article class="easyfile-referral-page-card lg:col-span-2">
+      <p class="text-sm font-extrabold text-blue-700">ACCESS STATUS</p>
+      <h2 class="mt-2 text-2xl font-black" data-referral-access>Checking access…</h2>
+      <div class="mt-5 easyfile-referral-progress" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0">
+        <span data-referral-progress style="width:0%"></span>
+      </div>
+      <p class="mt-3 text-gray-600"><strong data-referral-count>0 / 3</strong> qualifying referrals completed</p>
+      <div class="mt-6">
+        <label class="block text-sm font-extrabold mb-2" for="referralLink">Your referral link</label>
+        <div class="easyfile-referral-share">
+          <input id="referralLink" data-referral-link type="text" readonly value="Loading…">
+          <button type="button" class="easyfile-referral-button easyfile-referral-button--primary" data-copy-referral>
+            <i class="fa-solid fa-copy" aria-hidden="true"></i> Copy link
+          </button>
+        </div>
+        <p class="easyfile-referral-message" data-referral-message aria-live="polite"></p>
+      </div>
+      <div class="mt-4 easyfile-referral-actions">
+        <button type="button" class="easyfile-referral-button easyfile-referral-button--secondary" data-refresh-referral>
+          <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Refresh status
+        </button>
+        <button type="button" class="easyfile-referral-button easyfile-referral-button--secondary" data-change-email>
+          <i class="fa-solid fa-user-pen" aria-hidden="true"></i> Change email
+        </button>
+      </div>
+    </article>
+
+    <aside class="easyfile-referral-page-card">
+      <p class="text-sm font-extrabold text-blue-700">REFERRAL CODE</p>
+      <p class="mt-2 text-3xl font-black tracking-widest" data-referral-code>—</p>
+      <p class="mt-4 text-sm text-gray-600">A referral counts only when a different user enters through your link and performs a qualifying action such as Save Draft, Preview, Print or Export.</p>
+    </aside>
+  </section>
+
+  <section class="mt-8 grid gap-6 md:grid-cols-3" aria-labelledby="how-title">
+    <h2 id="how-title" class="sr-only">How the referral scheme works</h2>
+    <article class="easyfile-referral-page-card">
+      <div class="h-11 w-11 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-black">1</div>
+      <h3 class="mt-4 text-xl font-black">Use one module</h3>
+      <p class="mt-2 text-gray-600">Choose any EasyFile module and complete one meaningful document action. This consumes the once-off free use.</p>
+    </article>
+    <article class="easyfile-referral-page-card">
+      <div class="h-11 w-11 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-black">2</div>
+      <h3 class="mt-4 text-xl font-black">Refer three people</h3>
+      <p class="mt-2 text-gray-600">Share your unique link with three different people. Self-referrals and repeat use by the same referral do not count twice.</p>
+    </article>
+    <article class="easyfile-referral-page-card">
+      <div class="h-11 w-11 rounded-xl bg-green-100 text-green-700 flex items-center justify-center font-black">3</div>
+      <h3 class="mt-4 text-xl font-black">Unlock continued access</h3>
+      <p class="mt-2 text-gray-600">When all three referrals qualify, the referral service unlocks continued access to the full EasyFile module suite.</p>
+    </article>
+  </section>
+
+  <aside class="mt-8 rounded-2xl border border-yellow-200 bg-yellow-50 p-5 text-yellow-900">
+    <p class="font-extrabold">Important</p>
+    <p class="mt-1 text-sm">Referral validation requires an internet connection. Once an account is unlocked, its entitlement is cached so modules can continue operating during temporary service interruptions.</p>
+  </aside>
+</main>
+
+<footer class="easyfile-footer border-t border-adaptive">
+  <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+    <p class="muted-adaptive text-sm font-bold">EasyFile · Business paperwork, made easier.</p>
+    <p class="muted-adaptive text-sm">Local-first tools · Responsive interface · South African context</p>
+  </div>
+</footer>
+
+<script src="assets/js/easyfile-referral-config.js"></script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>

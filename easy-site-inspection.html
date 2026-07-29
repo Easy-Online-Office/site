@@ -4,12 +4,12 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyINSPECT â€" Site Inspection | Easy Suite</title>
+  <title>EasyINSPECT — Site Inspection | Easy Suite</title>
   
 
   <!-- Favicon -->
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
+  
+  
 <meta name="description" content="Production-ready site inspection tool with checklists, findings, photos, signatures, corrective actions, offline templates, and audit-ready exports." />
 
   <!-- Favicon --><!-- Tailwind CSS -->
@@ -104,13 +104,37 @@
   </style>
   <link rel="stylesheet" href="assets/css/easy-print.css" />
   <script defer src="assets/js/easy-suite-core.js"></script>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 
 <body class="min-h-screen">
-
-  <!-- Easy Suite mounts (injected) -->
-  <div id="easyNavMount" class="no-print"></div>
-<header class="bg-white border-b border-gray-200 no-print">
+<!-- NAV_SYNC -->
+<nav class="easyfile-nav bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
+      <img src="logo-w.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 object-contain easyfile-brand-logo" data-easyfile-logo data-logo-variant="on-dark" />
+      <span>EasyFile</span>
+    </a>
+    <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
+    <a data-safe-link href="easy-invoice.html" class="hover:underline">Invoice</a>
+    <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
+    <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
+    <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
+    <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
+    <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
+    <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
+    <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
+    <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
+    <a data-safe-link href="easy-asset-management.html" class="hover:underline">Assets</a>
+    <a data-safe-link href="easy-site-inspection.html" class="hover:underline">Inspections</a>
+  </div>
+</nav>
+<!-- Easy Suite mounts (injected) -->
+  <header class="bg-white border-b border-gray-200 no-print">
   <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">SI</div>
@@ -127,15 +151,10 @@
     </div>
   </div>
 </header><!-- HEADER:START --><!-- HEADER:END --><!-- Top Nav -->
-  <!-- NAV:START --></div>
-  </div>
-</div>
-<!-- NAV:END -->
-
   <!-- Header --><main class="container mx-auto px-4 py-6 print-wrap">
     <!-- Print title (only visible in print) -->
     <div class="print-title hidden">
-      <h1 class="text-2xl font-black">EasyINSPECT â€" Site Inspection Report</h1>
+      <h1 class="text-2xl font-black">EasyINSPECT — Site Inspection Report</h1>
       <p class="text-sm">Print-ready inspection report (manual style).</p>
       <div class="hr"></div>
     </div>
@@ -276,11 +295,11 @@
             <input id="search" class="input pl-9" placeholder="Search checklist + findings  /" />
           </div>
           <select id="checklistPreset" class="select w-full md:w-56" title="Checklist preset">
-            <option value="hse">HSE â€" General</option>
-            <option value="qa">QA â€" Workmanship</option>
-            <option value="snag">Snag â€" Practical</option>
-            <option value="electrical">Electrical â€" Basic</option>
-            <option value="fire">Fire â€" Basic</option>
+            <option value="hse">HSE — General</option>
+            <option value="qa">QA — Workmanship</option>
+            <option value="snag">Snag — Practical</option>
+            <option value="electrical">Electrical — Basic</option>
+            <option value="fire">Fire — Basic</option>
             <option value="custom">Custom</option>
           </select>
           <button class="btn btn-outline" id="btnLoadPreset"><i class="fa-solid fa-wand-magic-sparkles"></i> Load</button>
@@ -407,7 +426,7 @@
           </div>
 
           <div class="help mt-3">
-            Tip: use findings for audit trails. â€œClosedâ€ should include closure evidence in photos or notes.
+            Tip: use findings for audit trails. “Closed” should include closure evidence in photos or notes.
           </div>
         </div>
       </div>
@@ -636,9 +655,9 @@
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
         .replaceAll('"',"&quot;").replaceAll("'","&#039;");
       const fmtShort = (iso)=>{
-        if(!iso) return "â€"";
+        if(!iso) return "—";
         const d = new Date(iso);
-        if(Number.isNaN(d.getTime())) return "â€"";
+        if(Number.isNaN(d.getTime())) return "—";
         return d.toLocaleDateString("en-ZA", { year:"numeric", month:"short", day:"2-digit" });
       };
 
@@ -854,7 +873,7 @@
         }).join("") || `<tr><td colspan="5" class="help">No checklist items match your search.</td></tr>`;
 
         // Linked checklist dropdown
-        const opts = [`<option value="">â€" None â€"</option>`]
+        const opts = [`<option value="">— None —</option>`]
           .concat(state.checklist.map(it=> `<option value="${it.id}">${escapeHtml(it.text)}</option>`));
         els.fLinkedChecklist.innerHTML = opts.join("");
 
@@ -880,15 +899,15 @@
         });
 
         els.findingsTbody.innerHTML = filtered.map(f=>{
-          const linked = f.linkedChecklistText ? f.linkedChecklistText : (f.linkedChecklistId ? "Linked item" : "â€"");
+          const linked = f.linkedChecklistText ? f.linkedChecklistText : (f.linkedChecklistId ? "Linked item" : "—");
           return `
             <tr>
               <td>
-                <div class="font-extrabold">${escapeHtml(f.title||"â€"")}</div>
+                <div class="font-extrabold">${escapeHtml(f.title||"—")}</div>
                 <div class="help">${escapeHtml(f.area||"")}</div>
               </td>
               <td>${riskBadge(f.risk)}</td>
-              <td>${escapeHtml(f.owner||"â€"")}</td>
+              <td>${escapeHtml(f.owner||"—")}</td>
               <td>${fmtShort(f.dueDate)}</td>
               <td>${escapeHtml(f.status||"Open")}</td>
               <td>${escapeHtml(linked)}</td>
@@ -1780,6 +1799,7 @@
       init();
     })();
   </script>
+<script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
 

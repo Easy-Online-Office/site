@@ -4,12 +4,12 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyASM â€" Asset Management | Easy Suite</title>
+  <title>EasyASM — Asset Management | Easy Suite</title>
   
 
   <!-- Favicon -->
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
+  
+  
 <meta name="description" content="Asset register with assignments, service history, warranty tracking, depreciation, audit-ready exports, and offline-friendly templates." />
 
   <!-- Favicon --><!-- Tailwind CSS -->
@@ -114,13 +114,37 @@
   </style>
   <link rel="stylesheet" href="assets/css/easy-print.css" />
   <script defer src="assets/js/easy-suite-core.js"></script>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 
 <body class="min-h-screen">
-
-  <!-- Easy Suite mounts (injected) -->
-  <div id="easyNavMount" class="no-print"></div>
-<header class="bg-white border-b border-gray-200 no-print">
+<!-- NAV_SYNC -->
+<nav class="easyfile-nav bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
+  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+    <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
+      <img src="logo-w.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 object-contain easyfile-brand-logo" data-easyfile-logo data-logo-variant="on-dark" />
+      <span>EasyFile</span>
+    </a>
+    <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
+    <a data-safe-link href="easy-invoice.html" class="hover:underline">Invoice</a>
+    <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
+    <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
+    <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
+    <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
+    <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
+    <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
+    <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
+    <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
+    <a data-safe-link href="easy-asset-management.html" class="hover:underline">Assets</a>
+    <a data-safe-link href="easy-site-inspection.html" class="hover:underline">Inspections</a>
+  </div>
+</nav>
+<!-- Easy Suite mounts (injected) -->
+  <header class="bg-white border-b border-gray-200 no-print">
   <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">AM</div>
@@ -137,15 +161,10 @@
     </div>
   </div>
 </header><!-- HEADER:START --><!-- HEADER:END --><!-- Top Nav -->
-  <!-- NAV:START --></div>
-  </div>
-</div>
-<!-- NAV:END -->
-
   <!-- Header --><main class="container mx-auto px-4 py-6 print-wrap">
     <!-- Print title (only visible in print) -->
     <div class="print-title hidden">
-      <h1 class="text-2xl font-black">EasyASM â€" Asset Register</h1>
+      <h1 class="text-2xl font-black">EasyASM — Asset Register</h1>
       <p class="text-sm">Audit-ready register export (manual style).</p>
       <div class="hr"></div>
     </div>
@@ -239,11 +258,11 @@
           </div>
           <div class="flex items-center justify-between">
             <div class="help">Total Cost</div>
-            <div class="font-black text-xl" id="statTotalCost">â€"</div>
+            <div class="font-black text-xl" id="statTotalCost">—</div>
           </div>
           <div class="flex items-center justify-between">
             <div class="help">Book Value (est.)</div>
-            <div class="font-black text-xl" id="statBookValue">â€"</div>
+            <div class="font-black text-xl" id="statBookValue">—</div>
           </div>
           <div class="hr"></div>
           <div class="flex flex-wrap gap-2 no-print">
@@ -402,7 +421,7 @@
 
           <div class="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="help">
-              Tip: click an assetâ€™s <b>Tag</b> to copy it. Use <span class="kbd">/</span> to jump to search.
+              Tip: click an asset’s <b>Tag</b> to copy it. Use <span class="kbd">/</span> to jump to search.
             </div>
             <div class="flex flex-wrap gap-2 no-print">
               <button class="btn btn-outline" id="btnAuditList"><i class="fa-solid fa-clipboard-check"></i> Audit List</button>
@@ -764,9 +783,9 @@
         }
       };
       const fmtShort = (iso)=>{
-        if(!iso) return "â€"";
+        if(!iso) return "—";
         const d = new Date(iso);
-        if(Number.isNaN(d.getTime())) return "â€"";
+        if(Number.isNaN(d.getTime())) return "—";
         return d.toLocaleDateString("en-ZA", { year:"numeric", month:"short", day:"2-digit" });
       };
       const daysUntil = (iso)=>{
@@ -901,13 +920,13 @@
         if(status === "In Repair") return `<span class="badge warn"><i class="fa-solid fa-screwdriver-wrench"></i> ${escapeHtml(status)}</span>`;
         if(status === "Retired" || status === "Disposed") return `<span class="badge"><i class="fa-solid fa-box-archive"></i> ${escapeHtml(status)}</span>`;
         if(status === "Lost/Stolen") return `<span class="badge bad"><i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(status)}</span>`;
-        return `<span class="badge">${escapeHtml(status||"â€"")}</span>`;
+        return `<span class="badge">${escapeHtml(status||"—")}</span>`;
       }
 
       function warrantyBadge(warrantyIso){
-        if(!warrantyIso) return `<span class="badge">â€"</span>`;
+        if(!warrantyIso) return `<span class="badge">—</span>`;
         const d = daysUntil(warrantyIso);
-        if(d === null) return `<span class="badge">â€"</span>`;
+        if(d === null) return `<span class="badge">—</span>`;
         if(d < 0) return `<span class="badge bad"><i class="fa-solid fa-xmark"></i> Expired</span>`;
         if(d <= 30) return `<span class="badge warn"><i class="fa-solid fa-clock"></i> ${d}d</span>`;
         return `<span class="badge ok"><i class="fa-solid fa-shield"></i> ${d}d</span>`;
@@ -936,22 +955,22 @@
         const ccy = state.meta.currency || "ZAR";
         const rows = getFilteredAssets().map(a=>{
           const assignedTo = (a.assignment && (a.assignment.user || a.assignment.userId))
-            ? `${escapeHtml(a.assignment.user || "â€"")}<div class="help">${escapeHtml(a.assignment.userId || "")}</div>`
+            ? `${escapeHtml(a.assignment.user || "—")}<div class="help">${escapeHtml(a.assignment.userId || "")}</div>`
             : `<span class="help">Unassigned</span>`;
 
           const book = computeBookValue(a);
-          const tagCell = `<button class="btn btn-outline" data-act="copyTag" data-id="${a.id}" title="Copy tag">${escapeHtml(a.tag||"â€"")}</button>`;
+          const tagCell = `<button class="btn btn-outline" data-act="copyTag" data-id="${a.id}" title="Copy tag">${escapeHtml(a.tag||"—")}</button>`;
 
           return `
             <tr>
               <td>
-                <div class="font-extrabold">${escapeHtml(a.name||"â€"")}</div>
+                <div class="font-extrabold">${escapeHtml(a.name||"—")}</div>
                 <div class="help">${escapeHtml(a.dept||"")}</div>
               </td>
               <td>${tagCell}</td>
-              <td class="mono">${escapeHtml(a.serial||"â€"")}</td>
-              <td>${escapeHtml(a.category||"â€"")}</td>
-              <td>${escapeHtml(a.location||"â€"")}</td>
+              <td class="mono">${escapeHtml(a.serial||"—")}</td>
+              <td>${escapeHtml(a.category||"—")}</td>
+              <td>${escapeHtml(a.location||"—")}</td>
               <td>${assignedTo}</td>
               <td>${statusBadge(a.status)}</td>
               <td>${warrantyBadge(a.warranty)}</td>
@@ -1174,8 +1193,8 @@
         a.history.unshift({
           at: nowISO(),
           action: "ASSIGN",
-          from: prev ? (prev.user || prev.userId || "â€"") : "Unassigned",
-          to: newAsn.user || newAsn.userId || "â€""
+          from: prev ? (prev.user || prev.userId || "—") : "Unassigned",
+          to: newAsn.user || newAsn.userId || "—"
         });
 
         a.updatedAt = nowISO();
@@ -1195,7 +1214,7 @@
         a.history.unshift({
           at: nowISO(),
           action: "UNASSIGN",
-          from: prev.user || prev.userId || "â€"",
+          from: prev.user || prev.userId || "—",
           to: "Unassigned"
         });
         a.updatedAt = nowISO();
@@ -1220,8 +1239,8 @@
           return `
             <tr>
               <td>${fmtShort(e.date)}</td>
-              <td>${escapeHtml(e.type||"â€"")}</td>
-              <td>${escapeHtml(e.vendor||"â€"")}</td>
+              <td>${escapeHtml(e.type||"—")}</td>
+              <td>${escapeHtml(e.vendor||"—")}</td>
               <td class="font-extrabold">${fmtMoney(e.cost||0, ccy)}</td>
               <td>${escapeHtml(e.notes||"")}</td>
               <td class="no-print">
@@ -1624,15 +1643,15 @@
       }
       function renderAuditTable(){
         const rows = getFilteredAssets().map(a=>{
-          const assigned = a.assignment ? (a.assignment.user || a.assignment.userId || "â€"") : "Unassigned";
+          const assigned = a.assignment ? (a.assignment.user || a.assignment.userId || "—") : "Unassigned";
           return `
             <tr>
-              <td><div class="font-extrabold">${escapeHtml(a.name||"â€"")}</div><div class="help">${escapeHtml(a.category||"")}</div></td>
-              <td class="mono">${escapeHtml(a.tag||"â€"")}</td>
-              <td class="mono">${escapeHtml(a.serial||"â€"")}</td>
-              <td>${escapeHtml(a.location||"â€"")}</td>
+              <td><div class="font-extrabold">${escapeHtml(a.name||"—")}</div><div class="help">${escapeHtml(a.category||"")}</div></td>
+              <td class="mono">${escapeHtml(a.tag||"—")}</td>
+              <td class="mono">${escapeHtml(a.serial||"—")}</td>
+              <td>${escapeHtml(a.location||"—")}</td>
               <td>${escapeHtml(assigned)}</td>
-              <td>${escapeHtml(a.status||"â€"")}</td>
+              <td>${escapeHtml(a.status||"—")}</td>
             </tr>
           `;
         }).join("");
@@ -1835,6 +1854,7 @@
       init();
     })();
   </script>
+<script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
 
