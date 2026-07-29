@@ -23,10 +23,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const SHARED_STYLES = Object.freeze([
     "assets/css/easyfile-brand-tokens.css",
     "assets/css/easyfile-site.css",
-    "assets/css/easyfile-footer.css"
+    "assets/css/easyfile-footer.css",
+    "assets/css/easyfile-referrals.css"
   ]);
 
   const current = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+  const referralEntry = new URLSearchParams(location.search).has("ref");
+  const referralEnabledPage = MODULE_FILES.has(current) || current === "referrals.html" || referralEntry;
 
   function ensureSharedStyles() {
     SHARED_STYLES.forEach((href) => {
@@ -40,6 +43,18 @@ document.addEventListener("DOMContentLoaded", () => {
       link.dataset.easyfileSharedStyle = "";
       document.head.appendChild(link);
     });
+  }
+
+  function ensureScript(src, dataAttribute) {
+    const existing = Array.from(document.querySelectorAll("script[src]"))
+      .find((script) => (script.getAttribute("src") || "").endsWith(src));
+    if (existing) return existing;
+
+    const script = document.createElement("script");
+    script.src = src;
+    if (dataAttribute) script.dataset[dataAttribute] = "";
+    document.head.appendChild(script);
+    return script;
   }
 
   function applyLayoutHooks() {
@@ -127,10 +142,15 @@ document.addEventListener("DOMContentLoaded", () => {
     document.head.appendChild(link);
   });
 
-  if (MODULE_FILES.has(current) && !document.querySelector('script[data-easyfile-module-actions]')) {
-    const actionsScript = document.createElement("script");
-    actionsScript.src = "assets/js/easyfile-module-actions.js";
-    actionsScript.dataset.easyfileModuleActions = "";
-    document.head.appendChild(actionsScript);
+  if (MODULE_FILES.has(current)) {
+    ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
+  }
+
+  if (referralEnabledPage) {
+    ensureScript("assets/js/easyfile-referral-compat.js", "easyfileReferralCompat");
+    const configScript = ensureScript("assets/js/easyfile-referral-config.js", "easyfileReferralConfig");
+    const loadReferralGate = () => ensureScript("assets/js/easyfile-referrals.js", "easyfileReferrals");
+    if (window.EASYFILE_REFERRAL_CONFIG) loadReferralGate();
+    else configScript.addEventListener("load", loadReferralGate, { once: true });
   }
 });
