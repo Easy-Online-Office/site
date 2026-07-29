@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const SHARED_STYLES = Object.freeze([
     "assets/css/easyfile-brand-tokens.css",
-    "assets/css/easyfile-site.css"
+    "assets/css/easyfile-site.css",
+    "assets/css/easyfile-footer.css"
   ]);
 
   const current = (location.pathname.split("/").pop() || "index.html").toLowerCase();
@@ -53,6 +54,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const pageHeader = document.querySelector("body > header, main > header");
     if (pageHeader) pageHeader.classList.add("easyfile-page-header");
+
+    document.querySelectorAll("footer").forEach((footer) => {
+      footer.classList.add("easyfile-footer");
+      if (!footer.hasAttribute("aria-label")) {
+        footer.setAttribute("aria-label", "EasyFile site footer");
+      }
+    });
   }
 
   ensureSharedStyles();
