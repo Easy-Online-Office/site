@@ -191,8 +191,19 @@ body.easyfile-app thead {
 
 .easyfile-action-secondary:hover { background: #f8fafc; }
 
+.easyfile-action-secondary.bg-gray-900 {
+  border-color: #111827;
+  background: #111827;
+  color: #fff;
+}
+
+.easyfile-action-secondary.bg-gray-900:hover { background: #000; }
+
 .dark .easyfile-action-secondary:hover,
 [data-theme="dark"] .easyfile-action-secondary:hover { background: #172033; }
+
+.dark .easyfile-action-secondary.bg-gray-900,
+[data-theme="dark"] .easyfile-action-secondary.bg-gray-900 { background: #020617; }
 
 .easyfile-action-status {
   flex: 1 1 100%;
