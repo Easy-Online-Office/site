@@ -1,20 +1,147 @@
-/* EasyFile shared module actions: Save Draft, Export CSV and Print */
+/* EasyFile shared module action bar */
 (function () {
   "use strict";
 
   const MODULES = Object.freeze({
-    "easy-quote.html": { id: "quote", printLabel: "Print Quote" },
-    "easy-invoice.html": { id: "invoice", printLabel: "Print Invoice" },
-    "easy-purchase-order.html": { id: "purchase-order", printLabel: "Print Purchase Order" },
-    "easy-sales-order.html": { id: "sales-order", printLabel: "Print Sales Order" },
-    "easy-receipt.html": { id: "receipt", printLabel: "Print Receipt" },
-    "easy-statement.html": { id: "statement", printLabel: "Print Statement" },
-    "easy-job-card.html": { id: "job-card", printLabel: "Print Job Card" },
-    "easy-payroll.html": { id: "payroll", printLabel: "Print Payslip" },
-    "easy-inventory.html": { id: "inventory", printLabel: "Print Inventory Report" },
-    "easy-crm.html": { id: "crm", printLabel: "Print CRM Report" },
-    "easy-asset-management.html": { id: "asset-management", printLabel: "Print Asset Register" },
-    "easy-site-inspection.html": { id: "site-inspection", printLabel: "Print Inspection Report" }
+    "easy-quote.html": {
+      id: "quote",
+      noun: "Quote",
+      newLabel: "New Quote #",
+      newIcon: "fa-file-circle-plus",
+      newPattern: /new\s*quote|btnnewquote/i,
+      secondaryLabel: "Mark Accepted",
+      secondaryIcon: "fa-circle-check",
+      secondaryPattern: /mark\s*accepted|accept\s*quote/i,
+      secondaryValue: "Accepted",
+      printLabel: "Print Quote"
+    },
+    "easy-invoice.html": {
+      id: "invoice",
+      noun: "Invoice",
+      newLabel: "New Invoice #",
+      newIcon: "fa-file-circle-plus",
+      newPattern: /new\s*invoice|btnnewinvoice/i,
+      secondaryLabel: "Mark Paid",
+      secondaryIcon: "fa-circle-check",
+      secondaryPattern: /mark\s*paid|btnmarkpaid/i,
+      secondaryValue: "Paid",
+      printLabel: "Print Invoice"
+    },
+    "easy-purchase-order.html": {
+      id: "purchase-order",
+      noun: "Purchase Order",
+      newLabel: "New Purchase Order #",
+      newIcon: "fa-cart-plus",
+      newPattern: /new\s*(purchase\s*order|po)|btnnew(number|po)/i,
+      secondaryLabel: "Mark Approved",
+      secondaryIcon: "fa-circle-check",
+      secondaryPattern: /mark\s*approved|approve\s*(purchase\s*order|po)/i,
+      secondaryValue: "Approved",
+      printLabel: "Print Purchase Order"
+    },
+    "easy-sales-order.html": {
+      id: "sales-order",
+      noun: "Sales Order",
+      newLabel: "New Sales Order #",
+      newIcon: "fa-bag-shopping",
+      newPattern: /new\s*sales\s*order|btnnew(number|sales)/i,
+      secondaryLabel: "Mark Confirmed",
+      secondaryIcon: "fa-circle-check",
+      secondaryPattern: /mark\s*confirmed|confirm\s*order/i,
+      secondaryValue: "Confirmed",
+      printLabel: "Print Sales Order"
+    },
+    "easy-receipt.html": {
+      id: "receipt",
+      noun: "Receipt",
+      newLabel: "New Receipt #",
+      newIcon: "fa-receipt",
+      newPattern: /new\s*receipt|btnnewreceipt/i,
+      secondaryLabel: "Mark Issued",
+      secondaryIcon: "fa-circle-check",
+      secondaryPattern: /mark\s*issued|issue\s*receipt/i,
+      secondaryValue: "Issued",
+      printLabel: "Print Receipt"
+    },
+    "easy-statement.html": {
+      id: "statement",
+      noun: "Statement",
+      newLabel: "New Statement",
+      newIcon: "fa-file-circle-plus",
+      newPattern: /new\s*statement|btnnewstatement/i,
+      secondaryLabel: "Generate Statement",
+      secondaryIcon: "fa-rotate",
+      secondaryPattern: /generate\s*statement|refresh\s*statement|btngenerate/i,
+      printLabel: "Print Statement"
+    },
+    "easy-job-card.html": {
+      id: "job-card",
+      noun: "Job Card",
+      newLabel: "New Job Card #",
+      newIcon: "fa-clipboard-list",
+      newPattern: /new\s*job|btnnewnumber|btnnewjob/i,
+      secondaryLabel: "Mark Completed",
+      secondaryIcon: "fa-circle-check",
+      secondaryPattern: /mark\s*completed|btnmarkcompleted/i,
+      secondaryValue: "Completed",
+      printLabel: "Print Job Card"
+    },
+    "easy-payroll.html": {
+      id: "payroll",
+      noun: "Payroll",
+      newLabel: "New Payroll",
+      newIcon: "fa-money-check-dollar",
+      newPattern: /new\s*payroll|btnnewpayroll/i,
+      secondaryLabel: "Calculate Payroll",
+      secondaryIcon: "fa-calculator",
+      secondaryPattern: /calculate\s*payroll|btncalculate/i,
+      printLabel: "Print Payslip"
+    },
+    "easy-inventory.html": {
+      id: "inventory",
+      noun: "Inventory",
+      newLabel: "Add Product",
+      newIcon: "fa-box-open",
+      newPattern: /add\s*product|btnadd\b/i,
+      secondaryLabel: "Import CSV",
+      secondaryIcon: "fa-file-import",
+      secondaryPattern: /import\s*csv|btnimport/i,
+      printLabel: "Print Inventory Report"
+    },
+    "easy-crm.html": {
+      id: "crm",
+      noun: "CRM",
+      newLabel: "Add Contact",
+      newIcon: "fa-user-plus",
+      newPattern: /add\s*(contact|customer)|btnadd(contact|customer)?/i,
+      secondaryLabel: "Add Opportunity",
+      secondaryIcon: "fa-bullseye",
+      secondaryPattern: /add\s*opportunit|btnaddopportunit/i,
+      printLabel: "Print CRM Report"
+    },
+    "easy-asset-management.html": {
+      id: "asset-management",
+      noun: "Asset Register",
+      newLabel: "Add Asset",
+      newIcon: "fa-screwdriver-wrench",
+      newPattern: /add\s*asset|btnaddasset/i,
+      secondaryLabel: "Audit List",
+      secondaryIcon: "fa-list-check",
+      secondaryPattern: /audit\s*list|btnauditlist/i,
+      printLabel: "Print Asset Register"
+    },
+    "easy-site-inspection.html": {
+      id: "site-inspection",
+      noun: "Site Inspection",
+      newLabel: "New Inspection",
+      newIcon: "fa-clipboard-check",
+      newPattern: /new\s*inspection|btnnewinspection/i,
+      secondaryLabel: "Mark Completed",
+      secondaryIcon: "fa-circle-check",
+      secondaryPattern: /mark\s*completed|complete\s*inspection/i,
+      secondaryValue: "Completed",
+      printLabel: "Print Inspection Report"
+    }
   });
 
   const currentFile = (location.pathname.split("/").pop() || "index.html").toLowerCase();
@@ -22,109 +149,83 @@
   if (!moduleConfig) return;
 
   const TOOLBAR_ID = "easyfileModuleActions";
-  const STORAGE_KEY = `easyfile:shared-draft:${moduleConfig.id}:v1`;
+  const STORAGE_KEY = `easyfile:shared-draft:${moduleConfig.id}:v2`;
 
-  function addStyles() {
-    if (document.getElementById("easyfileModuleActionsStyles")) return;
+  const ACTION_PATTERNS = Object.freeze({
+    save: /save\s*draft|btnsave[d_-]?draft/i,
+    preview: /(^|\s)preview(\s|$)|btnpreview/i,
+    print: /(^|\s)print(\s|$)|btnprint/i,
+    pdf: /export\s*pdf|btnpdf/i,
+    word: /export\s*word|btnword/i,
+    excel: /export\s*excel|btnexcel/i,
+    csv: /export\s*csv|btncsv|btn_csv/i
+  });
 
-    const style = document.createElement("style");
-    style.id = "easyfileModuleActionsStyles";
-    style.textContent = `
-      #${TOOLBAR_ID} {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: .75rem;
-        width: min(100%, 80rem);
-        margin: 1rem auto 1.5rem;
-        padding: 1rem;
-        border: 1px solid #e5e7eb;
-        border-radius: 1rem;
-        background: #fff;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, .07);
-      }
-      #${TOOLBAR_ID} .easyfile-action-title {
-        margin-right: auto;
-        color: #334155;
-        font-size: .875rem;
-        font-weight: 800;
-      }
-      #${TOOLBAR_ID} button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: .5rem;
-        min-height: 2.75rem;
-        border: 0;
-        border-radius: .625rem;
-        padding: .65rem 1.25rem;
-        color: #fff;
-        font: inherit;
-        font-weight: 800;
-        cursor: pointer;
-        transition: transform .15s ease, filter .15s ease;
-      }
-      #${TOOLBAR_ID} button:hover { transform: translateY(-1px); filter: brightness(.96); }
-      #${TOOLBAR_ID} button:focus-visible { outline: 3px solid rgba(37, 99, 235, .3); outline-offset: 2px; }
-      #${TOOLBAR_ID} [data-easyfile-action="save"] { background: #4b5563; }
-      #${TOOLBAR_ID} [data-easyfile-action="csv"] { background: #9333ea; }
-      #${TOOLBAR_ID} [data-easyfile-action="print"] { background: #111827; }
-      .easyfile-action-toast {
-        position: fixed;
-        right: 1rem;
-        bottom: 1rem;
-        z-index: 9999;
-        max-width: min(24rem, calc(100vw - 2rem));
-        border-radius: .75rem;
-        padding: .8rem 1rem;
-        background: #111827;
-        color: #fff;
-        box-shadow: 0 18px 45px rgba(15, 23, 42, .28);
-        font-size: .875rem;
-        font-weight: 700;
-      }
-      @media (max-width: 640px) {
-        #${TOOLBAR_ID} { align-items: stretch; }
-        #${TOOLBAR_ID} .easyfile-action-title { width: 100%; margin-right: 0; }
-        #${TOOLBAR_ID} button { flex: 1 1 100%; }
-      }
-      @media print {
-        #${TOOLBAR_ID}, .easyfile-action-toast { display: none !important; }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        #${TOOLBAR_ID} button { transition: none; }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  function toast(message) {
+  function toast(message, isError) {
     const existing = document.querySelector(".easyfile-action-toast");
     if (existing) existing.remove();
 
     const element = document.createElement("div");
     element.className = "easyfile-action-toast";
-    element.setAttribute("role", "status");
-    element.setAttribute("aria-live", "polite");
+    element.setAttribute("role", isError ? "alert" : "status");
+    element.setAttribute("aria-live", isError ? "assertive" : "polite");
     element.textContent = message;
+    if (isError) element.style.background = "#b91c1c";
     document.body.appendChild(element);
-    window.setTimeout(() => element.remove(), 2600);
+    window.setTimeout(() => element.remove(), 2800);
+  }
+
+  function setToolbarStatus(message) {
+    const status = document.getElementById("easyfileActionStatus");
+    if (status) status.textContent = message;
+  }
+
+  function buttonText(button) {
+    return `${button.id || ""} ${button.name || ""} ${button.textContent || ""}`
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function nativeButton(pattern) {
+    return Array.from(document.querySelectorAll("button, [role='button'], a.btn")).find((button) => {
+      if (button.closest(`#${TOOLBAR_ID}`)) return false;
+      return pattern.test(buttonText(button));
+    });
+  }
+
+  function invokeNativeButton(pattern) {
+    const existing = nativeButton(pattern);
+    if (!existing) return false;
+    existing.click();
+    return true;
+  }
+
+  function invokeFunction(names) {
+    for (const name of names) {
+      if (typeof window[name] === "function") {
+        window[name]();
+        return true;
+      }
+    }
+    return false;
   }
 
   function fieldKey(field, index) {
     return field.id || field.name || `${field.tagName.toLowerCase()}-${index}`;
   }
 
-  function serialiseDraft() {
+  function draftFields() {
     const main = document.querySelector("main") || document.body;
-    const fields = Array.from(main.querySelectorAll("input, select, textarea, [contenteditable='true']"))
+    return Array.from(main.querySelectorAll("input, select, textarea, [contenteditable='true']"))
       .filter((field) => !field.closest(`#${TOOLBAR_ID}`))
-      .filter((field) => field.type !== "file" && field.type !== "button" && field.type !== "submit" && field.type !== "reset");
+      .filter((field) => !["file", "button", "submit", "reset"].includes(field.type));
+  }
 
+  function serialiseDraft() {
     return {
       module: moduleConfig.id,
       savedAt: new Date().toISOString(),
-      fields: fields.map((field, index) => ({
+      fields: draftFields().map((field, index) => ({
         key: fieldKey(field, index),
         type: field.type || field.tagName.toLowerCase(),
         value: field.isContentEditable ? field.textContent : field.value,
@@ -143,12 +244,9 @@
 
     if (!draft || !Array.isArray(draft.fields)) return;
 
-    const main = document.querySelector("main") || document.body;
-    const fields = Array.from(main.querySelectorAll("input, select, textarea, [contenteditable='true']"))
-      .filter((field) => !field.closest(`#${TOOLBAR_ID}`))
-      .filter((field) => field.type !== "file" && field.type !== "button" && field.type !== "submit" && field.type !== "reset");
-
+    const fields = draftFields();
     const saved = new Map(draft.fields.map((item) => [item.key, item]));
+
     fields.forEach((field, index) => {
       const item = saved.get(fieldKey(field, index));
       if (!item) return;
@@ -160,34 +258,103 @@
       field.dispatchEvent(new Event("input", { bubbles: true }));
       field.dispatchEvent(new Event("change", { bubbles: true }));
     });
-  }
 
-  function nativeButton(pattern) {
-    return Array.from(document.querySelectorAll("button, [role='button']")).find((button) => {
-      if (button.closest(`#${TOOLBAR_ID}`)) return false;
-      const text = `${button.id || ""} ${button.textContent || ""}`.replace(/\s+/g, " ").trim();
-      return pattern.test(text);
-    });
+    setToolbarStatus(`Draft restored from ${new Date(draft.savedAt).toLocaleString("en-ZA")}.`);
   }
 
   function saveDraft() {
-    if (typeof window.saveDraft === "function" && window.saveDraft !== saveDraft) {
+    if (typeof window.saveDraft === "function") {
       window.saveDraft();
+      setToolbarStatus("Draft saved using this module's native save function.");
       return;
     }
 
-    const existing = nativeButton(/save\s*draft|btnsave[d_-]?draft/i);
-    if (existing) {
-      existing.click();
+    if (invokeNativeButton(ACTION_PATTERNS.save)) {
+      setToolbarStatus("Draft save requested.");
       return;
     }
 
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(serialiseDraft()));
       toast("Draft saved in this browser.");
+      setToolbarStatus("Draft saved locally.");
     } catch {
-      toast("Draft could not be saved because browser storage is unavailable.");
+      toast("Draft could not be saved because browser storage is unavailable.", true);
     }
+  }
+
+  function resetForNewRecord() {
+    const confirmed = window.confirm(`Start a new ${moduleConfig.noun}? Unsaved values in the current form will be cleared.`);
+    if (!confirmed) return;
+
+    localStorage.removeItem(STORAGE_KEY);
+    document.querySelectorAll("main form").forEach((form) => form.reset());
+
+    draftFields().forEach((field) => {
+      if (field.type === "checkbox" || field.type === "radio") field.checked = false;
+      else if (field.isContentEditable) field.textContent = "";
+      else if (field.tagName === "SELECT") field.selectedIndex = 0;
+      else field.value = "";
+      field.dispatchEvent(new Event("input", { bubbles: true }));
+      field.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    toast(`New ${moduleConfig.noun} form ready.`);
+    setToolbarStatus(`Started a new ${moduleConfig.noun}.`);
+  }
+
+  function newRecord() {
+    if (invokeNativeButton(moduleConfig.newPattern)) return;
+
+    const functionNames = [
+      "newInvoiceNumber",
+      "generateInvoiceNumber",
+      "generateQuoteNumber",
+      "generateJobNumber",
+      "newDocument",
+      "newRecord"
+    ];
+    if (invokeFunction(functionNames)) return;
+
+    resetForNewRecord();
+  }
+
+  function setStatusValue(value) {
+    if (!value) return false;
+
+    const candidates = Array.from(document.querySelectorAll("select")).filter((select) => {
+      const identity = `${select.id || ""} ${select.name || ""} ${select.getAttribute("aria-label") || ""}`;
+      return /status/i.test(identity);
+    });
+
+    for (const select of candidates) {
+      const option = Array.from(select.options).find((item) =>
+        (item.value || item.textContent || "").trim().toLowerCase() === value.toLowerCase()
+      );
+      if (!option) continue;
+      select.value = option.value;
+      select.dispatchEvent(new Event("input", { bubbles: true }));
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+      toast(`Status changed to ${value}.`);
+      setToolbarStatus(`Status: ${value}.`);
+      return true;
+    }
+
+    return false;
+  }
+
+  function secondaryAction() {
+    if (invokeNativeButton(moduleConfig.secondaryPattern)) return;
+    if (moduleConfig.secondaryValue && setStatusValue(moduleConfig.secondaryValue)) return;
+
+    const functionNames = moduleConfig.id === "payroll"
+      ? ["calculatePayroll", "calculate"]
+      : moduleConfig.id === "statement"
+        ? ["generateStatement", "calculate", "render"]
+        : [];
+
+    if (invokeFunction(functionNames)) return;
+    toast(`${moduleConfig.secondaryLabel} is not available in this module yet.`, true);
   }
 
   function csvEscape(value) {
@@ -215,52 +382,191 @@
     });
 
     if (!rows.length) {
-      const main = document.querySelector("main") || document.body;
       rows = [[csvEscape("Field"), csvEscape("Value")]];
-      Array.from(main.querySelectorAll("input, select, textarea"))
-        .filter((field) => field.type !== "file" && field.type !== "button" && field.type !== "submit")
-        .forEach((field, index) => {
-          const label = field.labels?.[0]?.textContent || field.placeholder || field.id || field.name || `Field ${index + 1}`;
-          const value = (field.type === "checkbox" || field.type === "radio") ? field.checked : field.value;
-          rows.push([csvEscape(label), csvEscape(value)]);
-        });
+      draftFields().forEach((field, index) => {
+        const label = field.labels?.[0]?.textContent || field.placeholder || field.id || field.name || `Field ${index + 1}`;
+        const value = (field.type === "checkbox" || field.type === "radio") ? field.checked : field.value;
+        rows.push([csvEscape(label), csvEscape(value)]);
+      });
     }
 
-    const csv = rows.map((row) => row.join(",")).join("\n");
-    const blob = new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    const date = new Date().toISOString().slice(0, 10);
-    link.href = url;
-    link.download = `easyfile-${moduleConfig.id}-${date}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+    downloadBlob(
+      new Blob(["\uFEFF", rows.map((row) => row.join(",")).join("\n")], { type: "text/csv;charset=utf-8" }),
+      fileName("csv")
+    );
     toast("CSV export created.");
   }
 
   function exportCsv() {
-    if (typeof window.exportCSV === "function" && window.exportCSV !== exportCsv) {
+    if (typeof window.exportCSV === "function") {
       window.exportCSV();
       return;
     }
-
-    const existing = nativeButton(/export\s*csv|btncsv|btn_csv/i);
-    if (existing) {
-      existing.click();
-      return;
-    }
-
+    if (invokeNativeButton(ACTION_PATTERNS.csv)) return;
     genericCsv();
   }
 
-  function button(action, label, icon) {
+  function exportRootClone() {
+    const source = document.querySelector("#printArea, .print-container, #previewCard, main") || document.body;
+    const clone = source.cloneNode(true);
+
+    clone.querySelectorAll(".no-print, script, style, button, #easyfileModuleActions").forEach((node) => node.remove());
+    clone.querySelectorAll("input, select, textarea").forEach((control) => {
+      if (control.type === "file") {
+        control.remove();
+        return;
+      }
+      const value = control.tagName === "SELECT"
+        ? control.options[control.selectedIndex]?.textContent || control.value
+        : (control.type === "checkbox" || control.type === "radio")
+          ? (control.checked ? "Yes" : "No")
+          : control.value;
+      const replacement = document.createElement(control.tagName === "TEXTAREA" ? "div" : "span");
+      replacement.textContent = value || "";
+      replacement.style.whiteSpace = "pre-wrap";
+      control.replaceWith(replacement);
+    });
+
+    return clone;
+  }
+
+  function preview() {
+    if (invokeNativeButton(ACTION_PATTERNS.preview)) return;
+
+    const modal = document.createElement("div");
+    modal.className = "easyfile-preview-modal no-print";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "easyfilePreviewTitle");
+
+    const dialog = document.createElement("div");
+    dialog.className = "easyfile-preview-dialog";
+    dialog.innerHTML = `
+      <div class="easyfile-preview-header">
+        <div>
+          <div id="easyfilePreviewTitle" class="font-black text-lg">${moduleConfig.noun} Preview</div>
+          <div class="text-sm text-gray-500">Review the document before printing or exporting.</div>
+        </div>
+        <button type="button" class="easyfile-action-button easyfile-action-secondary" data-close-preview>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i><span>Close</span>
+        </button>
+      </div>
+      <div class="easyfile-preview-body"></div>`;
+
+    dialog.querySelector(".easyfile-preview-body").appendChild(exportRootClone());
+    modal.appendChild(dialog);
+    document.body.appendChild(modal);
+
+    const close = () => modal.remove();
+    modal.querySelector("[data-close-preview]").addEventListener("click", close);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) close();
+    });
+    document.addEventListener("keydown", function escape(event) {
+      if (event.key !== "Escape") return;
+      close();
+      document.removeEventListener("keydown", escape);
+    });
+  }
+
+  function printDocument() {
+    if (invokeNativeButton(ACTION_PATTERNS.print)) return;
+    window.print();
+  }
+
+  function exportPdf() {
+    if (invokeNativeButton(ACTION_PATTERNS.pdf)) return;
+    if (invokeFunction(["exportPDF", "exportPdf", "downloadPDF", "downloadPdf"])) return;
+    toast("Opening the print dialog. Choose ‘Save as PDF’ as the destination.");
+    window.print();
+  }
+
+  function exportWord() {
+    if (invokeNativeButton(ACTION_PATTERNS.word)) return;
+    if (invokeFunction(["exportWord", "downloadWord"])) return;
+
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>${moduleConfig.noun}</title>
+      <style>body{font-family:Arial,sans-serif;color:#111827;padding:24px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #d1d5db;padding:8px;text-align:left}</style>
+      </head><body>${exportRootClone().innerHTML}</body></html>`;
+    downloadBlob(new Blob(["\uFEFF", html], { type: "application/msword" }), fileName("doc"));
+    toast("Word export created.");
+  }
+
+  function exportExcel() {
+    if (invokeNativeButton(ACTION_PATTERNS.excel)) return;
+    if (invokeFunction(["exportExcel", "downloadExcel"])) return;
+
+    const tables = Array.from(document.querySelectorAll("main table"));
+    const body = tables.length
+      ? tables.map((table, index) => `<h3>Table ${index + 1}</h3>${table.outerHTML}`).join("<br>")
+      : `<table><tr><th>Field</th><th>Value</th></tr>${draftFields().map((field, index) => {
+          const label = field.labels?.[0]?.textContent || field.placeholder || field.id || field.name || `Field ${index + 1}`;
+          return `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(field.value)}</td></tr>`;
+        }).join("")}</table>`;
+
+    const html = `<!doctype html><html><head><meta charset="utf-8"></head><body>${body}</body></html>`;
+    downloadBlob(new Blob(["\uFEFF", html], { type: "application/vnd.ms-excel" }), fileName("xls"));
+    toast("Excel export created.");
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[character]));
+  }
+
+  function fileName(extension) {
+    const date = new Date().toISOString().slice(0, 10);
+    return `easyfile-${moduleConfig.id}-${date}.${extension}`;
+  }
+
+  function downloadBlob(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
+
+  function createButton(id, label, icon, variant, handler) {
     const element = document.createElement("button");
+    element.id = id;
     element.type = "button";
-    element.dataset.easyfileAction = action;
+    element.className = `easyfile-action-button ${variant}`;
     element.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i><span>${label}</span>`;
+    element.addEventListener("click", handler);
     return element;
+  }
+
+  function hideDuplicateNativeActions() {
+    const patterns = [
+      moduleConfig.newPattern,
+      moduleConfig.secondaryPattern,
+      ACTION_PATTERNS.save,
+      ACTION_PATTERNS.preview,
+      ACTION_PATTERNS.print,
+      ACTION_PATTERNS.pdf,
+      ACTION_PATTERNS.word,
+      ACTION_PATTERNS.excel,
+      ACTION_PATTERNS.csv
+    ];
+
+    document.querySelectorAll("button, [role='button'], a.btn").forEach((element) => {
+      if (element.closest(`#${TOOLBAR_ID}`)) return;
+      const text = buttonText(element);
+      if (patterns.some((pattern) => pattern.test(text))) {
+        element.classList.add("easyfile-native-action-hidden");
+        element.setAttribute("aria-hidden", "true");
+        element.tabIndex = -1;
+      }
+    });
   }
 
   function mountToolbar() {
@@ -268,31 +574,57 @@
     const main = document.querySelector("main");
     if (!main) return;
 
-    addStyles();
-
     const toolbar = document.createElement("section");
     toolbar.id = TOOLBAR_ID;
-    toolbar.className = "no-print";
-    toolbar.setAttribute("aria-label", "EasyFile document actions");
+    toolbar.className = "easyfile-action-card card no-print";
+    toolbar.setAttribute("aria-label", `${moduleConfig.noun} actions`);
 
-    const title = document.createElement("span");
-    title.className = "easyfile-action-title";
-    title.textContent = "Document actions";
+    const row = document.createElement("div");
+    row.className = "easyfile-action-row flex flex-wrap gap-2 items-center";
 
-    const save = button("save", "Save Draft", "fa-floppy-disk");
-    const csv = button("csv", "Export CSV", "fa-file-csv");
-    const print = button("print", moduleConfig.printLabel, "fa-print");
+    const newButton = createButton(
+      "easyfileBtnNew",
+      moduleConfig.newLabel,
+      moduleConfig.newIcon,
+      "easyfile-action-primary btn text-white px-4 py-2 rounded-lg",
+      newRecord
+    );
 
-    save.addEventListener("click", saveDraft);
-    csv.addEventListener("click", exportCsv);
-    print.addEventListener("click", () => window.print());
+    const secondaryButton = createButton(
+      "easyfileBtnSecondary",
+      moduleConfig.secondaryLabel,
+      moduleConfig.secondaryIcon,
+      "easyfile-action-success bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg",
+      secondaryAction
+    );
 
-    toolbar.append(title, save, csv, print);
+    const group = document.createElement("div");
+    group.className = "easyfile-action-group ml-auto flex flex-wrap gap-2";
+
+    group.append(
+      createButton("easyfileBtnSave", "Save Draft", "fa-floppy-disk", "easyfile-action-secondary bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg", saveDraft),
+      createButton("easyfileBtnPreview", "Preview", "fa-eye", "easyfile-action-secondary bg-gray-900 text-white px-4 py-2 rounded-lg", preview),
+      createButton("easyfileBtnPrint", moduleConfig.printLabel, "fa-print", "easyfile-action-secondary bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg", printDocument),
+      createButton("easyfileBtnPdf", "Export PDF", "fa-file-pdf text-red-600", "easyfile-action-secondary bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg", exportPdf),
+      createButton("easyfileBtnWord", "Export Word", "fa-file-word text-blue-600", "easyfile-action-secondary bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg", exportWord),
+      createButton("easyfileBtnExcel", "Export Excel", "fa-file-excel text-green-600", "easyfile-action-secondary bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg", exportExcel),
+      createButton("easyfileBtnCsv", "Export CSV", "fa-file-csv text-gray-700", "easyfile-action-secondary bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg", exportCsv)
+    );
+
+    const status = document.createElement("p");
+    status.id = "easyfileActionStatus";
+    status.className = "easyfile-action-status";
+    status.setAttribute("aria-live", "polite");
+    status.textContent = "Use the actions above to create, save, preview, print or export this module's records.";
+
+    row.append(newButton, secondaryButton, group, status);
+    toolbar.appendChild(row);
 
     const directHeader = Array.from(main.children).find((child) => child.tagName === "HEADER");
     if (directHeader) directHeader.insertAdjacentElement("afterend", toolbar);
     else main.insertBefore(toolbar, main.firstChild);
 
+    hideDuplicateNativeActions();
     restoreDraft();
   }
 
