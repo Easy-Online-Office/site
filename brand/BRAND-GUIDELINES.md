@@ -14,9 +14,12 @@ Recommended short tagline:
 
 ## Primary logo
 
-Use [`/icon.png`](../icon.png) as the primary EasyFile logo asset.
+EasyFile has two canonical logo variants:
 
-The logo combines a rounded blue application tile, a file-folder symbol, an upload arrow, and the EasyFile wordmark. Use the original asset without redrawing, stretching, skewing, rotating, outlining, recolouring, or adding effects.
+- [`/logo-b.png`](../logo-b.png) — black mark for white, Cloud Grey, and other light surfaces.
+- [`/logo-w.png`](../logo-w.png) — white mark for EasyFile Blue, Midnight Navy, and other dark surfaces.
+
+Use the correct contrast variant without redrawing, stretching, skewing, rotating, outlining, recolouring, cropping, or adding effects. Do not place the black logo on a dark background or the white logo on a light background.
 
 ### Minimum sizes
 
@@ -31,12 +34,13 @@ Keep clear space around the logo equal to at least one quarter of the logo's dis
 
 ### Backgrounds
 
-Preferred backgrounds:
+Preferred applications:
 
-- White or Cloud Grey
-- EasyFile Blue
-- Midnight Navy
-- Simple, low-detail imagery with adequate contrast
+- `logo-b.png` on White or Cloud Grey
+- `logo-w.png` on EasyFile Blue or Midnight Navy
+- Either approved variant on simple, low-detail imagery only when contrast remains clear
+
+The navigation uses `logo-w.png`. Light product headers, browser favicon fallback, and Apple touch icons use `logo-b.png`. Browser tabs may switch between the variants using the operating system's light or dark colour-scheme preference.
 
 ## Colour system
 
@@ -156,7 +160,10 @@ Recommended module pattern:
 
 ## Implementation assets
 
-- Primary logo: [`/icon.png`](../icon.png)
+- Light-surface logo and favicon fallback: [`/logo-b.png`](../logo-b.png)
+- Dark-surface logo: [`/logo-w.png`](../logo-w.png)
 - Shared brand tokens: [`/assets/css/easyfile-brand-tokens.css`](../assets/css/easyfile-brand-tokens.css)
 - Shared navigation: [`/partials/easy-nav.html`](../partials/easy-nav.html)
+- Shared header: [`/partials/easy-header.html`](../partials/easy-header.html)
 - Shared runtime branding: [`/assets/js/easy-suite-core.js`](../assets/js/easy-suite-core.js)
+- Build-time navigation and favicon enforcement: [`/tools/inject-nav.js`](../tools/inject-nav.js)
