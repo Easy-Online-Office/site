@@ -1,0 +1,8 @@
+{
+  "doctype-first": true,
+  "tag-pair": true,
+  "spec-char-escape": false,
+  "attr-no-duplication": true,
+  "src-not-empty": true,
+  "title-require": true
+}
