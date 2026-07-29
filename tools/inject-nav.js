@@ -40,6 +40,12 @@ function applyEncodingFixups(content) {
   for (const [from, to] of ENCODING_FIXUPS) {
     output = output.split(from).join(to);
   }
+
+  // Repair a legacy malformed double-quote key in the statement HTML escape map.
+  output = output
+    .split(String.raw`"\\"":"&quot;"`)
+    .join(String.raw`"\"":"&quot;"`);
+
   return output;
 }
 
