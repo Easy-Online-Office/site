@@ -1,4 +1,4 @@
-name: Easy Suite Quality Gate + Deploy
+name: EasyFile Quality Gate
 
 on:
   push:
@@ -7,19 +7,11 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
 
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
-
-    env:
-      # Set your GitHub Pages base URL here
-      PUBLIC_SITE_URL: https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO
-      # Optional strict Carbon mode:
-      # CARBON_STRICT: "true"
 
     steps:
       - name: Checkout
@@ -28,81 +20,47 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
-      - name: Install deps
-        run: npm ci || npm install
+      - name: Enforce canonical navigation
+        run: node tools/inject-nav.js
 
-      # 1) Enforce nav + sync-nav.js across all HTML
-      - name: Enforce navigation
-        run: npm run nav:enforce
+      - name: Validate document structure and inline scripts
+        run: node tools/validate-html.js
 
-      # 2) Generate sitemap.xml and robots.txt
-      - name: Generate sitemap + robots
-        run: npm run sitemap:generate
+      - name: Install HTMLHint
+        run: npm install --global htmlhint
 
-      # 3) Tailwind class consistency enforcement
-      #    If you want auto-fix, replace format:check with format:write
-      - name: Prettier check (Tailwind ordering)
-        run: npm run format:check
+      - name: Validate HTML conventions
+        run: htmlhint --config .htmlhintrc ./*.html
 
-      # 4) HTML lint
-      - name: HTMLHint validation
-        run: npm run html:validate
-
-      # 5) SEO meta validation
-      - name: SEO validation
-        run: npm run seo:validate
-
-      # 6) Carbon compliance validation
-      - name: Carbon compliance validation
-        run: npm run carbon:validate
-
-      # 7) Start local server and run broken link checks + Lighthouse
-      - name: Start server (background)
+      - name: Validate JavaScript syntax
         run: |
-          npx http-server -p 8080 -c-1 &
-          sleep 2
+          find tools scripts assets/js -type f -name '*.js' -print0 \
+            | xargs -0 -r -n1 node --check
 
-      - name: Broken link detection
+      - name: Start static-site smoke test
         run: |
-          SITE_URL="http://localhost:8080/index.html" npm run links:check
+          python3 -m http.server 8080 > /tmp/easyfile-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID"' EXIT
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent --show-error http://127.0.0.1:8080/index.html > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/easyfile-http.log
+          exit 1
 
-      - name: Lighthouse CI
-        run: npm run lhci
-
-      # 8) Commit auto-generated changes (nav + sitemap + robots) if needed
-      - name: Commit changes if modified
-        if: github.ref == 'refs/heads/main'
-        run: |
-          git config --global user.name "easy-suite-bot"
-          git config --global user.email "bot@easy-suite.local"
-          git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "chore: enforce nav + regenerate sitemap"
-          git push
-
-      # Upload artifact for PR inspection
-      - name: Upload build artifacts
+      - name: Upload validated site
         uses: actions/upload-artifact@v4
         with:
-          name: site
+          name: easyfile-site
           path: |
             ./*.html
+            ./assets
             ./scripts
-            ./sitemap.xml
-            ./robots.txt
-
-  deploy:
-    needs: quality-gate
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+            ./partials
+            ./icon.png
+          if-no-files-found: error

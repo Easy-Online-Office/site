@@ -1,12 +1,10 @@
-name: Easy Suite Nav Enforcement
+name: EasyFile Navigation Enforcement
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 permissions:
   contents: write
@@ -18,43 +16,63 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
-      - name: Install Dependencies (Optional)
-        run: npm install || true
-
-      - name: Inject Navigation + Sync Script
+      - name: Inject canonical navigation
         run: node tools/inject-nav.js
 
-      - name: Validate HTML Structure
-        run: |
-          npm install -g htmlhint
-          htmlhint "**/*.html"
+      - name: Validate document structure and inline scripts
+        run: node tools/validate-html.js
 
-      - name: Commit Changes If Modified
+      - name: Install HTMLHint
+        run: npm install --global htmlhint
+
+      - name: Validate HTML conventions
+        run: htmlhint --config .htmlhintrc ./*.html
+
+      - name: Commit generated navigation updates
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          git config --global user.name "easy-suite-bot"
-          git config --global user.email "bot@easy-suite.local"
-          git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto enforce navigation"
+          if git diff --quiet; then
+            echo "Navigation is already synchronized."
+            exit 0
+          fi
+          git config user.name "easyfile-bot"
+          git config user.email "bot@easyfile.local"
+          git add -- '*.html'
+          git commit -m "chore: synchronize EasyFile navigation"
           git push
 
   deploy:
     needs: enforce-navigation
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout Repo
+      - name: Checkout synchronized site
         uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+        id: deployment
+        uses: actions/deploy-pages@v4
