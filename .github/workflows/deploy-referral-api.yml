@@ -7,6 +7,10 @@ on:
     paths:
       - "referral-api/**"
       - ".github/workflows/deploy-referral-api.yml"
+  pull_request:
+    paths:
+      - "referral-api/**"
+      - ".github/workflows/deploy-referral-api.yml"
 
 permissions:
   contents: read
@@ -33,6 +37,7 @@ jobs:
         run: npm run check
 
   deploy:
+    if: ${{ github.event_name != 'pull_request' }}
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 15
