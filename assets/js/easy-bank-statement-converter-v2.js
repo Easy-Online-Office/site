@@ -1,4 +1,5 @@
 import { extractPdf, parseStatement } from "./bank-statement/easy-bank-parser-engine.js";
+import { normaliseHeaderItems } from "./bank-statement/normalise-header-items.js";
 import { dom, state, uid, options, toast, setStatus, setProcessing, validate } from "./bank-statement/converter-state.js";
 import { render, renderRows, addRow, exportCsv, exportExcel, exportAudit } from "./bank-statement/converter-review-export.js";
 
@@ -18,7 +19,7 @@ async function convert() {
   try {
     const extracted=await extractPdf(state.file,(page,total)=>{dom.title.textContent="Reading statement…";dom.message.textContent=`Extracting structured text from page ${page} of ${total}.`;dom.progress.value=Math.round(page/total*68)});
     state.pages=extracted.pages;dom.title.textContent="Identifying statement layout…";dom.message.textContent="Selecting a bank- and account-type-specific parser.";dom.progress.value=76;
-    Object.assign(state,parseStatement(extracted.rows,extracted.rawText,options()));dom.title.textContent="Validating Sage output…";dom.message.textContent="Checking rows and reconciling statement balances.";dom.progress.value=92;
+    Object.assign(state,parseStatement(normaliseHeaderItems(extracted.rows),extracted.rawText,options()));dom.title.textContent="Validating Sage output…";dom.message.textContent="Checking rows and reconciling statement balances.";dom.progress.value=92;
     validate();render();dom.title.textContent="Conversion complete";dom.message.textContent=`${state.transactions.length} posted transaction rows are ready for review.`;dom.progress.value=100;setTimeout(()=>setProcessing(false),450);
     if(!state.transactions.length)toast("No posted transactions could be recognised. Try another profile or download CSV/OFX from the bank.",true);else dom.results.scrollIntoView({behavior:"smooth",block:"start"});
   } catch(error) {
