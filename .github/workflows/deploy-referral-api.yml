@@ -12,11 +12,34 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install production dependencies
+        working-directory: referral-api
+        run: npm install --omit=dev --no-audit --no-fund
+
+      - name: Validate and test referral API
+        working-directory: referral-api
+        run: npm run check
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       AZURE_FUNCTIONAPP_NAME: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
       AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+      EASYFILE_REFERRAL_HEALTH_URL: ${{ vars.EASYFILE_REFERRAL_HEALTH_URL }}
 
     steps:
       - name: Checkout repository
@@ -25,8 +48,9 @@ jobs:
       - name: Report unconfigured deployment
         if: ${{ env.AZURE_FUNCTIONAPP_NAME == '' || env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE == '' }}
         run: |
-          echo "Referral API deployment is not configured yet."
-          echo "Set repository variable AZURE_FUNCTIONAPP_NAME and secret AZURE_FUNCTIONAPP_PUBLISH_PROFILE."
+          echo "Referral API deployment is not configured."
+          echo "Set AZURE_FUNCTIONAPP_NAME and AZURE_FUNCTIONAPP_PUBLISH_PROFILE."
+          echo "The API was validated but was not deployed."
 
       - name: Setup Node.js
         if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
@@ -37,12 +61,7 @@ jobs:
       - name: Install production dependencies
         if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
         working-directory: referral-api
-        run: npm install --omit=dev
-
-      - name: Validate referral API
-        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
-        working-directory: referral-api
-        run: npm run check
+        run: npm install --omit=dev --no-audit --no-fund
 
       - name: Deploy Azure Function App
         if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
@@ -51,3 +70,24 @@ jobs:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
           package: referral-api
           publish-profile: ${{ env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+
+      - name: Verify deployed referral API health
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' && env.EASYFILE_REFERRAL_HEALTH_URL != '' }}
+        shell: bash
+        run: |
+          for attempt in {1..12}; do
+            status=$(curl --silent --show-error --output health.json --write-out "%{http_code}" \
+              --max-time 15 "$EASYFILE_REFERRAL_HEALTH_URL" || true)
+            cat health.json 2>/dev/null || true
+            if [ "$status" = "200" ]; then
+              exit 0
+            fi
+            echo "Health check attempt $attempt returned HTTP $status."
+            sleep 10
+          done
+          echo "Referral API did not become production-ready after deployment."
+          exit 1
+
+      - name: Warn when health verification is not configured
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' && env.EASYFILE_REFERRAL_HEALTH_URL == '' }}
+        run: echo "Deployment completed without a health check. Set EASYFILE_REFERRAL_HEALTH_URL."
