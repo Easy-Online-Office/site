@@ -6,6 +6,8 @@ window.EASYFILE_REFERRAL_CONFIG = Object.freeze({
   allowOfflineUnlockedAccess: false,
   qualifyingClickFallback: true,
   referralCodePattern: "^[A-Z0-9][A-Z0-9_-]{5,31}$",
-  clientVersion: "2.0.0",
+  emailVerificationEnabled: false,
+  emailSender: "referrals@easyfile.co.za",
+  clientVersion: "2.1.0",
   supportEmail: "support@easyfile.co.za"
 });
