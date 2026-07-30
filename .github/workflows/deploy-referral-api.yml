@@ -1,0 +1,53 @@
+name: Deploy EasyFile Referral API
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "referral-api/**"
+      - ".github/workflows/deploy-referral-api.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_FUNCTIONAPP_NAME: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
+      AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Report unconfigured deployment
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME == '' || env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE == '' }}
+        run: |
+          echo "Referral API deployment is not configured yet."
+          echo "Set repository variable AZURE_FUNCTIONAPP_NAME and secret AZURE_FUNCTIONAPP_PUBLISH_PROFILE."
+
+      - name: Setup Node.js
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install production dependencies
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
+        working-directory: referral-api
+        run: npm install --omit=dev
+
+      - name: Validate referral API
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
+        working-directory: referral-api
+        run: npm run check
+
+      - name: Deploy Azure Function App
+        if: ${{ env.AZURE_FUNCTIONAPP_NAME != '' && env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: referral-api
+          publish-profile: ${{ env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
