@@ -23,8 +23,17 @@ assert.match(gate, /\^easy-\[a-z0-9\]/, "All easy-*.html module pages must be ga
 assert.match(gate, /offlineAllowed/, "Offline entitlement handling must be explicit.");
 assert.match(gate, /value\.entitlementToken/, "Offline access must require a signed token field.");
 assert.match(gate, /document\.visibilityState === "visible"/, "Polling must pause for hidden tabs.");
+assert.match(gate, /verification-request/, "Referral identity must support email OTP requests.");
+assert.match(gate, /verification-confirm/, "Referral identity must confirm email OTPs.");
+assert.match(gate, /data-share-referral/, "Referral dashboard sharing controls must be bound.");
+assert.match(gate, /window\.QRCode/, "Referral sharing must support locally rendered QR codes.");
+assert.match(gate, /postRaw\("invite"/, "Verified referral invitations must use the referral API.");
 assert.match(nav, /easyfile-referrals\.js/, "Global navigation must load the referral gate.");
 assert.match(dashboard, /data-referral-access/, "Referral dashboard must expose live access state.");
+assert.match(dashboard, /data-share-referral="whatsapp"/, "Referral dashboard must support WhatsApp sharing.");
+assert.match(dashboard, /data-share-referral="email"/, "Referral dashboard must support email-app sharing.");
+assert.match(dashboard, /data-share-referral="qr"/, "Referral dashboard must expose QR sharing.");
+assert.match(dashboard, /data-referral-invite-form/, "Referral dashboard must expose verified email invitations.");
 
 const files = await readdir(root);
 const modulePages = files.filter((name) => /^easy-[a-z0-9][a-z0-9-]*\.html$/.test(name));
