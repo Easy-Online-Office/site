@@ -17,6 +17,7 @@
     { name: "Sales Order", href: "easy-sales-order.html", icon: "fa-bag-shopping", group: "Documents", description: "Record customer sales orders" },
     { name: "Receipt", href: "easy-receipt.html", icon: "fa-receipt", group: "Documents", description: "Issue payment receipts" },
     { name: "Statement", href: "easy-statement.html", icon: "fa-file-contract", group: "Documents", description: "Generate account statements" },
+    { name: "Bank Converter", href: "easy-bank-statement-converter.html", icon: "fa-building-columns", group: "Documents", description: "Convert PDF bank statements to Sage CSV or Excel" },
     { name: "Job Card", href: "easy-job-card.html", icon: "fa-briefcase", group: "Operations", description: "Track service and repair work" },
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
     { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },
@@ -96,6 +97,7 @@
         <div class="easyfile-nav-desktop" aria-label="Primary links">
           <a class="easyfile-nav-link" href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
           <a class="easyfile-nav-link" href="index.html#modules"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>Modules</a>
+          <a class="easyfile-nav-link" href="easy-bank-statement-converter.html"><i class="fa-solid fa-building-columns" aria-hidden="true"></i>Bank converter</a>
           <a class="easyfile-nav-link" href="referrals.html"><i class="fa-solid fa-user-group" aria-hidden="true"></i>Referrals</a>
         </div>
         <div class="easyfile-nav-tools">
