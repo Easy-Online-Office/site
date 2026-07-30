@@ -1,12 +1,12 @@
 {
   "name": "easyfile-referral-api",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Server-authoritative referral access API for EasyFile.",
   "main": "src/functions/referrals.js",
   "scripts": {
     "start": "func start",
-    "check": "node --check src/functions/referrals.js"
+    "check": "node --check src/functions/referrals.js && node --test test/referrals.test.js"
   },
   "engines": {
     "node": ">=20"

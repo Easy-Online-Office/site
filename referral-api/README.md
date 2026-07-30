@@ -1,30 +1,45 @@
 # EasyFile Referral Access API
 
-This Azure Functions API provides the authoritative entitlement state for the EasyFile referral scheme.
+This Azure Functions API provides the server-authoritative entitlement state for the EasyFile referral scheme.
 
 ## Access rule
 
-1. A user identifies themselves with an email address.
+1. A user establishes a referral identity with an email address.
 2. The user receives one free qualifying use across the entire EasyFile module suite.
-3. After that use, all EasyFile modules are locked for that user.
+3. After that use, all EasyFile modules are locked for that identity.
 4. The user shares a unique referral link.
-5. Three different referred users must enter through that link and complete a qualifying module action.
-6. The original user's access is then unlocked for continued use across all modules.
+5. Three different referred identities must enter through that link and complete one qualifying module action.
+6. The original user's access is unlocked for continued use across all modules.
 
 Qualifying actions include Save Draft, Preview, Print and supported export actions. Opening a page without completing an action does not qualify.
 
-## Privacy and identity
+## Security model
 
-The API normalises the email address and stores only its SHA-256 hash as the participant identifier. The plain email address is not written to Azure Table Storage.
+The v2 API adds the following controls:
 
-This implementation prevents:
+- keyed HMAC-SHA-256 participant identifiers through `EASYFILE_EMAIL_HMAC_SECRET`;
+- legacy SHA-256 participant lookup so existing referral accounts remain usable during migration;
+- atomic trial consumption and idempotency-marker creation in one Azure Table transaction;
+- optimistic ETag concurrency checks to prevent concurrent requests consuming the same free use twice;
+- one referral-qualification entity per referred participant;
+- self-referral prevention and one-referrer binding;
+- strict referral-code, module, action and payload validation;
+- request-size limits, no-store response headers and restrictive CORS defaults;
+- readiness diagnostics through the health endpoint;
+- optional verified-email enforcement through Azure App Service Authentication claims or a signed verification token.
 
-- self-referrals using the same email address;
-- repeat qualification by the same referred email address;
-- one referral being credited to multiple referrers;
-- access being unlocked before three qualifying referral records exist.
+Plain email addresses are not written to Azure Table Storage. New participant IDs are produced with HMAC-SHA-256. A secret of at least 32 random characters is required for production readiness.
 
-Email ownership is not verified in this first implementation. Add passwordless sign-in or Microsoft Entra External ID before treating the scheme as fraud-resistant.
+### Identity-verification boundary
+
+Email ownership verification is disabled by default for backward compatibility. This means the scheme remains vulnerable to users entering email addresses they do not control.
+
+Before treating the referral scheme as fraud-resistant production identity enforcement, configure one of these approaches and set `EASYFILE_REQUIRE_EMAIL_VERIFICATION=true`:
+
+- Microsoft Entra External ID or App Service Authentication, supplying an authenticated `x-ms-client-principal`; or
+- a passwordless email/OTP service that issues the short-lived signed verification fields accepted by the API.
+
+The health endpoint reports `email-verification-disabled` until that control is enabled.
 
 ## Azure resources
 
@@ -32,20 +47,23 @@ Create or select:
 
 - an Azure Function App using the Node.js v4 programming model;
 - an Azure Storage account available to the Function App;
-- an Application Insights resource for operational monitoring.
+- an Application Insights resource for operational monitoring;
+- Azure Front Door, API Management or an equivalent edge control for distributed rate limiting and abuse protection.
 
-The function creates the `EasyFileReferrals` table automatically when the configured identity or connection string has permission.
+The function creates the configured Azure Table automatically when the configured identity or connection string has permission.
 
 ## Function App settings
 
-Set these application settings:
-
-| Setting | Required | Example |
+| Setting | Required | Production guidance |
 | --- | --- | --- |
-| `EASYFILE_REFERRALS_STORAGE` | Yes | Azure Storage connection string |
+| `EASYFILE_REFERRALS_STORAGE` | Yes | Azure Storage connection string or use `AzureWebJobsStorage` |
 | `EASYFILE_REFERRALS_TABLE` | No | `EasyFileReferrals` |
 | `EASYFILE_REFERRALS_REQUIRED` | No | `3` |
-| `EASYFILE_ALLOWED_ORIGINS` | Yes | `https://easy-online-office.github.io,https://your-custom-domain.example` |
+| `EASYFILE_EMAIL_HMAC_SECRET` | Yes | At least 32 cryptographically random characters |
+| `EASYFILE_REQUIRE_IDEMPOTENCY` | Yes | `true` |
+| `EASYFILE_REQUIRE_EMAIL_VERIFICATION` | Yes for fraud resistance | `true` after the identity flow is configured |
+| `EASYFILE_MAX_BODY_BYTES` | No | `8192` |
+| `EASYFILE_ALLOWED_ORIGINS` | Yes | Exact HTTPS origins; do not use `*` |
 | `FUNCTIONS_WORKER_RUNTIME` | Yes | `node` |
 
 `AzureWebJobsStorage` is used when `EASYFILE_REFERRALS_STORAGE` is not set.
@@ -56,8 +74,12 @@ Configure the repository:
 
 1. Add repository variable `AZURE_FUNCTIONAPP_NAME` containing the Function App name.
 2. Add repository secret `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` containing the Function App publish profile XML.
-3. Run **Deploy EasyFile Referral API** from GitHub Actions, or merge changes under `referral-api/` into `main`.
-4. Bind `api-easyfile.skunkworks.africa` to the Function App or change `assets/js/easyfile-referral-config.js` to the deployed API URL.
+3. Add repository variable `EASYFILE_REFERRAL_HEALTH_URL` with the deployed `/api/referrals/health` URL for post-deployment verification.
+4. Configure all Function App settings listed above.
+5. Run **Deploy EasyFile Referral API**, or merge changes under `referral-api/` into `main`.
+6. Bind `api-easyfile.skunkworks.africa` to the Function App or change the frontend API configuration.
+
+The deployment workflow does not create the Function App or inject application settings. Those infrastructure settings must exist before deployment.
 
 ## Local development
 
@@ -65,6 +87,7 @@ Configure the repository:
 cd referral-api
 cp local.settings.example.json local.settings.json
 npm install
+npm run check
 npm start
 ```
 
@@ -79,28 +102,47 @@ Creates or retrieves a participant, attaches an optional referral code and retur
 ```json
 {
   "email": "user@example.com",
-  "referralCode": "ABC234DE"
+  "referralCode": "ABC234DE",
+  "requestId": "f5e19e74-746a-4372-a64d-cf2b2407cc3f",
+  "clientVersion": "2.0.0"
 }
 ```
 
 ### `POST /api/referrals/use`
 
-Consumes the once-off use and qualifies the referring user when applicable.
+Consumes the once-off use exactly once and qualifies the referring user when applicable.
 
 ```json
 {
   "email": "user@example.com",
   "moduleId": "invoice",
-  "event": "export pdf"
+  "event": "export pdf",
+  "idempotencyKey": "71b2c0ec-575a-4c71-bfce-d3800783ec2a",
+  "occurredAt": "2026-07-30T03:00:00.000Z",
+  "clientVersion": "2.0.0"
 }
 ```
 
+Repeating the same `idempotencyKey` returns the existing consumption result and does not qualify the referral twice.
+
 ### `GET /api/referrals/health`
 
-Returns service health and the configured referral requirement.
+Checks storage connectivity and reports security/readiness issues. Production monitoring should require HTTP 200 and an empty `issues` array.
 
 ## Access states
 
 - `trial`: one qualifying module use remains.
 - `locked`: the trial is consumed and fewer than three referrals have qualified.
 - `unlocked`: at least three referrals have qualified; continued module use is permitted.
+
+## Required production acceptance tests
+
+- New verified account returns `trial`.
+- The first qualifying use changes the account to `locked` exactly once.
+- Concurrent use requests cannot double-consume the trial.
+- Repeating an idempotency key does not create a second qualification.
+- Self-referrals and invalid codes are rejected.
+- A referred account can qualify only one referrer.
+- The referrer unlocks after exactly three distinct qualifications.
+- Unapproved browser origins are rejected.
+- The health endpoint returns 200 only when required security settings are present.
