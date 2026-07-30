@@ -1,138 +1,127 @@
-# EasyPO - Simple Purchase Order Generator
-
 <div align="center">
-  
-![EasyPO Logo](https://raw.githubusercontent.com/jamtax/EasyPO/349fe6218b724a8a6f06a255f49c65572fc171f0/assets/easypo-logo%20(1).svg)
+  <img src="easyfile-banner.svg" alt="EasyFile — Simple. Fast. Professional business tools" width="100%">
 
-[![GitHub license](https://img.shields.io/github/license/yourusername/easypo?color=blue)](https://github.com/yourusername/easypo/blob/main/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/easypo?style=social)](https://github.com/yourusername/easypo/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/yourusername/easypo)](https://github.com/yourusername/easypo/issues)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/yourusername/easypo/pulls)
+  # EasyFile
 
-**Create beautiful purchase orders in seconds. Free, easy, and professional.**
+  **Simple. Fast. Professional business paperwork and operational tools.**
 
-[View Demo](https://easypo.jamtax.co.za) | [Report Bug](https://github.com/jamtax/easypo/issues) | [Request Feature](https://github.com/jamtax/easypo/issues)
-
+  [Open EasyFile](https://www.easyfile.co.za/) · [Bank Statement Converter](https://www.easyfile.co.za/easy-bank-statement-converter.html) · [Referral Access](https://www.easyfile.co.za/referrals.html) · [Report an Issue](https://github.com/Easy-Online-Office/site/issues)
 </div>
 
-## ✨ Features
+## Overview
 
-<table>
-  <tr>
-    <td width="50%">
-      <h3>📝 Create Professional POs</h3>
-      <ul>
-        <li>Clean, modern purchase order layouts</li>
-        <li>Automatic calculations</li>
-        <li>Company logo upload</li>
-        <li>Multiple line items with discounts</li>
-      </ul>
-    </td>
-    <td width="50%">
-      <img src="https://github.com/jamtax/EasyPO/blob/main/assets/Screenshot_Preview_easypo.jamtax.co.za.jpeg?raw=true)">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="https://github.com/user-attachments/assets/531b5caa-37ae-4d0b-a1de-d39047fe42ca">
-    </td>
-    <td width="50%">
-      <h3>📊 Multiple Export Formats</h3>
-      <ul>
-        <li>PDF export for sharing</li>
-        <li>Word document for editing</li>
-        <li>Excel spreadsheet for tracking</li>
-        <li>Preview before exporting</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+EasyFile is a responsive, local-first suite of browser-based tools for creating business documents and managing everyday operational records. The main landing page provides module search, direct launch controls, a responsive global navigation bar, dark/light themes and access to the referral dashboard.
 
-## 🚀 Live Demo
+The product is designed for small businesses, independent professionals and operational teams that need practical tools without a heavyweight ERP deployment.
 
-Try EasyPO now at [https://easypo.jamtax.co.za](https://easypo.jamtax.co.za)
+## Modules
 
-## 💻 Technologies
+| Sales and finance | Operations and records |
+| --- | --- |
+| Quotes | Job cards |
+| Invoices | Payroll |
+| Purchase orders | Inventory |
+| Sales orders | CRM |
+| Receipts | Asset management |
+| Statements | Site inspections |
+| PDF bank statement converter | Referral access dashboard |
 
-<div align="center">
-  
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222222?style=for-the-badge&logo=github&logoColor=white)
+## Easy Bank Statement Converter
 
-</div>
+Open `easy-bank-statement-converter.html` to convert a text-based PDF bank statement into a Sage Accounting-compatible CSV or Excel workbook.
 
-## 📋 How It Works
+The converter:
 
-1. **Fill in your details** - Enter your company and supplier information
-2. **Add your products** - Add line items, quantities, and prices
-3. **Preview your PO** - Check how your purchase order looks
-4. **Export in your preferred format** - Download as PDF, Word, or Excel
+- processes PDF content in browser memory rather than uploading the statement;
+- reconstructs statement lines with PDF.js;
+- auto-detects common South African bank branding;
+- extracts and normalises transaction dates, descriptions and signed amounts;
+- uses explicit debit/credit markers, description keywords and running balances to improve amount direction;
+- provides an editable review table with confidence and validation indicators;
+- exports the three-column Sage bank-import structure: `Date`, `Description`, `Amount`;
+- exports an Excel workbook and an audit JSON file for review evidence;
+- detects image-only/scanned PDFs and instructs the user to run OCR or use bank-supplied CSV/OFX instead of silently producing unreliable data.
 
-## 🧰 Installation & Setup
+Supported parsing profiles include FNB/RMB, Absa, Standard Bank, Nedbank, Capitec, TymeBank, Investec and a generic statement profile. Bank layouts change over time, so users must review every extracted row against the source statement before importing it into accounting software.
 
-### Option 1: GitHub Pages (Recommended)
+## Referral access model
 
-1. Fork this repository
-2. Go to repository settings → Pages
-3. Set source to 'main' branch
-4. Your site will be published at `https://yourusername.github.io/EasyPO`
+EasyFile uses a referral-based access mechanism:
 
-### Option 2: Local Installation
+1. A user receives one qualifying use across the EasyFile module suite.
+2. After the free use is consumed, the user shares a unique referral link.
+3. Three different referred users must enter through that link and complete a qualifying action such as Save, Preview, Print or Export.
+4. The original user receives continued EasyFile access after all three referrals qualify.
+
+Referral identity, status and entitlement checks are handled by the EasyFile referral service. The browser retains a cached entitlement so an already-unlocked account can tolerate a temporary service interruption.
+
+## Navigation and user interface
+
+The shared topbar is generated by `scripts/sync-nav.js` and provides:
+
+- EasyFile logo and product identity
+- Desktop and mobile navigation
+- Module search with keyboard shortcut support (`/` or `Ctrl/Cmd + K`)
+- Referral dashboard access
+- Dark/light theme switching
+- Responsive burger-menu controls
+
+Shared navigation styles are maintained in `assets/css/easyfile-navigation.css`.
+
+## Technology
+
+- HTML5, CSS3 and vanilla JavaScript
+- Tailwind CSS utility classes where applicable
+- Font Awesome icons
+- PDF.js for client-side PDF text extraction
+- SheetJS for Excel workbook export
+- Browser LocalStorage for module preferences and referral entitlement cache
+- Static hosting compatible with GitHub Pages or a conventional web server
+- Referral API integration configured through `assets/js/easyfile-referral-config.js`
+
+## Local development
 
 ```bash
-# Clone the repository
-git clone https://github.com/jamtax/easypo.git
-
-# Navigate to the project directory
-cd easypo
-
-# Open in your browser
-# You can use any local server, for example:
-npx serve
+git clone https://github.com/Easy-Online-Office/site.git
+cd site
+python -m http.server 8080
 ```
 
-## 📱 Responsive Design
+Open `http://localhost:8080` in a browser.
 
-<div align="center">
-  <img src="https://github.com/jamtax/EasyPO/blob/05a4722c4b0ab8bda26b995fe618592154c90c2a/assets/Screenshot_Responsive-Design_easypo.jamtax.co.za.jpeg" alt="Responsive Design" width="80%">
-</div>
+Test the converter at `http://localhost:8080/easy-bank-statement-converter.html`. PDF.js uses an ES module worker, so the page must be served over HTTP rather than opened directly with a `file://` URL.
 
-EasyPO is designed to work on all devices:
-- 💻 **Desktop** - Full-featured experience
-- 📱 **Mobile** - Optimized for on-the-go use
-- 📟 **Tablet** - Perfect for field work
+## Deployment
 
-## 🔒 Privacy & Security
+The repository is a static site. Deploy the repository root through GitHub Pages or copy the files to the document root used by `www.easyfile.co.za`.
 
-- **100% Client-side** - All data stays in your browser
-- **No Server Storage** - We don't store your PO information
-- **No Registration Required** - Use immediately without accounts
+For GitHub Pages:
 
-## 🤝 Contributing
+1. Open **Settings → Pages**.
+2. Select the production branch and repository root.
+3. Confirm the custom domain and HTTPS settings.
+4. Verify `/`, `/referrals.html`, `/easy-bank-statement-converter.html` and each module URL after deployment.
 
-Contributions make the open-source community an amazing place to learn, inspire, and create. Any contributions are **greatly appreciated**.
+## Privacy and security notes
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- Most module data is retained in the user’s browser rather than a central application database.
+- The bank statement converter holds extracted PDF text and transactions in page memory and clears them when the page is refreshed or the session is cleared.
+- Do not add statement text or transaction records to LocalStorage, analytics events, console telemetry or referral API payloads.
+- Clearing browser storage can remove locally stored drafts, preferences and cached referral entitlement.
+- Referral validation requires network access and must be treated as a server-authoritative entitlement check.
+- Do not store secrets, payment-card data or highly sensitive personal information in browser storage.
+- Production deployments should enforce HTTPS, a restrictive Content Security Policy and appropriate API CORS controls.
 
-## 📄 License
+## Independent product notice
 
-Distributed under the MIT License. See `LICENSE` for more information.
+EasyFile is an independent business-software product and is not affiliated with, endorsed by or operated by Sage, any listed financial institution, the South African Revenue Service or SARS e@syFile.
 
-## 📞 Contact
+## Licence
 
-Project Link: [https://github.com/yourusername/easypo](https://github.com/jamtax/EasyPO)
+Distributed under the MIT Licence. See [`LICENSE`](LICENSE).
 
 ---
 
 <div align="center">
-  
-Made with ❤️ by [burnt-exe](https://github.com/burnt-exe)
-
+  Maintained by <a href="https://github.com/Easy-Online-Office">Easy Online Office</a> and contributors.
 </div>
