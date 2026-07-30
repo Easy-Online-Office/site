@@ -54,6 +54,51 @@
         </div>
         <p class="easyfile-referral-message" data-referral-message aria-live="polite"></p>
       </div>
+      <div class="mt-5">
+        <p class="block text-sm font-extrabold mb-2">Share your referral</p>
+        <div class="easyfile-referral-share-options" aria-label="Referral sharing options">
+          <button type="button" class="easyfile-referral-share-option" data-share-referral="native">
+            <i class="fa-solid fa-share-nodes" aria-hidden="true"></i><span>Share</span>
+          </button>
+          <button type="button" class="easyfile-referral-share-option" data-share-referral="whatsapp">
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i><span>WhatsApp</span>
+          </button>
+          <button type="button" class="easyfile-referral-share-option" data-share-referral="email">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Email app</span>
+          </button>
+          <button type="button" class="easyfile-referral-share-option" data-share-referral="sms">
+            <i class="fa-solid fa-comment-sms" aria-hidden="true"></i><span>SMS</span>
+          </button>
+          <button type="button" class="easyfile-referral-share-option" data-share-referral="facebook">
+            <i class="fa-brands fa-facebook-f" aria-hidden="true"></i><span>Facebook</span>
+          </button>
+          <button type="button" class="easyfile-referral-share-option" data-share-referral="linkedin">
+            <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i><span>LinkedIn</span>
+          </button>
+          <button type="button" class="easyfile-referral-share-option" data-share-referral="x">
+            <i class="fa-brands fa-x-twitter" aria-hidden="true"></i><span>X</span>
+          </button>
+          <button type="button" class="easyfile-referral-share-option" data-share-referral="qr">
+            <i class="fa-solid fa-qrcode" aria-hidden="true"></i><span>QR code</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="easyfile-referral-invite mt-6">
+        <div>
+          <label class="block text-sm font-extrabold" for="referralInviteEmail">Send a verified invitation</label>
+          <p class="mt-1 text-sm text-gray-600">
+            EasyFile emails the invitation from <strong>referrals@easyfile.co.za</strong>. You verify your address first, and the invited person verifies theirs before their use can qualify.
+          </p>
+        </div>
+        <form class="easyfile-referral-invite-form mt-3" data-referral-invite-form>
+          <input id="referralInviteEmail" data-referral-invite-email type="email" autocomplete="email" maxlength="254" required placeholder="person@example.com" aria-label="Person to invite">
+          <button type="submit" class="easyfile-referral-button easyfile-referral-button--primary">
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send invitation
+          </button>
+        </form>
+        <p class="easyfile-referral-message" data-referral-invite-message aria-live="polite"></p>
+      </div>
       <div class="mt-4 easyfile-referral-actions">
         <button type="button" class="easyfile-referral-button easyfile-referral-button--secondary" data-refresh-referral>
           <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Refresh status
@@ -103,6 +148,7 @@
   </div>
 </footer>
 
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="assets/js/easyfile-referral-config.js"></script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
