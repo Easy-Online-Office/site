@@ -32,14 +32,28 @@ Plain email addresses are not written to Azure Table Storage. New participant ID
 
 ### Identity-verification boundary
 
-Email ownership verification is disabled by default for backward compatibility. This means the scheme remains vulnerable to users entering email addresses they do not control.
+Email ownership verification is disabled by default for backward compatibility. This means the scheme remains vulnerable to users entering email addresses they do not control until production email delivery is configured and enforcement is enabled.
 
-Before treating the referral scheme as fraud-resistant production identity enforcement, configure one of these approaches and set `EASYFILE_REQUIRE_EMAIL_VERIFICATION=true`:
+The API includes an Azure Communication Services Email OTP flow:
 
-- Microsoft Entra External ID or App Service Authentication, supplying an authenticated `x-ms-client-principal`; or
-- a passwordless email/OTP service that issues the short-lived signed verification fields accepted by the API.
+1. `POST /verification-request` sends a six-digit code from `referrals@easyfile.co.za`.
+2. Only a salted HMAC of the code is stored; the code expires after 10 minutes.
+3. `POST /verification-confirm` enforces a limited number of attempts and returns a signed, short-lived verification token.
+4. The browser supplies that token to `/session`, `/use` and `/invite`.
+5. `/invite` requires a verified sender, rate-limits email invitations and never stores the recipient email in plaintext.
 
-The health endpoint reports `email-verification-disabled` until that control is enabled.
+Microsoft Entra External ID or App Service Authentication remains supported through an authenticated `x-ms-client-principal`.
+
+Before setting `EASYFILE_REQUIRE_EMAIL_VERIFICATION=true`:
+
+- create an Azure Email Communication Services resource;
+- verify `easyfile.co.za` ownership and configure SPF and DKIM;
+- connect the verified domain to an Azure Communication Services resource;
+- add `referrals@easyfile.co.za` as a MailFrom address;
+- store the Communication Services connection string only as a Function App secret setting;
+- send a verification email successfully from production.
+
+The health endpoint reports `email-verification-disabled` until enforcement is enabled. When enforcement is enabled, missing email settings are also reported as readiness failures.
 
 ## Azure resources
 
@@ -60,8 +74,16 @@ The function creates the configured Azure Table automatically when the configure
 | `EASYFILE_REFERRALS_TABLE` | No | `EasyFileReferrals` |
 | `EASYFILE_REFERRALS_REQUIRED` | No | `3` |
 | `EASYFILE_EMAIL_HMAC_SECRET` | Yes | At least 32 cryptographically random characters |
+| `EASYFILE_EMAIL_CONNECTION_STRING` | Yes for OTP/invitations | Store as a Function App secret; never commit the real value |
+| `EASYFILE_EMAIL_SENDER` | Yes for OTP/invitations | `referrals@easyfile.co.za` after the custom domain and MailFrom address are verified |
 | `EASYFILE_REQUIRE_IDEMPOTENCY` | Yes | `true` |
 | `EASYFILE_REQUIRE_EMAIL_VERIFICATION` | Yes for fraud resistance | `true` after the identity flow is configured |
+| `EASYFILE_VERIFICATION_CODE_TTL_SECONDS` | No | `600` |
+| `EASYFILE_VERIFICATION_TOKEN_TTL_SECONDS` | No | `86400` maximum |
+| `EASYFILE_VERIFICATION_RESEND_SECONDS` | No | `60` |
+| `EASYFILE_VERIFICATION_MAX_ATTEMPTS` | No | `5` |
+| `EASYFILE_INVITE_COOLDOWN_SECONDS` | No | `86400` per sender/recipient pair |
+| `EASYFILE_INVITE_DAILY_LIMIT` | No | `25` per verified sender |
 | `EASYFILE_MAX_BODY_BYTES` | No | `8192` |
 | `EASYFILE_ALLOWED_ORIGINS` | Yes | Exact HTTPS origins; do not use `*` |
 | `FUNCTIONS_WORKER_RUNTIME` | Yes | `node` |
@@ -125,6 +147,45 @@ Consumes the once-off use exactly once and qualifies the referring user when app
 
 Repeating the same `idempotencyKey` returns the existing consumption result and does not qualify the referral twice.
 
+### `POST /api/referrals/verification-request`
+
+Sends a time-limited six-digit OTP to the supplied email through Azure Communication Services Email. Requests are throttled per HMAC-derived email identity.
+
+```json
+{
+  "email": "user@example.com",
+  "requestId": "f5e19e74-746a-4372-a64d-cf2b2407cc3f",
+  "clientVersion": "2.1.0"
+}
+```
+
+### `POST /api/referrals/verification-confirm`
+
+Confirms the OTP and returns `emailVerificationToken` plus `emailVerificationExpiresAt`. The browser must send both fields with protected referral requests.
+
+```json
+{
+  "email": "user@example.com",
+  "code": "123456",
+  "clientVersion": "2.1.0"
+}
+```
+
+### `POST /api/referrals/invite`
+
+Sends a referral invitation from `referrals@easyfile.co.za`. The sender must provide a valid verification token, and the referral code must belong to that sender.
+
+```json
+{
+  "email": "verified-sender@example.com",
+  "recipientEmail": "person@example.com",
+  "referralCode": "2345ABCD",
+  "emailVerificationToken": "signed-token",
+  "emailVerificationExpiresAt": 2000000000000,
+  "clientVersion": "2.1.0"
+}
+```
+
 ### `GET /api/referrals/health`
 
 Checks storage connectivity and reports security/readiness issues. Production monitoring should require HTTP 200 and an empty `issues` array.
@@ -144,5 +205,8 @@ Checks storage connectivity and reports security/readiness issues. Production mo
 - Self-referrals and invalid codes are rejected.
 - A referred account can qualify only one referrer.
 - The referrer unlocks after exactly three distinct qualifications.
+- Verification codes expire, are attempt-limited and cannot be recovered from storage.
+- Unverified users cannot create a session or qualifying use when enforcement is enabled.
+- Email invitations require a verified sender and enforce recipient cooldown and daily limits.
 - Unapproved browser origins are rejected.
 - The health endpoint returns 200 only when required security settings are present.
