@@ -1,4 +1,4 @@
-import { extractPdf, parseStatement } from "./bank-statement/easy-bank-parser-engine.js";
+import { extractPdf, parseStatement } from "./bank-statement/easy-bank-parser-engine-v3.js";
 import { normaliseHeaderItems } from "./bank-statement/normalise-header-items.js";
 import { dom, state, uid, options, toast, setStatus, setProcessing, validate } from "./bank-statement/converter-state.js";
 import { render, renderRows, addRow, exportCsv, exportExcel, exportAudit } from "./bank-statement/converter-review-export.js";
