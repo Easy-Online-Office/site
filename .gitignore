@@ -1,16 +1,13 @@
-
-# Easy Suite backups
+# EasyFile backups
 *.html.bak
 
+# Node and Azure Functions local files
+node_modules/
+referral-api/node_modules/
+referral-api/local.settings.json
+referral-api/.funcignore
 
-# Easy Suite normalization backups
-*.html.bak
-
-
-# backups
-*.html.bak
-
-
-# backups
-*.html.bak
-
+# Local tooling
+.env
+.env.*
+!.env.example

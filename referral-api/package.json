@@ -1,0 +1,21 @@
+{
+  "name": "easyfile-referral-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Server-authoritative referral access API for EasyFile.",
+  "main": "src/functions/referrals.js",
+  "scripts": {
+    "start": "func start",
+    "check": "node --check src/functions/referrals.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@azure/data-tables": "^13.3.2",
+    "@azure/functions": "^4.7.2"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.0.6821"
+  }
+}
