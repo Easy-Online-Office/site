@@ -5,7 +5,7 @@
 
   **Simple. Fast. Professional business paperwork and operational tools.**
 
-  [Open EasyFile](https://www.easyfile.co.za/) · [Referral Access](https://www.easyfile.co.za/referrals.html) · [Report an Issue](https://github.com/Easy-Online-Office/site/issues)
+  [Open EasyFile](https://www.easyfile.co.za/) · [Bank Statement Converter](https://www.easyfile.co.za/easy-bank-statement-converter.html) · [Referral Access](https://www.easyfile.co.za/referrals.html) · [Report an Issue](https://github.com/Easy-Online-Office/site/issues)
 </div>
 
 ## Overview
@@ -24,6 +24,25 @@ The product is designed for small businesses, independent professionals and oper
 | Sales orders | CRM |
 | Receipts | Asset management |
 | Statements | Site inspections |
+| PDF bank statement converter | Referral access dashboard |
+
+## Easy Bank Statement Converter
+
+Open `easy-bank-statement-converter.html` to convert a text-based PDF bank statement into a Sage Accounting-compatible CSV or Excel workbook.
+
+The converter:
+
+- processes PDF content in browser memory rather than uploading the statement;
+- reconstructs statement lines with PDF.js;
+- auto-detects common South African bank branding;
+- extracts and normalises transaction dates, descriptions and signed amounts;
+- uses explicit debit/credit markers, description keywords and running balances to improve amount direction;
+- provides an editable review table with confidence and validation indicators;
+- exports the three-column Sage bank-import structure: `Date`, `Description`, `Amount`;
+- exports an Excel workbook and an audit JSON file for review evidence;
+- detects image-only/scanned PDFs and instructs the user to run OCR or use bank-supplied CSV/OFX instead of silently producing unreliable data.
+
+Supported parsing profiles include FNB/RMB, Absa, Standard Bank, Nedbank, Capitec, TymeBank, Investec and a generic statement profile. Bank layouts change over time, so users must review every extracted row against the source statement before importing it into accounting software.
 
 ## Referral access model
 
@@ -54,7 +73,9 @@ Shared navigation styles are maintained in `assets/css/easyfile-navigation.css`.
 - HTML5, CSS3 and vanilla JavaScript
 - Tailwind CSS utility classes where applicable
 - Font Awesome icons
-- Browser LocalStorage for module working data and preferences
+- PDF.js for client-side PDF text extraction
+- SheetJS for Excel workbook export
+- Browser LocalStorage for module preferences and referral entitlement cache
 - Static hosting compatible with GitHub Pages or a conventional web server
 - Referral API integration configured through `assets/js/easyfile-referral-config.js`
 
@@ -68,6 +89,8 @@ python -m http.server 8080
 
 Open `http://localhost:8080` in a browser.
 
+Test the converter at `http://localhost:8080/easy-bank-statement-converter.html`. PDF.js uses an ES module worker, so the page must be served over HTTP rather than opened directly with a `file://` URL.
+
 ## Deployment
 
 The repository is a static site. Deploy the repository root through GitHub Pages or copy the files to the document root used by `www.easyfile.co.za`.
@@ -77,19 +100,21 @@ For GitHub Pages:
 1. Open **Settings → Pages**.
 2. Select the production branch and repository root.
 3. Confirm the custom domain and HTTPS settings.
-4. Verify `/`, `/referrals.html` and each module URL after deployment.
+4. Verify `/`, `/referrals.html`, `/easy-bank-statement-converter.html` and each module URL after deployment.
 
 ## Privacy and security notes
 
 - Most module data is retained in the user’s browser rather than a central application database.
-- Clearing browser storage can remove locally stored drafts and preferences.
+- The bank statement converter holds extracted PDF text and transactions in page memory and clears them when the page is refreshed or the session is cleared.
+- Do not add statement text or transaction records to LocalStorage, analytics events, console telemetry or referral API payloads.
+- Clearing browser storage can remove locally stored drafts, preferences and cached referral entitlement.
 - Referral validation requires network access and must be treated as a server-authoritative entitlement check.
 - Do not store secrets, payment-card data or highly sensitive personal information in browser storage.
 - Production deployments should enforce HTTPS, a restrictive Content Security Policy and appropriate API CORS controls.
 
 ## Independent product notice
 
-EasyFile is an independent business-software product and is not affiliated with, endorsed by or operated by the South African Revenue Service or SARS e@syFile.
+EasyFile is an independent business-software product and is not affiliated with, endorsed by or operated by Sage, any listed financial institution, the South African Revenue Service or SARS e@syFile.
 
 ## Licence
 
