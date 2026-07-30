@@ -124,13 +124,22 @@
   }
 
   function installNavigation() {
-    let topbar = document.querySelector("body > .easyfile-nav:not(nav)");
+    const existingBars = Array.from(document.querySelectorAll(
+      'body > .easyfile-nav:not(nav), body > nav[aria-label="Primary navigation"], body > nav.easyfile-nav, body > nav.bg-blue-600'
+    ));
+
+    let topbar = existingBars.find((element) => element.tagName !== "NAV");
     if (!topbar) {
-      const existingNav = document.querySelector('nav[aria-label="Primary navigation"], nav.easyfile-nav, nav.bg-blue-600');
       topbar = document.createElement("div");
-      if (existingNav) existingNav.replaceWith(topbar);
+      const firstExistingBar = existingBars[0];
+      if (firstExistingBar) firstExistingBar.replaceWith(topbar);
       else document.body.insertBefore(topbar, document.body.firstChild);
     }
+
+    existingBars.forEach((element) => {
+      if (element !== topbar && element.isConnected) element.remove();
+    });
+
     topbar.className = "easyfile-nav no-print";
     topbar.removeAttribute("aria-label");
     topbar.innerHTML = navMarkup();
