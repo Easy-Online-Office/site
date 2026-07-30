@@ -361,7 +361,7 @@ function chooseAmount(tokens) {
 
 function cleanDescription(text, dateRaw, tokens) {
   let description = String(text || "");
-  if (dateRaw) description = description.replace(dateRaw, " ");
+  if (dateRaw) description = description.replace(dateRaw, " ".repeat(dateRaw.length));
   for (const token of [...tokens].sort((a, b) => b.index - a.index)) {
     description = `${description.slice(0, token.index)} ${description.slice(token.end)}`;
   }
