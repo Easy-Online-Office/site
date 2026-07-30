@@ -102,7 +102,14 @@ function removeLegacyNavigation(content) {
   let output = content;
 
   output = output.replace(/<!--\s*NAV:START\s*-->[\s\S]*?<!--\s*NAV:END\s*-->\s*/gi, "");
-  output = output.replace(/<!--\s*NAV_SYNC\s*-->[\s\S]*?<\/nav>\s*/gi, "");
+  output = output.replace(
+    /<!--\s*NAV_SYNC\s*-->\s*(?:<nav\b[\s\S]*?<\/nav>|<div\b[^>]*class=(["'])[^"']*\beasyfile-nav\b[^"']*\1[^>]*>[\s\S]*?<\/div>)\s*/gi,
+    ""
+  );
+  output = output.replace(
+    /<nav\b[^>]*class=(["'])[^"']*\beasyfile-nav\b[^"']*\1[^>]*>[\s\S]*?<\/nav>\s*/gi,
+    ""
+  );
   output = output.replace(
     /<nav\b[^>]*class=(["'])[^"']*\bbg-blue-600\b[^"']*\1[^>]*>[\s\S]*?<\/nav>\s*/gi,
     ""

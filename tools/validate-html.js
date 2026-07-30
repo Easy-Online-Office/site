@@ -35,6 +35,10 @@ function checkPair(errors, file, source, tag, options = {}) {
   }
 }
 
+function hasEasyFileTopbar(source) {
+  return /<div\b[^>]*class=(["'])[^"']*\beasyfile-nav\b[^"']*\1[^>]*>/i.test(source);
+}
+
 function scriptType(attributes) {
   const match = attributes.match(/\btype\s*=\s*["']([^"']+)["']/i);
   return match ? match[1].trim().toLowerCase() : "";
@@ -92,8 +96,12 @@ function validateFile(filePath) {
   checkPair(errors, file, structural, "head", { minimum: 1, maximum: 1 });
   checkPair(errors, file, structural, "body", { minimum: 1, maximum: 1 });
   checkPair(errors, file, structural, "main", { maximum: 1 });
-  checkPair(errors, file, structural, "nav", { minimum: 1 });
+  checkPair(errors, file, structural, "nav");
   checkPair(errors, file, structural, "div");
+
+  if (!hasEasyFileTopbar(structural)) {
+    errors.push(`${file}: missing the canonical .easyfile-nav topbar container.`);
+  }
 
   validateScripts(errors, file, html);
   return errors;
