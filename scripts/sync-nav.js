@@ -92,10 +92,7 @@
   function navMarkup() {
     return `
       <div class="easyfile-nav-shell">
-        <a class="easyfile-nav-brand" href="index.html" aria-label="EasyFile home">
-          <img src="${BRAND.logoOnDark}" alt="" width="41" height="41" decoding="async">
-          <span class="easyfile-nav-brand-copy"><strong>${BRAND.name}</strong><small>${BRAND.subtitle}</small></span>
-        </a>
+        <a class="easyfile-nav-brand" href="index.html"><img src="${BRAND.logoOnDark}" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>${BRAND.name}</strong><small>${BRAND.subtitle}</small></span></a>
         <div class="easyfile-nav-desktop" aria-label="Primary links">
           <a class="easyfile-nav-link" href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
           <a class="easyfile-nav-link" href="index.html#modules"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>Modules</a>
@@ -127,24 +124,36 @@
   }
 
   function installNavigation() {
-    let nav = document.querySelector('nav[aria-label="Primary navigation"], nav.easyfile-nav, nav.bg-blue-600');
-    if (!nav) {
-      nav = document.createElement("nav");
-      document.body.insertBefore(nav, document.body.firstChild);
-    }
-    nav.className = "easyfile-nav no-print";
-    nav.setAttribute("aria-label", "Primary navigation");
-    nav.innerHTML = navMarkup();
+    const existingBars = Array.from(document.querySelectorAll(
+      'body > .easyfile-nav:not(nav), body > nav[aria-label="Primary navigation"], body > nav.easyfile-nav, body > nav.bg-blue-600'
+    ));
 
-    nav.querySelectorAll("a[href]").forEach((link) => {
+    let topbar = existingBars.find((element) => element.tagName !== "NAV");
+    if (!topbar) {
+      topbar = document.createElement("div");
+      const firstExistingBar = existingBars[0];
+      if (firstExistingBar) firstExistingBar.replaceWith(topbar);
+      else document.body.insertBefore(topbar, document.body.firstChild);
+    }
+
+    existingBars.forEach((element) => {
+      if (element !== topbar && element.isConnected) element.remove();
+    });
+
+    topbar.className = "easyfile-nav no-print";
+    topbar.removeAttribute("aria-label");
+    topbar.innerHTML = navMarkup();
+
+    topbar.querySelectorAll("a[href]").forEach((link) => {
+      if (link.classList.contains("easyfile-nav-brand")) return;
       const rawHref = (link.getAttribute("href") || "").toLowerCase();
       if (rawHref.includes("#")) return;
       const href = rawHref.split("?")[0];
       if (href === current || (current === "" && href === "index.html")) link.setAttribute("aria-current", "page");
     });
 
-    const menu = nav.querySelector("[data-mobile-menu]");
-    const toggle = nav.querySelector("[data-menu-toggle]");
+    const menu = topbar.querySelector("[data-mobile-menu]");
+    const toggle = topbar.querySelector("[data-menu-toggle]");
     toggle?.addEventListener("click", () => {
       const open = !menu.classList.contains("is-open");
       menu.classList.toggle("is-open", open);
@@ -153,7 +162,7 @@
       toggle.innerHTML = `<i class="fa-solid ${open ? "fa-xmark" : "fa-bars"}" aria-hidden="true"></i>`;
     });
 
-    nav.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+    topbar.querySelectorAll("[data-theme-toggle]").forEach((button) => {
       button.addEventListener("click", () => {
         const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
         localStorage.setItem(THEME_KEY, next);
@@ -162,7 +171,7 @@
       });
     });
 
-    installSearch(nav);
+    installSearch(topbar);
   }
 
   function installSearch(nav) {
