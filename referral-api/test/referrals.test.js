@@ -8,10 +8,15 @@ process.env.EASYFILE_EMAIL_HMAC_SECRET = "test-secret-that-is-at-least-thirty-tw
 process.env.EASYFILE_ALLOWED_ORIGINS = "https://www.easyfile.co.za,https://easyfile.co.za";
 process.env.EASYFILE_REQUIRE_IDEMPOTENCY = "true";
 process.env.EASYFILE_REQUIRE_EMAIL_VERIFICATION = "true";
+process.env.EASYFILE_EMAIL_CONNECTION_STRING = "endpoint=https://example.communication.azure.com/;accesskey=test";
+process.env.EASYFILE_EMAIL_SENDER = "referrals@easyfile.co.za";
 
 const originalLoad = Module._load;
 Module._load = function mockedLoad(request, parent, isMain) {
   if (request === "@azure/functions") return { app: { http() {} } };
+  if (request === "@azure/communication-email") {
+    return { EmailClient: class EmailClient {} };
+  }
   if (request === "@azure/data-tables") {
     return {
       TableClient: class TableClient {},
@@ -62,7 +67,21 @@ test("produces deterministic verification tokens", () => {
   assert.notEqual(token, helpers.verificationToken("other@example.com", 2000000000000));
 });
 
+test("hashes OTP values without retaining the plaintext code", () => {
+  const digest = helpers.otpDigest("user@example.com", "123456", "salt-value");
+  assert.match(digest, /^[A-Za-z0-9_-]{40,}$/);
+  assert.equal(digest.includes("123456"), false);
+  assert.equal(digest, helpers.otpDigest("user@example.com", "123456", "salt-value"));
+  assert.notEqual(digest, helpers.otpDigest("user@example.com", "654321", "salt-value"));
+});
+
+test("masks email addresses for API responses", () => {
+  assert.equal(helpers.maskEmail("raydo@easyfile.co.za"), "ra***@easyfile.co.za");
+  assert.equal(helpers.maskEmail("a@example.com"), "a**@example.com");
+});
+
 test("reports only missing storage when other critical controls are enabled", () => {
   assert.deepEqual(helpers.configuredOrigins(), ["https://www.easyfile.co.za", "https://easyfile.co.za"]);
+  assert.equal(helpers.emailDeliveryConfigured(), true);
   assert.deepEqual(helpers.readiness(), { ready: false, issues: ["storage-not-configured"] });
 });
