@@ -3,13 +3,22 @@
 const crypto = require("node:crypto");
 const { app } = require("@azure/functions");
 const { TableClient, TableTransaction } = require("@azure/data-tables");
+const { EmailClient } = require("@azure/communication-email");
 
 const REQUIRED_REFERRALS = boundedInt(process.env.EASYFILE_REFERRALS_REQUIRED, 3, 1, 100);
 const TABLE_NAME = safeTableName(process.env.EASYFILE_REFERRALS_TABLE || "EasyFileReferrals");
 const EMAIL_HMAC_SECRET = String(process.env.EASYFILE_EMAIL_HMAC_SECRET || "").trim();
+const EMAIL_CONNECTION_STRING = String(process.env.EASYFILE_EMAIL_CONNECTION_STRING || "").trim();
+const EMAIL_SENDER = normalizeEmail(process.env.EASYFILE_EMAIL_SENDER || "referrals@easyfile.co.za");
 const REQUIRE_IDEMPOTENCY = envBoolean("EASYFILE_REQUIRE_IDEMPOTENCY", true);
 const REQUIRE_VERIFIED_EMAIL = envBoolean("EASYFILE_REQUIRE_EMAIL_VERIFICATION", false);
 const MAX_BODY_BYTES = boundedInt(process.env.EASYFILE_MAX_BODY_BYTES, 8192, 1024, 65536);
+const VERIFICATION_CODE_TTL_SECONDS = boundedInt(process.env.EASYFILE_VERIFICATION_CODE_TTL_SECONDS, 600, 300, 1800);
+const VERIFICATION_TOKEN_TTL_SECONDS = boundedInt(process.env.EASYFILE_VERIFICATION_TOKEN_TTL_SECONDS, 86400, 900, 86400);
+const VERIFICATION_RESEND_SECONDS = boundedInt(process.env.EASYFILE_VERIFICATION_RESEND_SECONDS, 60, 30, 900);
+const VERIFICATION_MAX_ATTEMPTS = boundedInt(process.env.EASYFILE_VERIFICATION_MAX_ATTEMPTS, 5, 3, 10);
+const INVITE_COOLDOWN_SECONDS = boundedInt(process.env.EASYFILE_INVITE_COOLDOWN_SECONDS, 86400, 300, 604800);
+const INVITE_DAILY_LIMIT = boundedInt(process.env.EASYFILE_INVITE_DAILY_LIMIT, 25, 1, 100);
 const CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 const REFERRAL_CODE = /^[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{8}$/;
 const QUALIFYING_ACTION = /save|preview|print|pdf|word|excel|csv|export|download|generate/i;
@@ -22,6 +31,7 @@ const DEFAULT_ORIGINS = [
 ];
 
 let tablePromise;
+let emailClientInstance;
 
 function boundedInt(value, fallback, min, max) {
   const parsed = Number.parseInt(String(value ?? ""), 10);
@@ -51,6 +61,8 @@ function readiness() {
   if (EMAIL_HMAC_SECRET.length < 32) issues.push("email-hmac-secret-too-short");
   if (!origins.length || origins.includes("*")) issues.push("cors-not-restricted");
   if (!REQUIRE_VERIFIED_EMAIL) issues.push("email-verification-disabled");
+  if (REQUIRE_VERIFIED_EMAIL && !EMAIL_CONNECTION_STRING) issues.push("email-delivery-not-configured");
+  if (REQUIRE_VERIFIED_EMAIL && !EMAIL_SENDER) issues.push("email-sender-invalid");
   return { ready: issues.length === 0, issues };
 }
 
@@ -71,10 +83,56 @@ async function table() {
   return tablePromise;
 }
 
+function emailDeliveryConfigured() {
+  return Boolean(EMAIL_CONNECTION_STRING && EMAIL_SENDER);
+}
+
+function mailer() {
+  if (!emailDeliveryConfigured()) {
+    const error = new Error("EasyFile email delivery is not configured yet.");
+    error.statusCode = 503;
+    throw error;
+  }
+  if (!emailClientInstance) emailClientInstance = new EmailClient(EMAIL_CONNECTION_STRING);
+  return emailClientInstance;
+}
+
+function htmlEscape(value) {
+  return String(value || "").replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[character]));
+}
+
+async function sendEmail(to, subject, plainText, html) {
+  const poller = await mailer().beginSend({
+    senderAddress: EMAIL_SENDER,
+    content: { subject, plainText, html },
+    recipients: { to: [{ address: to }] },
+    replyTo: [{ address: "support@easyfile.co.za" }]
+  });
+  const result = await poller.pollUntilDone();
+  if (String(result?.status || "").toLowerCase() !== "succeeded") {
+    throw new Error(`Email delivery failed with status ${safeText(result?.status || "unknown", 40)}.`);
+  }
+  return result;
+}
+
 function normalizeEmail(value) {
   const email = String(value || "").trim().toLowerCase();
   if (!/^\S+@\S+\.\S+$/.test(email) || email.length > 254) return "";
   return email;
+}
+
+function maskEmail(value) {
+  const email = normalizeEmail(value);
+  if (!email) return "";
+  const [local, domain] = email.split("@");
+  const visible = local.slice(0, Math.min(2, local.length));
+  return `${visible}${"*".repeat(Math.max(2, local.length - visible.length))}@${domain}`;
 }
 
 function legacyParticipantId(email) {
@@ -93,9 +151,14 @@ function verificationToken(email, expiresAt) {
     .digest("base64url");
 }
 
-function verifiedEmail(body, request) {
-  if (!REQUIRE_VERIFIED_EMAIL) return true;
+function otpDigest(email, otp, salt) {
+  if (!EMAIL_HMAC_SECRET) return "";
+  return crypto.createHmac("sha256", EMAIL_HMAC_SECRET)
+    .update(`otp:${normalizeEmail(email)}:${String(otp)}:${String(salt)}`)
+    .digest("base64url");
+}
 
+function hasVerifiedEmail(body, request) {
   const principal = request.headers.get("x-ms-client-principal");
   if (principal) {
     try {
@@ -115,6 +178,10 @@ function verifiedEmail(body, request) {
   const expected = verificationToken(normalizeEmail(body.email), expiresAt);
   if (!supplied || supplied.length !== expected.length) return false;
   return crypto.timingSafeEqual(Buffer.from(supplied), Buffer.from(expected));
+}
+
+function verifiedEmail(body, request) {
+  return !REQUIRE_VERIFIED_EMAIL || hasVerifiedEmail(body, request);
 }
 
 function now() {
@@ -309,6 +376,17 @@ async function sessionHandler(body, request) {
 
   const client = await table();
   const participant = await ensureParticipant(client, email);
+  if (hasVerifiedEmail(body, request) && participant.emailVerified !== true) {
+    await client.updateEntity({
+      partitionKey: participant.partitionKey,
+      rowKey: participant.rowKey,
+      emailVerified: true,
+      emailVerifiedAt: now()
+    }, "Merge", { etag: entityTag(participant) }).catch((error) => {
+      if (error.statusCode !== 412) throw error;
+    });
+    participant.emailVerified = true;
+  }
   let referral = { accepted: false, reason: "not-supplied" };
   if (body.referralCode) referral = await attachReferral(client, participant, body.referralCode);
   const qualified = await refreshUnlock(client, participant);
@@ -318,6 +396,229 @@ async function sessionHandler(body, request) {
       referralAccepted: referral.accepted,
       referralReason: referral.reason
     })
+  };
+}
+
+async function sendVerificationMessage(email, otp) {
+  const safeOtp = htmlEscape(otp);
+  const subject = "Your EasyFile verification code";
+  const plainText = `Your EasyFile verification code is ${otp}. It expires in ${Math.round(VERIFICATION_CODE_TTL_SECONDS / 60)} minutes. If you did not request this code, ignore this email.`;
+  const html = `<!doctype html><html><body style="margin:0;background:#f1f5f9;font-family:Arial,sans-serif;color:#0f172a">
+    <div style="max-width:600px;margin:0 auto;padding:32px 16px">
+      <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:32px">
+        <p style="margin:0 0 18px;color:#2563eb;font-weight:800">EasyFile · Email verification</p>
+        <h1 style="margin:0 0 12px;font-size:26px">Verify your email</h1>
+        <p style="line-height:1.6;color:#475569">Enter this six-digit code in EasyFile. It expires in ${Math.round(VERIFICATION_CODE_TTL_SECONDS / 60)} minutes.</p>
+        <p style="margin:26px 0;padding:18px;border-radius:12px;background:#eff6ff;color:#1d4ed8;text-align:center;font-size:32px;font-weight:900;letter-spacing:8px">${safeOtp}</p>
+        <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5">If you did not request this code, you can safely ignore this email. Never share this code with anyone.</p>
+      </div>
+    </div></body></html>`;
+  return sendEmail(email, subject, plainText, html);
+}
+
+async function verificationRequestHandler(body) {
+  const email = normalizeEmail(body.email);
+  if (!email) return { status: 400, body: { error: "A valid email address is required." } };
+  if (!emailDeliveryConfigured()) {
+    return { status: 503, body: { error: "EasyFile email verification is not configured yet." } };
+  }
+  if (EMAIL_HMAC_SECRET.length < 32) {
+    return { status: 503, body: { error: "EasyFile email verification is not ready." } };
+  }
+
+  const client = await table();
+  const rowKey = participantId(email);
+  const existing = await getEntity(client, "verification", rowKey);
+  const currentTime = Date.now();
+  const previousSentAt = Date.parse(existing?.sentAt || "") || 0;
+  const retryAfterSeconds = Math.max(0, VERIFICATION_RESEND_SECONDS - Math.floor((currentTime - previousSentAt) / 1000));
+  if (existing && retryAfterSeconds > 0) {
+    return {
+      status: 429,
+      headers: { "Retry-After": String(retryAfterSeconds) },
+      body: { error: `Wait ${retryAfterSeconds} seconds before requesting another code.`, retryAfterSeconds }
+    };
+  }
+
+  const otp = String(crypto.randomInt(0, 1000000)).padStart(6, "0");
+  const salt = crypto.randomBytes(18).toString("base64url");
+  const expiresAt = currentTime + VERIFICATION_CODE_TTL_SECONDS * 1000;
+  await client.upsertEntity({
+    partitionKey: "verification",
+    rowKey,
+    otpHash: otpDigest(email, otp, salt),
+    salt,
+    expiresAt,
+    attempts: 0,
+    sentAt: now(),
+    requestIdHash: crypto.createHash("sha256").update(safeText(body.requestId, 128)).digest("hex")
+  }, "Replace");
+
+  try {
+    await sendVerificationMessage(email, otp);
+  } catch (error) {
+    await client.deleteEntity("verification", rowKey).catch(() => {});
+    throw error;
+  }
+
+  return {
+    status: 202,
+    body: {
+      verificationRequired: true,
+      emailMasked: maskEmail(email),
+      expiresAt,
+      resendAfterSeconds: VERIFICATION_RESEND_SECONDS
+    }
+  };
+}
+
+async function verificationConfirmHandler(body) {
+  const email = normalizeEmail(body.email);
+  const suppliedCode = String(body.code || "").replace(/\D/g, "");
+  if (!email || !/^\d{6}$/.test(suppliedCode)) {
+    return { status: 400, body: { error: "A valid email and six-digit verification code are required." } };
+  }
+
+  const client = await table();
+  const rowKey = participantId(email);
+  const verification = await getEntity(client, "verification", rowKey);
+  if (!verification) return { status: 410, body: { error: "The verification code is missing or expired. Request a new code." } };
+  if (Number(verification.expiresAt || 0) <= Date.now()) {
+    await client.deleteEntity("verification", rowKey).catch(() => {});
+    return { status: 410, body: { error: "The verification code expired. Request a new code." } };
+  }
+
+  const attempts = Number(verification.attempts || 0);
+  if (attempts >= VERIFICATION_MAX_ATTEMPTS) {
+    await client.deleteEntity("verification", rowKey).catch(() => {});
+    return { status: 429, body: { error: "Too many incorrect attempts. Request a new verification code." } };
+  }
+
+  const expected = String(verification.otpHash || "");
+  const supplied = otpDigest(email, suppliedCode, verification.salt);
+  const matches = supplied.length === expected.length
+    && crypto.timingSafeEqual(Buffer.from(supplied), Buffer.from(expected));
+  if (!matches) {
+    const remaining = Math.max(0, VERIFICATION_MAX_ATTEMPTS - attempts - 1);
+    await client.updateEntity({
+      partitionKey: "verification",
+      rowKey,
+      attempts: attempts + 1,
+      lastAttemptAt: now()
+    }, "Merge", { etag: entityTag(verification) }).catch((error) => {
+      if (error.statusCode !== 412) throw error;
+    });
+    return { status: 401, body: { error: `The verification code is incorrect. ${remaining} attempt${remaining === 1 ? "" : "s"} remaining.` } };
+  }
+
+  await client.deleteEntity("verification", rowKey).catch(() => {});
+  const emailVerificationExpiresAt = Date.now() + VERIFICATION_TOKEN_TTL_SECONDS * 1000;
+  return {
+    status: 200,
+    body: {
+      emailVerified: true,
+      emailMasked: maskEmail(email),
+      emailVerificationToken: verificationToken(email, emailVerificationExpiresAt),
+      emailVerificationExpiresAt
+    }
+  };
+}
+
+async function inviteCountForDay(client, partitionKey, day) {
+  let count = 0;
+  const entities = client.listEntities({
+    queryOptions: { filter: `PartitionKey eq '${partitionKey}' and day eq '${day}'` }
+  });
+  for await (const _entity of entities) {
+    count += 1;
+    if (count >= INVITE_DAILY_LIMIT) break;
+  }
+  return count;
+}
+
+async function sendInvitationMessage(recipientEmail, referralCode) {
+  const referralUrl = new URL("https://www.easyfile.co.za/index.html");
+  referralUrl.searchParams.set("ref", referralCode);
+  referralUrl.searchParams.set("utm_source", "easyfile-referral-email");
+  referralUrl.searchParams.set("utm_medium", "email");
+  const url = referralUrl.toString();
+  const subject = "You have been invited to try EasyFile";
+  const plainText = `You have been invited to try EasyFile. Create your first business document free, then verify your email before your use can qualify the referral. Open: ${url}`;
+  const html = `<!doctype html><html><body style="margin:0;background:#f1f5f9;font-family:Arial,sans-serif;color:#0f172a">
+    <div style="max-width:600px;margin:0 auto;padding:32px 16px">
+      <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:18px;padding:32px">
+        <p style="margin:0 0 18px;color:#2563eb;font-weight:800">EasyFile · Referral invitation</p>
+        <h1 style="margin:0 0 12px;font-size:26px">Create your first business document free</h1>
+        <p style="line-height:1.6;color:#475569">You have been invited to try EasyFile. Open the secure referral link, verify your email, and complete one qualifying Save, Preview, Print or Export action.</p>
+        <p style="margin:28px 0"><a href="${htmlEscape(url)}" style="display:inline-block;border-radius:10px;padding:14px 22px;background:#2563eb;color:#ffffff;text-decoration:none;font-weight:800">Open EasyFile</a></p>
+        <p style="color:#64748b;font-size:13px;line-height:1.5">Referral code: <strong>${htmlEscape(referralCode)}</strong>. Opening the link does not award referral credit; a verified qualifying use is required.</p>
+      </div>
+    </div></body></html>`;
+  return sendEmail(recipientEmail, subject, plainText, html);
+}
+
+async function inviteHandler(body, request) {
+  const email = normalizeEmail(body.email);
+  const recipientEmail = normalizeEmail(body.recipientEmail);
+  const referralCode = normalizeReferralCode(body.referralCode);
+  if (!email || !recipientEmail || !referralCode) {
+    return { status: 400, body: { error: "A verified sender, recipient email and referral code are required." } };
+  }
+  if (email === recipientEmail) return { status: 400, body: { error: "Self-referral invitations are not allowed." } };
+  if (!hasVerifiedEmail(body, request)) {
+    return { status: 401, body: { error: "Verify your email before EasyFile sends a referral invitation." } };
+  }
+  if (!emailDeliveryConfigured()) {
+    return { status: 503, body: { error: "EasyFile referral email delivery is not configured yet." } };
+  }
+
+  const client = await table();
+  const participant = await findParticipant(client, email);
+  if (!participant || participant.referralCode !== referralCode) {
+    return { status: 403, body: { error: "The referral code does not belong to the verified sender." } };
+  }
+
+  const partitionKey = `invite:${participant.rowKey}`;
+  const recipientId = participantId(recipientEmail);
+  const existing = await getEntity(client, partitionKey, recipientId);
+  const elapsedSeconds = Math.floor((Date.now() - (Date.parse(existing?.sentAt || "") || 0)) / 1000);
+  if (existing && elapsedSeconds < INVITE_COOLDOWN_SECONDS) {
+    const retryAfterSeconds = INVITE_COOLDOWN_SECONDS - elapsedSeconds;
+    return {
+      status: 429,
+      headers: { "Retry-After": String(retryAfterSeconds) },
+      body: { error: "An invitation was already sent to this address recently.", retryAfterSeconds }
+    };
+  }
+
+  const day = new Date().toISOString().slice(0, 10);
+  if (await inviteCountForDay(client, partitionKey, day) >= INVITE_DAILY_LIMIT) {
+    return { status: 429, body: { error: `The daily invitation limit of ${INVITE_DAILY_LIMIT} has been reached.` } };
+  }
+
+  await client.upsertEntity({
+    partitionKey,
+    rowKey: recipientId,
+    day,
+    sentAt: now(),
+    status: "sending",
+    recipientIdentityVersion: EMAIL_HMAC_SECRET ? "hmac-sha256-v1" : "sha256-legacy"
+  }, "Replace");
+  try {
+    await sendInvitationMessage(recipientEmail, referralCode);
+    await client.updateEntity({ partitionKey, rowKey: recipientId, status: "sent", deliveredAt: now() }, "Merge");
+  } catch (error) {
+    await client.deleteEntity(partitionKey, recipientId).catch(() => {});
+    throw error;
+  }
+
+  return {
+    status: 202,
+    body: {
+      sent: true,
+      recipientMasked: maskEmail(recipientEmail),
+      sender: EMAIL_SENDER
+    }
   };
 }
 
@@ -582,10 +883,18 @@ async function referralApi(request, context) {
       ? await sessionHandler(body, request)
       : action === "use"
         ? await useHandler(body, request)
-        : { status: 404, body: { error: "Referral endpoint not found." } };
-    return response(request, result.status, result.body);
+        : action === "verification-request"
+          ? await verificationRequestHandler(body)
+          : action === "verification-confirm"
+            ? await verificationConfirmHandler(body)
+            : action === "invite"
+              ? await inviteHandler(body, request)
+              : { status: 404, body: { error: "Referral endpoint not found." } };
+    return response(request, result.status, result.body, result.headers || {});
   } catch (error) {
-    if ([400, 413].includes(error.statusCode)) return response(request, error.statusCode, { error: error.message });
+    if ([400, 401, 413, 429, 503].includes(error.statusCode)) {
+      return response(request, error.statusCode, { error: error.message });
+    }
     context.error(error);
     return response(request, 500, { error: "The referral service could not process the request." });
   }
@@ -606,6 +915,9 @@ module.exports.__test = Object.freeze({
   participantId,
   legacyParticipantId,
   verificationToken,
+  otpDigest,
+  maskEmail,
+  emailDeliveryConfigured,
   useMarkerRowKey,
   configuredOrigins,
   readiness
