@@ -1,5 +1,5 @@
 window.EASYFILE_REFERRAL_CONFIG = Object.freeze({
-  apiBase: "https://api-easyfile.skunkworks.africa/api/referrals",
+  apiBase: "https://easyfile-referrals-prod-za.azurewebsites.net/api/referrals",
   referralsRequired: 3,
   statusPollMs: 30000,
   requestTimeoutMs: 10000,
