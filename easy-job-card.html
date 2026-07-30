@@ -4,12 +4,12 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyJC ÃƒÂ¢Ã¢â€šÂ¬" Job Card Manager</title>
+  <title>EasyJC — Job Card Manager</title>
   
 
   <!-- Favicon -->
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
+  
+  
 <meta name="description" content="Create and manage job cards for service and repair work. Track labour, parts and costs; preview and export summaries to PDF, Word, Excel or CSV." />
 
   <!-- Favicon (optional: put your icon file in the same folder or adjust path) --><!-- Tailwind CSS -->
@@ -83,30 +83,19 @@
   </style>
   <link rel="stylesheet" href="assets/css/easy-print.css" />
   <script defer src="assets/js/easy-suite-core.js"></script>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 
 <body class="min-h-screen flex flex-col">
 <!-- NAV_SYNC -->
-<nav class="bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
-  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
-    <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
-      <img src="icon.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 rounded-xl object-contain bg-white bg-opacity-10" data-easyfile-logo />
-      <span>EasyFile</span>
-    </a>
-    <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
-    <a data-safe-link href="easy-invoice.html" class="hover:underline">Invoice</a>
-    <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
-    <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
-    <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
-    <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
-    <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
-    <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
-    <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
-    <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
-  </div>
-</nav>
-
-  <!-- Easy Suite mounts (injected) -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
+<!-- Easy Suite mounts (injected) -->
   <header class="bg-white border-b border-gray-200 no-print">
   <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
     <div class="flex items-center gap-3">
@@ -135,7 +124,7 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Fill company + customer details ÃƒÂ¢Ã¢â‚¬Â ' 2) Describe job + assign staff ÃƒÂ¢Ã¢â‚¬Â ' 3) Add labour & parts ÃƒÂ¢Ã¢â‚¬Â ' 4) Preview ÃƒÂ¢Ã¢â‚¬Â ' 5) Export PDF/Word/Excel/CSV ÃƒÂ¢Ã¢â‚¬Â ' 6) Save as template.
+            1) Fill company + customer details → 2) Describe job + assign staff → 3) Add labour & parts → 4) Preview → 5) Export PDF/Word/Excel/CSV → 6) Save as template.
           </div>
         </div>
       </div>
@@ -569,7 +558,7 @@
         </div>
 
         <div class="mt-6 text-xs text-slate-500 text-center">
-          Generated with EasyJC ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ Print-friendly output
+          Generated with EasyJC —Ã‚Â¢ Print-friendly output
         </div>
       </div>
     </div>

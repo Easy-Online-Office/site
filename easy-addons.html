@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EasyFile Add-on Modules</title>
   <meta name="description" content="Add-on modules for EasyFile / Easy Suite." />
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
+  
+  
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <style>/* EasyFile Add-ons */
 :root{
@@ -29,28 +29,18 @@ body{background:var(--bg); color:var(--text);}
 .toast>div{background:rgba(2,6,23,.92); color:#fff; border-radius:12px; padding:12px 14px; max-width:360px;}
 @media print{ .no-print{display:none !important;} body{background:#fff !important;} .card{box-shadow:none !important; border:none !important;} }
 </style>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 <body class="min-h-screen">
 <!-- NAV_SYNC -->
-<nav class="bg-blue-600 text-white py-4 no-print" aria-label="Primary navigation">
-  <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
-    <a data-safe-link href="index.html" class="font-black text-xl mr-4 inline-flex items-center gap-2" aria-label="EasyFile home">
-      <img src="icon.png" alt="" width="40" height="40" decoding="async" class="h-10 w-10 rounded-xl object-contain bg-white bg-opacity-10" data-easyfile-logo />
-      <span>EasyFile</span>
-    </a>
-    <a data-safe-link href="easy-quote.html" class="hover:underline">Quote</a>
-    <a data-safe-link href="easy-invoice.html" class="hover:underline">Invoice</a>
-    <a data-safe-link href="easy-purchase-order.html" class="hover:underline">Purchase&nbsp;Order</a>
-    <a data-safe-link href="easy-sales-order.html" class="hover:underline">Sales&nbsp;Order</a>
-    <a data-safe-link href="easy-receipt.html" class="hover:underline">Receipt</a>
-    <a data-safe-link href="easy-statement.html" class="hover:underline">Statement</a>
-    <a data-safe-link href="easy-job-card.html" class="hover:underline">Job&nbsp;Card</a>
-    <a data-safe-link href="easy-payroll.html" class="hover:underline">Payroll</a>
-    <a data-safe-link href="easy-inventory.html" class="hover:underline">Inventory</a>
-    <a data-safe-link href="easy-crm.html" class="hover:underline">CRM</a>
-  </div>
-</nav>
-  <main class="container mx-auto px-4 py-8">
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
+<main class="container mx-auto px-4 py-8">
     <div class="card p-6">
       <h1 class="text-3xl font-extrabold text-slate-900">EasyFile Add-on Modules</h1>
       <p class="text-sm text-slate-600 mt-2">Copy these HTML files into your Easy Suite folder (same place as index.html). Offline-first + LocalStorage.</p>

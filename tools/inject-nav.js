@@ -17,6 +17,10 @@ const FAVICON_MARKUP = [
 ].join("\n");
 
 const ENCODING_FIXUPS = new Map([
+  ["ÃƒÂ¢Ã¢â‚¬Â '", "→"],
+  ["ÃƒÂ¢Ã¢â‚¬Â&nbsp;'", "→"],
+  ["ÃƒÂ¢Ã¢â€šÂ¬\"", "—"],
+  ["ÃƒÂ¢Ã¢â€šÂ¬", "—"],
   ["â€”", "—"],
   ["â€“", "–"],
   ["â€\"", "—"],
@@ -63,6 +67,8 @@ function ensureBrandHead(content) {
   let head = content.slice(0, closingHead.index);
   const tail = content.slice(closingHead.index);
 
+  // Replace legacy brand-image references used by Open Graph, Twitter and JSON-LD.
+  head = head.replace(/(["'])(?:icon|logo)\.png\1/gi, "$1logo-b.png$1");
   head = head.replace(/<!--\s*EASYFILE_FAVICONS\s*-->\s*/gi, "");
   head = head.replace(/<link\b[^>]*>/gi, (tag) => {
     const rel = tag.match(/\brel\s*=\s*["']([^"']+)["']/i)?.[1]?.toLowerCase() || "";
@@ -96,7 +102,14 @@ function removeLegacyNavigation(content) {
   let output = content;
 
   output = output.replace(/<!--\s*NAV:START\s*-->[\s\S]*?<!--\s*NAV:END\s*-->\s*/gi, "");
-  output = output.replace(/<!--\s*NAV_SYNC\s*-->[\s\S]*?<\/nav>\s*/gi, "");
+  output = output.replace(
+    /<!--\s*NAV_SYNC\s*-->\s*(?:<nav\b[\s\S]*?<\/nav>|<div\b[^>]*class=(["'])[^"']*\beasyfile-nav\b[^"']*\1[^>]*>[\s\S]*?<\/div>)\s*/gi,
+    ""
+  );
+  output = output.replace(
+    /<nav\b[^>]*class=(["'])[^"']*\beasyfile-nav\b[^"']*\1[^>]*>[\s\S]*?<\/nav>\s*/gi,
+    ""
+  );
   output = output.replace(
     /<nav\b[^>]*class=(["'])[^"']*\bbg-blue-600\b[^"']*\1[^>]*>[\s\S]*?<\/nav>\s*/gi,
     ""
