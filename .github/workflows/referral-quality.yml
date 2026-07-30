@@ -1,0 +1,42 @@
+name: Referral quality
+
+on:
+  push:
+    paths:
+      - "assets/js/easyfile-referral*.js"
+      - "assets/js/easyfile-module-actions.js"
+      - "assets/css/easyfile-referrals.css"
+      - "scripts/sync-nav.js"
+      - "scripts/validate-referrals.mjs"
+      - "referrals.html"
+      - ".github/workflows/referral-quality.yml"
+  pull_request:
+    paths:
+      - "assets/js/easyfile-referral*.js"
+      - "assets/js/easyfile-module-actions.js"
+      - "assets/css/easyfile-referrals.css"
+      - "scripts/sync-nav.js"
+      - "scripts/validate-referrals.mjs"
+      - "referrals.html"
+      - ".github/workflows/referral-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check JavaScript syntax
+        run: |
+          node --check assets/js/easyfile-referrals.js
+          node --check assets/js/easyfile-referral-config.js
+          node --check assets/js/easyfile-referral-compat.js
+          node --check scripts/sync-nav.js
+      - name: Validate referral integration
+        run: node scripts/validate-referrals.mjs

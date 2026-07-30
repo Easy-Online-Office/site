@@ -48,12 +48,14 @@ Supported parsing profiles include FNB/RMB, Absa, Standard Bank, Nedbank, Capite
 
 EasyFile uses a referral-based access mechanism:
 
-1. A user receives one qualifying use across the EasyFile module suite.
+1. A verified user receives one qualifying use across the EasyFile module suite.
 2. After the free use is consumed, the user shares a unique referral link.
-3. Three different referred users must enter through that link and complete a qualifying action such as Save, Preview, Print or Export.
+3. Three different verified referred users must enter through that link and complete a qualifying action such as Save, Preview, Print or Export.
 4. The original user receives continued EasyFile access after all three referrals qualify.
 
-Referral identity, status and entitlement checks are handled by the EasyFile referral service. The browser retains a cached entitlement so an already-unlocked account can tolerate a temporary service interruption.
+Referral identity, status and entitlement checks are handled by the EasyFile referral service. The browser caches status for display purposes, but production access fails closed unless the API verifies the entitlement. Offline unlocked access remains disabled unless the service issues a signed, unexpired entitlement token.
+
+See [`docs/referral-api-production-contract.md`](docs/referral-api-production-contract.md) for the server contract, security controls and deployment acceptance tests.
 
 ## Navigation and user interface
 
@@ -75,7 +77,7 @@ Shared navigation styles are maintained in `assets/css/easyfile-navigation.css`.
 - Font Awesome icons
 - PDF.js for client-side PDF text extraction
 - SheetJS for Excel workbook export
-- Browser LocalStorage for module preferences and referral entitlement cache
+- Browser LocalStorage for module preferences and referral status cache
 - Static hosting compatible with GitHub Pages or a conventional web server
 - Referral API integration configured through `assets/js/easyfile-referral-config.js`
 
@@ -91,6 +93,13 @@ Open `http://localhost:8080` in a browser.
 
 Test the converter at `http://localhost:8080/easy-bank-statement-converter.html`. PDF.js uses an ES module worker, so the page must be served over HTTP rather than opened directly with a `file://` URL.
 
+Run the referral validation locally with:
+
+```bash
+node --check assets/js/easyfile-referrals.js
+node scripts/validate-referrals.mjs
+```
+
 ## Deployment
 
 The repository is a static site. Deploy the repository root through GitHub Pages or copy the files to the document root used by `www.easyfile.co.za`.
@@ -101,14 +110,16 @@ For GitHub Pages:
 2. Select the production branch and repository root.
 3. Confirm the custom domain and HTTPS settings.
 4. Verify `/`, `/referrals.html`, `/easy-bank-statement-converter.html` and each module URL after deployment.
+5. Confirm the referral API CORS allowlist includes the production origin.
 
 ## Privacy and security notes
 
 - Most module data is retained in the user’s browser rather than a central application database.
 - The bank statement converter holds extracted PDF text and transactions in page memory and clears them when the page is refreshed or the session is cleared.
 - Do not add statement text or transaction records to LocalStorage, analytics events, console telemetry or referral API payloads.
-- Clearing browser storage can remove locally stored drafts, preferences and cached referral entitlement.
+- Clearing browser storage can remove locally stored drafts, preferences and cached referral status.
 - Referral validation requires network access and must be treated as a server-authoritative entitlement check.
+- Do not trust an unsigned LocalStorage value to grant access.
 - Do not store secrets, payment-card data or highly sensitive personal information in browser storage.
 - Production deployments should enforce HTTPS, a restrictive Content Security Policy and appropriate API CORS controls.
 
