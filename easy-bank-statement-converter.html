@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Bank Statement Converter | PDF to Sage CSV and Excel</title>
+  <meta name="description" content="Convert text-based South African PDF bank statements into Sage Accounting-compatible CSV or Excel files directly in your browser.">
+  <meta name="keywords" content="PDF bank statement converter, Sage Accounting CSV, bank statement Excel, FNB, Absa, Standard Bank, Nedbank, Capitec, South Africa">
+  <meta name="author" content="EasyFile">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#061a4d">
+  <meta name="color-scheme" content="light dark">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-referrals.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <link rel="stylesheet" href="assets/css/easy-bank-statement-converter.css">
+
+  <script>
+    (function () {
+      try {
+        const stored = localStorage.getItem("easyfile:theme") || localStorage.getItem("easySuite.theme");
+        const dark = stored ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+        document.documentElement.classList.toggle("dark", dark);
+      } catch (_) {}
+    })();
+  </script>
+
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+</head>
+<body class="easyfile-app bank-converter-page">
+  <div class="easyfile-nav no-print">
+    <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+  </div>
+
+  <a class="skip-link" href="#converterWorkspace">Skip to converter</a>
+
+  <header class="bank-hero">
+    <div class="bank-shell bank-hero-grid">
+      <div>
+        <p class="bank-eyebrow"><i class="fa-solid fa-building-columns" aria-hidden="true"></i> EasyFile finance utility</p>
+        <h1>PDF Bank Statement to <span>Sage-ready CSV</span></h1>
+        <p class="bank-hero-copy">Extract transactions from a text-based PDF bank statement, review every row, correct any uncertain entries and export a clean Sage Accounting bank-import file or Excel workbook.</p>
+        <div class="bank-hero-actions">
+          <a class="bank-button bank-button-primary" href="#converterWorkspace"><i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i>Convert a statement</a>
+          <a class="bank-button bank-button-secondary" href="#formatGuide"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Review Sage format</a>
+        </div>
+        <div class="bank-trust-row" aria-label="Converter privacy and compatibility">
+          <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Processed in your browser</span>
+          <span><i class="fa-solid fa-table" aria-hidden="true"></i>CSV and Excel export</span>
+          <span><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Editable review table</span>
+        </div>
+      </div>
+
+      <aside class="bank-hero-card" aria-label="Supported workflow">
+        <div class="bank-hero-card-icon"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i></div>
+        <ol>
+          <li><span>1</span><div><strong>Select a PDF</strong><small>Text is extracted locally with PDF.js.</small></div></li>
+          <li><span>2</span><div><strong>Review transactions</strong><small>Validate dates, descriptions and signed amounts.</small></div></li>
+          <li><span>3</span><div><strong>Export for Sage</strong><small>Download Date, Description and Amount columns.</small></div></li>
+        </ol>
+      </aside>
+    </div>
+  </header>
+
+  <main id="converterWorkspace" class="bank-shell bank-main">
+    <section class="bank-notice bank-notice-info" aria-label="Privacy notice">
+      <i class="fa-solid fa-lock" aria-hidden="true"></i>
+      <div><strong>Your statement stays on this device.</strong><p>The PDF is read in browser memory and is not uploaded by this module. Transaction data is cleared when the page is refreshed or you select Clear session.</p></div>
+    </section>
+
+    <section class="bank-workspace-grid" aria-label="Bank statement conversion controls">
+      <article class="bank-card bank-upload-card">
+        <div class="bank-card-heading">
+          <div><p class="bank-step-label">Step 1</p><h2>Select a PDF statement</h2></div>
+          <span id="fileBadge" class="bank-status-pill">No file selected</span>
+        </div>
+
+        <div id="dropZone" class="bank-drop-zone" tabindex="0" role="button" aria-controls="pdfFile" aria-describedby="dropHelp">
+          <input id="pdfFile" type="file" accept="application/pdf,.pdf" hidden>
+          <div class="bank-drop-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></div>
+          <h3>Drop your PDF statement here</h3>
+          <p id="dropHelp">or browse for a text-based PDF up to 25 MB</p>
+          <button id="chooseFileButton" class="bank-button bank-button-primary" type="button"><i class="fa-solid fa-folder-open" aria-hidden="true"></i>Choose PDF</button>
+        </div>
+
+        <div class="bank-inline-actions">
+          <button id="sampleButton" class="bank-button bank-button-muted" type="button"><i class="fa-solid fa-flask" aria-hidden="true"></i>Load sample transactions</button>
+          <button id="clearButton" class="bank-button bank-button-muted" type="button"><i class="fa-solid fa-trash-can" aria-hidden="true"></i>Clear session</button>
+        </div>
+      </article>
+
+      <article class="bank-card">
+        <div class="bank-card-heading">
+          <div><p class="bank-step-label">Step 2</p><h2>Conversion settings</h2></div>
+        </div>
+
+        <div class="bank-form-grid">
+          <label class="bank-field">
+            <span>Bank profile</span>
+            <select id="bankProfile">
+              <option value="auto">Auto-detect bank</option>
+              <option value="fnb">FNB / RMB</option>
+              <option value="absa">Absa</option>
+              <option value="standard-bank">Standard Bank</option>
+              <option value="nedbank">Nedbank</option>
+              <option value="capitec">Capitec Business</option>
+              <option value="tymebank">TymeBank</option>
+              <option value="investec">Investec</option>
+              <option value="generic">Generic statement</option>
+            </select>
+          </label>
+
+          <label class="bank-field">
+            <span>PDF date order</span>
+            <select id="sourceDateOrder">
+              <option value="dmy">Day / month / year</option>
+              <option value="ymd">Year / month / day</option>
+              <option value="mdy">Month / day / year</option>
+            </select>
+          </label>
+
+          <label class="bank-field">
+            <span>Sage export date format</span>
+            <select id="exportDateFormat">
+              <option value="dd/mm/yyyy">DD/MM/YYYY</option>
+              <option value="yyyy/mm/dd">YYYY/MM/DD</option>
+              <option value="mm/dd/yyyy">MM/DD/YYYY</option>
+            </select>
+          </label>
+
+          <label class="bank-field">
+            <span>Default year for dates without a year</span>
+            <input id="defaultYear" type="number" min="2000" max="2100" inputmode="numeric">
+          </label>
+
+          <label class="bank-field bank-field-full">
+            <span>Ambiguous amount treatment</span>
+            <select id="ambiguousDirection">
+              <option value="debit">Treat as money out unless evidence says otherwise</option>
+              <option value="credit">Treat as money in unless evidence says otherwise</option>
+              <option value="positive">Keep extracted amount sign</option>
+            </select>
+          </label>
+        </div>
+
+        <button id="convertButton" class="bank-button bank-button-primary bank-button-wide" type="button" disabled>
+          <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>Extract and convert transactions
+        </button>
+        <p class="bank-field-help">For scanned/image-only PDFs, first use your bank's downloadable CSV/OFX option or run OCR in a trusted document tool.</p>
+      </article>
+    </section>
+
+    <section id="processingPanel" class="bank-card bank-processing" hidden aria-live="polite">
+      <div class="bank-spinner" aria-hidden="true"></div>
+      <div><strong id="processingTitle">Reading statement…</strong><p id="processingMessage">Preparing the PDF parser.</p></div>
+      <progress id="processingProgress" max="100" value="0">0%</progress>
+    </section>
+
+    <section id="resultSection" hidden>
+      <div class="bank-section-heading">
+        <div><p class="bank-step-label">Step 3</p><h2>Review extracted transactions</h2><p>Edit incorrect values before exporting. Red validation indicators must be resolved.</p></div>
+        <div class="bank-result-meta"><span id="detectedBankBadge" class="bank-status-pill">Bank not detected</span><span id="pageCountBadge" class="bank-status-pill">0 pages</span></div>
+      </div>
+
+      <div class="bank-kpi-grid" aria-label="Statement totals">
+        <article class="bank-kpi"><span>Transactions</span><strong id="transactionCount">0</strong><small id="dateRangeLabel">No date range</small></article>
+        <article class="bank-kpi bank-kpi-in"><span>Money in</span><strong id="moneyInTotal">R0.00</strong><small id="moneyInCount">0 credits</small></article>
+        <article class="bank-kpi bank-kpi-out"><span>Money out</span><strong id="moneyOutTotal">R0.00</strong><small id="moneyOutCount">0 debits</small></article>
+        <article class="bank-kpi bank-kpi-warning"><span>Review warnings</span><strong id="warningCount">0</strong><small id="readinessLabel">Not validated</small></article>
+      </div>
+
+      <section class="bank-card bank-review-card">
+        <div class="bank-review-toolbar no-print">
+          <label class="bank-search-field" for="transactionSearch"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="transactionSearch" type="search" placeholder="Search descriptions or dates…"></label>
+          <label class="bank-compact-field">Show
+            <select id="reviewFilter">
+              <option value="all">All transactions</option>
+              <option value="warnings">Warnings only</option>
+              <option value="credits">Money in</option>
+              <option value="debits">Money out</option>
+            </select>
+          </label>
+          <button id="addRowButton" class="bank-button bank-button-muted" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i>Add row</button>
+        </div>
+
+        <div class="bank-table-wrap">
+          <table class="bank-table">
+            <thead><tr><th scope="col">Date</th><th scope="col">Description</th><th scope="col">Direction</th><th scope="col">Amount</th><th scope="col">Confidence</th><th scope="col" class="no-print">Action</th></tr></thead>
+            <tbody id="transactionRows"></tbody>
+          </table>
+        </div>
+        <p id="emptyReviewMessage" class="bank-empty-message" hidden>No transactions match the current review filter.</p>
+      </section>
+
+      <div class="bank-output-grid">
+        <section class="bank-card">
+          <div class="bank-card-heading"><div><p class="bank-step-label">Validation</p><h2>Sage import readiness</h2></div><span id="sageReadyBadge" class="bank-status-pill bank-status-warning">Needs review</span></div>
+          <ul id="validationList" class="bank-validation-list"></ul>
+        </section>
+
+        <section class="bank-card bank-export-card">
+          <div class="bank-card-heading"><div><p class="bank-step-label">Step 4</p><h2>Download converted file</h2></div></div>
+          <p>The Sage CSV contains exactly three columns in this order: <strong>Date, Description, Amount</strong>. Money out is negative and money in is positive.</p>
+          <div class="bank-export-actions">
+            <button id="exportCsvButton" data-easyfile-action="export csv" class="bank-button bank-button-primary" type="button"><i class="fa-solid fa-file-csv" aria-hidden="true"></i>Export Sage CSV</button>
+            <button id="exportExcelButton" data-easyfile-action="export excel" class="bank-button bank-button-success" type="button"><i class="fa-solid fa-file-excel" aria-hidden="true"></i>Export Excel</button>
+            <button id="exportAuditButton" data-easyfile-action="download audit" class="bank-button bank-button-muted" type="button"><i class="fa-solid fa-file-code" aria-hidden="true"></i>Download audit JSON</button>
+          </div>
+          <p id="exportStatus" class="bank-export-status" aria-live="polite"></p>
+        </section>
+      </div>
+    </section>
+
+    <section id="formatGuide" class="bank-guide-grid">
+      <article class="bank-card">
+        <div class="bank-card-heading"><div><p class="bank-step-label">Sage format guide</p><h2>What this module produces</h2></div></div>
+        <div class="bank-example-table" role="table" aria-label="Sage CSV example">
+          <div role="row" class="bank-example-head"><span role="columnheader">Date</span><span role="columnheader">Description</span><span role="columnheader">Amount</span></div>
+          <div role="row"><span>03/07/2026</span><span>CLIENT PAYMENT 4581</span><span>4500.00</span></div>
+          <div role="row"><span>04/07/2026</span><span>MONTHLY SERVICE FEE</span><span>-175.00</span></div>
+        </div>
+        <ul class="bank-check-list">
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i>Headers are spelled Date, Description and Amount.</li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i>Descriptions are one line, trimmed and limited to 100 characters.</li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i>Amounts use a decimal point with no currency symbol or thousand separator.</li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i>Zero-value rows and exact duplicates are blocked or flagged.</li>
+        </ul>
+      </article>
+
+      <article class="bank-card">
+        <div class="bank-card-heading"><div><p class="bank-step-label">Supported statements</p><h2>Best results and limitations</h2></div></div>
+        <div class="bank-bank-list">
+          <span>FNB / RMB</span><span>Absa</span><span>Standard Bank</span><span>Nedbank</span><span>Capitec</span><span>TymeBank</span><span>Investec</span><span>Generic PDF</span>
+        </div>
+        <ul class="bank-check-list bank-check-list-muted">
+          <li><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Layouts vary by bank, account type and statement version; every conversion must be reviewed.</li>
+          <li><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Password-protected PDFs must be unlocked before processing.</li>
+          <li><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Image-only scans require OCR and are not converted by this browser-only release.</li>
+          <li><i class="fa-solid fa-circle-info" aria-hidden="true"></i>The parser does not categorise general-ledger accounts or reconcile transactions automatically.</li>
+        </ul>
+      </article>
+    </section>
+
+    <aside class="bank-notice bank-notice-warning">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <div><strong>Independent compatibility notice.</strong><p>EasyFile is an independent product and is not affiliated with or endorsed by Sage, any listed bank, or SARS. Confirm the import format available in your Sage product and retain the original statement as the source record.</p></div>
+    </aside>
+  </main>
+
+  <footer class="easyfile-footer border-t border-adaptive">
+    <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p class="muted-adaptive text-sm font-bold">EasyFile · Simple. Fast. Professional.</p>
+      <p class="muted-adaptive text-sm">Local-first conversion · User-reviewed output · South African context</p>
+    </div>
+  </footer>
+
+  <section id="accessModal" class="bank-modal no-print" hidden aria-modal="true" role="dialog" aria-labelledby="accessModalTitle">
+    <div class="bank-modal-panel">
+      <button id="accessModalClose" class="bank-modal-close" type="button" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+      <div class="bank-modal-icon"><i class="fa-solid fa-user-shield" aria-hidden="true"></i></div>
+      <h2 id="accessModalTitle">Confirm EasyFile access</h2>
+      <p id="accessModalCopy">Enter the email linked to your EasyFile referral account.</p>
+      <form id="accessForm">
+        <label class="bank-field"><span>Email address</span><input id="accessEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+        <p id="accessMessage" class="bank-modal-message" aria-live="polite"></p>
+        <button class="bank-button bank-button-primary bank-button-wide" type="submit">Continue</button>
+      </form>
+      <a href="referrals.html" class="bank-modal-link">Open referral dashboard</a>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script defer src="scripts/sync-nav.js"></script>
+  <script type="module" src="assets/js/easy-bank-statement-converter.js"></script>
+</body>
+</html>
