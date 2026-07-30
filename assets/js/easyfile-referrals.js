@@ -128,6 +128,53 @@
     if (error) toast.style.background = "#b91c1c";
     document.body.appendChild(toast); setTimeout(() => toast.remove(), 4200);
   }
+  function acknowledgeReferral(value = {}) {
+    if (!referralEntry) return;
+
+    const reason = String(value.referralReason || "");
+    const accepted = value.referralAccepted === true;
+    let title = "Referral link received";
+    let detail = "Your referral code was received, but it has not earned credit yet.";
+    let action = `<a class="easyfile-referral-button easyfile-referral-button--primary" href="easy-quote.html">Start your free use</a>`;
+
+    if (accepted) {
+      title = "Referral link accepted";
+      detail = `You are now linked to referral code ${esc(incoming)}. Your referrer will receive credit after you complete your first qualifying Save, Preview, Print or Export action.`;
+    } else if (reason === "self-referral") {
+      title = "Self-referral not accepted";
+      detail = "This referral code belongs to the email already active in this browser. Use a different person’s email address to test or qualify the referral.";
+      action = btn("Use a different email", "easyfile-referral-button--primary", "data-referral-change");
+    } else if (reason === "already-bound") {
+      title = value.referred ? "Referral account already linked" : "Referral link not applied";
+      detail = value.referred
+        ? "This email is already linked to a referrer. Referral links cannot replace an existing referral relationship."
+        : "This account has already used EasyFile, so a new referral code cannot be attached.";
+    } else if (reason === "invalid" || !incoming) {
+      title = "Referral link not recognised";
+      detail = "The referral code is invalid or no longer available. Ask the person who referred you to copy a fresh link from their EasyFile referral dashboard.";
+      action = `<a class="easyfile-referral-button easyfile-referral-button--primary" href="referrals.html">Open referral dashboard</a>`;
+    } else if (reason === "concurrent-update") {
+      title = "Referral confirmation needs a retry";
+      detail = "EasyFile received the referral while another account update was in progress. Refresh this page to confirm it.";
+      action = btn("Refresh confirmation", "easyfile-referral-button--primary", "data-referral-refresh");
+    }
+
+    document.getElementById("easyfileReferralAcknowledgement")?.remove();
+    const notice = document.createElement("section");
+    notice.id = "easyfileReferralAcknowledgement";
+    notice.className = "easyfile-referral-bar no-print";
+    notice.setAttribute("role", accepted || reason === "already-bound" ? "status" : "alert");
+    notice.setAttribute("aria-live", "polite");
+    notice.innerHTML = `<div><strong>${esc(title)}</strong><p>${esc(detail)}</p></div>
+      <div class="easyfile-referral-actions">${action}${btn("Dismiss", "easyfile-referral-button--secondary", "data-referral-dismiss")}</div>`;
+
+    const nav = document.querySelector(".easyfile-nav");
+    nav ? nav.insertAdjacentElement("afterend", notice) : document.body.prepend(notice);
+    notice.querySelector("[data-referral-change]")?.addEventListener("click", changeEmail);
+    notice.querySelector("[data-referral-refresh]")?.addEventListener("click", refresh);
+    notice.querySelector("[data-referral-dismiss]")?.addEventListener("click", () => notice.remove());
+  }
+
   function interactive(on) {
     if (!moduleId) return;
     const main = document.querySelector("main");
@@ -166,11 +213,15 @@
 
   async function session(refresh = false) {
     if (!/^\S+@\S+\.\S+$/.test(email)) await identity();
+    const pendingReferral = code(localStorage.getItem(K.pending));
     const value = await post("session", {
-      email, referralCode: code(localStorage.getItem(K.pending)) || undefined,
+      email, referralCode: pendingReferral || undefined,
       page: file, moduleId, refresh, requestId: id(), clientVersion: C.clientVersion
     });
-    localStorage.removeItem(K.pending); save(value); render(value); return value;
+    if (!pendingReferral || value.referralAccepted || ["already-bound", "invalid", "missing"].includes(value.referralReason)) {
+      localStorage.removeItem(K.pending);
+    }
+    save(value); render(value); return value;
   }
 
   function statusBar(value) {
@@ -259,7 +310,10 @@
   function changeEmail() {
     localStorage.removeItem(K.email); localStorage.removeItem(K.entitlement); email = ""; state = null;
     document.getElementById("easyfileReferralLock")?.remove(); document.getElementById("easyfileReferralStatusModal")?.remove();
-    identity("Enter the verified email attached to the referral account.").then(() => session()).catch(() => {});
+    identity("Enter the verified email attached to the referral account.")
+      .then(() => session())
+      .then((value) => { if (referralEntry) acknowledgeReferral(value); })
+      .catch(() => {});
   }
 
   async function record(action) {
@@ -307,8 +361,11 @@
     if (!moduleId && !dashboard && !referralEntry) return;
     if (moduleId) lock({}, "", true);
     bindUse(); bindDashboard();
-    if (referralEntry && !incoming) message("The referral link is invalid or malformed.", true);
-    try { await session(); }
+    if (referralEntry && !incoming) acknowledgeReferral({ referralReason: "invalid" });
+    try {
+      const value = await session();
+      if (referralEntry && incoming) acknowledgeReferral(value);
+    }
     catch (error) {
       const local = cached();
       if (offlineAllowed(local)) { state = local; render(local); return message("Signed offline entitlement active.", true); }
