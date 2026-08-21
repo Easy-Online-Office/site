@@ -1,0 +1,219 @@
+Worked for 2m 23s
+
+Reviewed current main at fa09bc0. No changes made. The API syntax check, eight unit tests, and static referral integration validator pass—but the tests are not the production acceptance suite described in the docs.
+
+Referral API controls
+
+Implemented in referrals.js:
+
+HMAC-SHA-256 participant IDs; raw emails are not stored in Table Storage.
+OTP hashes use HMAC plus a random salt; six-digit codes expire and have an attempt limit.
+Verification tokens are HMAC-signed and expire within 24 hours.
+Referral codes are randomly generated and stored uniquely.
+Self-referral and second referrer binding are rejected.
+One qualification entity per referred participant prevents duplicate referral credit.
+Free-use consumption and idempotency-marker creation use one Azure Table transaction in the same participant partition.
+ETag optimistic concurrency protects participant updates.
+JSON bodies are capped at 8 KiB; response headers include no-store, nosniff, no-referrer, and Vary: Origin.
+Exact-origin CORS allowlisting is implemented; credentials are omitted by the frontend.
+Material risks
+Area	Risk / gap
+Email verification	It is disabled by default in the API and explicitly disabled in easyfile-referral-config.js. Until EASYFILE_REQUIRE_EMAIL_VERIFICATION=true is deployed, anyone can assert an email address for /session and /use.
+OTP concurrency	OTP resend checks are read-then-replace, without ETags or a transaction. Parallel requests can bypass the cooldown, send multiple codes, and invalidate one another. Failed-attempt increments ignore ETag conflicts, so parallel guesses can avoid reliably consuming attempts.
+Verification token	The token is stored in localStorage; an XSS or a person with browser access can steal and replay it until expiry. It is not bound to device/session and has no revocation record.
+Trusted App Service header	x-ms-client-principal is accepted as proof of email ownership. This is safe only if App Service Authentication reliably injects/strips that header and direct Function-host access is restricted; otherwise a caller may forge it.
+Idempotency	Trial consumption is atomic with its marker, which is good. However it is not atomic with referrer qualification: the trial can commit, then qualifyReferrer() can fail. A retry sees the idempotency marker and returns duplicate without repairing the missing referral credit.
+Table transactions	Azure Table transactions only cover one partition. The code correctly transacts the participant and marker together, but referral qualification and referrer unlocking occur in other partitions, so there is no end-to-end transaction or reconciliation job.
+Invitation limits	Cooldown and daily-limit checks are non-atomic. Parallel invite calls can exceed the daily limit or send multiple messages. requestId is stored for OTP requests but is not used as an idempotency key.
+CORS	Origin matching is exact for requests that include Origin. But a request with no Origin is accepted, and CORS is not authentication—it does not stop curl, server-side callers, or a forged Origin header.
+Referral loops	Direct self-referrals are blocked; multi-account loops such as A → B → A are not detected, despite the production contract requiring loop rejection.
+Abuse controls	No IP-prefix, device-risk, Front Door, APIM, or distributed rate limiting is implemented.
+Entitlement event	A client declares moduleId and an event string matching `/save
+Weak-secret mode	If the HMAC secret is absent, the service falls back to plain SHA-256 IDs and remains callable while health is degraded. Production should refuse protected operations when readiness is not satisfied.
+Production contract and settings: not fully confirmed
+
+The root README correctly links docs/referral-api-production-contract.md.
+
+The contract contains ten high-level deployment acceptance tests, but it is incomplete against its own controls and they are not implemented as integration tests:
+
+The repository test suite has only eight helper/unit tests—email formatting, HMAC, code/token derivation, masking, and readiness. It does not exercise Azure Table concurrency, CORS, OTP expiry, invitations, unlock-at-three, or failure recovery.
+The contract requires referral-loop detection, account/IP/device rate limits, structured audit events, privacy retention/deletion, and a transaction spanning trial consumption plus referral increment. These are not implemented.
+The contract says “verified user”, while both the client config and API default have verification disabled. That is a production-readiness contradiction.
+CORS and first-use transaction tests are described, but not automated end-to-end.
+
+Function App settings are documented in referral-api/README.md and exemplified in local.settings.example.json. Nearly all settings match the source defaults.
+
+One source setting is undocumented:
+
+EASYFILE_ALLOW_WILDCARD_CORS — defaults to false, but when set true it permits EASYFILE_ALLOWED_ORIGINS=*. This should be documented and explicitly prohibited in production policy.
+
+Also, local.settings.example.json correctly keeps verification false for local development, but it must not be copied into production unchanged. The deployment README is stale: it mentions a publish-profile secret, while deploy-referral-api.yml actually deploys through Azure OIDC.
+
+Frontend integration
+
+The canonical frontend configuration is:
+
+assets/js/easyfile-referral-config.js
+
+It currently targets:
+
+https://easyfile-referrals-prod-za.azurewebsites.net/api/referrals
+
+The referral client has a fallback api-easyfile.skunkworks.africa host, but the config overrides it. The docs still describe binding that custom domain, so the configured hostname and deployment guidance should be reconciled.
+
+The config is injected by scripts/sync-nav.js, which then loads easyfile-referrals.js.
+
+Inclusion method	Pages
+Static <script> configuration	referrals.html
+Dynamically injected by sync-nav.js	easy-quote.html, easy-invoice.html, easy-purchase-order.html, easy-sales-order.html, easy-receipt.html, easy-statement.html, easy-bank-statement-converter.html, easy-job-card.html, easy-payroll.html, easy-inventory.html, easy-crm.html, easy-asset-management.html, easy-site-inspection.html, and referrals.html
+Injected when URL contains ?ref=	Any page loading sync-nav.js
+
+There are 31 easy-*.html pages, but only the 13 named module pages above are ordinarily gated. The remaining 18 pages load sync-nav.js yet do not load the referral client unless entered with a ?ref= URL. That leaves a material entitlement-coverage gap.
+
+Token and origin handling
+
+easyfile-referrals.js sends:
+
+emailVerificationToken and emailVerificationExpiresAt in the JSON request body for /session, /use, and /invite.
+No verification token for /verification-request or /verification-confirm, as expected.
+X-EasyFile-Client, Accept, and Content-Type headers.
+credentials: "omit", cache: "no-store", and referrerPolicy: "strict-origin-when-cross-origin".
+
+It does not set an Origin header. Browsers set Origin automatically for cross-origin POSTs; JavaScript cannot safely manufacture it. Because Content-Type: application/json and X-EasyFile-Client trigger a preflight, the API replies with the explicit CORS allowlist.
+
+Priority before production: enable verified email, make OTP/invite counters atomic, add a retryable outbox/reconciliation flow for trial-to-referrer qualification, detect loops, enforce rate limits at Front Door/APIM, and expand the eight helper tests into real deployment acceptance tests.
+
+@
+GitHub
+ enable verified email, make OTP/invite counters atomic, add a retryable outbox/reconciliation flow for trial-to-referrer qualification, detect loops, enforce rate limits at Front Door/APIM, and expand the eight helper tests into real deployment acceptance tests.
+Worked for 9m 28s
+
+Implemented in the EasyFile workspace.
+
+Verified-email enforcement is now on by default in frontend and API.
+OTP resend/attempt state and invite cooldown/daily counters use ETag-backed atomic updates.
+Trial consumption atomically creates a qualification outbox; a five-minute Function timer reconciles failed cross-partition referral credits safely.
+Referral ancestry loops are rejected.
+Added APIM policy for IP, account-derived, and device-risk rate limits, plus Front Door WAF setup instructions.
+Deployment now validates required Azure settings, applies the APIM policy, and runs edge-facing acceptance checks.
+Expanded tests from 8 helpers to 16 contract/acceptance tests; all pass.
+
+Key files: 
+referrals.js, 
+apim-referral-policy.xml, 
+deploy-referral-api.yml, 
+README.md.
+
+npm run check passes: 16/16 tests.
+
+I could not commit/push or open the draft PR because this environment does not have the GitHub CLI installed (gh: command not found), which the selected GitHub publish workflow requires. Before merge/deployment, configure the Azure Email settings, APIM named secret, Function App gateway settings, APIM domain, and Front Door WAF rule documented in the deployment guide. APIM limits are intentionally treated as distributed throttles, as Microsoft notes they are not perfectly exact under load; Front Door adds the coarse IP layer. APIM rate-limit guidance and Front Door WAF rate-limit setup.
+
+referrals.js
+Code
+apim-referral-policy.xml
+Code
+deploy-referral-api.yml
+Code
+1 more
+which path do i add these files to?
+Worked for 11s
+
+Add the images to the root of the EasyFile repository, alongside index.html:
+
+Attached file	Add/replace as	Used for
+logo-w.png	/logo-w.png	Logo on the dark top navigation
+icon.png	/logo-b.png	Light-mode favicon, Apple touch icon, and landing-page logo
+logo.png	/logo.png	Legacy converter module branding
+
+So, in GitHub’s upload screen, the path should be the repository root—do not put them inside assets/.
+
+The site is already coded to use these root paths:
+
+/logo-w.png
+/logo-b.png
+/logo.png
+
+Important: rename the uploaded icon.png to logo-b.png before uploading, because the current pages reference logo-b.png, not icon.png.
+
+where ot i save these files 
+Worked for 13s
+
+Save them in the Easy-Online-Office/site repository, using these exact paths:
+
+File	Repository path
+referrals.js	referral-api/src/functions/referrals.js
+apim-referral-policy.xml	infra/referral-edge/apim-referral-policy.xml
+deploy-referral-api.yml	.github/workflows/deploy-referral-api.yml
+Edge deployment README.md	infra/referral-edge/README.md
+
+In GitHub’s upload dialog, open/create the listed folders first—especially .github/workflows and infra/referral-edge—then upload each file there. Do not put these into the website root or assets/.
+
+README.md
+EasyFile referral edge controls
+
+Production browser traffic must follow this path:
+
+www.easyfile.co.za -> Front Door WAF -> API Management -> Azure Function
+
+In APIM, create the secret named value easyfile-referral-edge-shared-secret.
+Set the identical value as the Function App secret EASYFILE_EDGE_SHARED_SECRET and set EASYFILE_REQUIRE_EDGE_GATEWAY=true.
+Configure the APIM backend with the Function origin, then bind api-easyfile.skunkworks.africa to APIM/Front Door. Do not point it directly at the Function App.
+Apply apim-referral-policy.xml to the referral API. The deployment workflow does this when AZURE_APIM_NAME and AZURE_APIM_API_ID are configured.
+
+Add this Front Door WAF custom rule to the owning policy and ensure that policy is in Prevention mode. It provides a coarse per-source-IP cap; APIM provides account/IP/device-risk limits.
+
+az network front-door waf-policy rule create \
+  --name EasyFileReferralRateLimit \
+  --policy-name "$AZURE_WAF_POLICY_NAME" \
+  --resource-group "$AZURE_RESOURCE_GROUP" \
+  --rule-type RateLimitRule \
+  --rate-limit-duration 1 \
+  --rate-limit-threshold 180 \
+  --action Block \
+  --priority 20 \
+  --defer
+az network front-door waf-policy rule match-condition add \
+  --name EasyFileReferralRateLimit \
+  --policy-name "$AZURE_WAF_POLICY_NAME" \
+  --resource-group "$AZURE_RESOURCE_GROUP" \
+  --match-variable RequestUri \
+  --operator Contains \
+  --values '/api/referrals/'
+Add a Function App access restriction allowing only the APIM/Front Door origin. The shared secret is defence in depth, not a substitute for origin access restrictions.
+
+APIM retains only a SHA-256-derived counter key for the request email. X-EasyFile-Device-Risk is a risk signal only and must never be used as account identity or as a reason to block a legitimate customer without review.
+
+README.md
+EasyFile referral edge controls
+
+Production browser traffic must follow this path:
+
+www.easyfile.co.za -> Front Door WAF -> API Management -> Azure Function
+
+In APIM, create the secret named value easyfile-referral-edge-shared-secret.
+Set the identical value as the Function App secret EASYFILE_EDGE_SHARED_SECRET and set EASYFILE_REQUIRE_EDGE_GATEWAY=true.
+Configure the APIM backend with the Function origin, then bind api-easyfile.skunkworks.africa to APIM/Front Door. Do not point it directly at the Function App.
+Apply apim-referral-policy.xml to the referral API. The deployment workflow does this when AZURE_APIM_NAME and AZURE_APIM_API_ID are configured.
+
+Add this Front Door WAF custom rule to the owning policy and ensure that policy is in Prevention mode. It provides a coarse per-source-IP cap; APIM provides account/IP/device-risk limits.
+
+az network front-door waf-policy rule create \
+  --name EasyFileReferralRateLimit \
+  --policy-name "$AZURE_WAF_POLICY_NAME" \
+  --resource-group "$AZURE_RESOURCE_GROUP" \
+  --rule-type RateLimitRule \
+  --rate-limit-duration 1 \
+  --rate-limit-threshold 180 \
+  --action Block \
+  --priority 20 \
+  --defer
+az network front-door waf-policy rule match-condition add \
+  --name EasyFileReferralRateLimit \
+  --policy-name "$AZURE_WAF_POLICY_NAME" \
+  --resource-group "$AZURE_RESOURCE_GROUP" \
+  --match-variable RequestUri \
+  --operator Contains \
+  --values '/api/referrals/'
+Add a Function App access restriction allowing only the APIM/Front Door origin. The shared secret is defence in depth, not a substitute for origin access restrictions.
+
+APIM retains only a SHA-256-derived counter key for the request email. X-EasyFile-Device-Risk is a risk signal only and must never be used as account identity or as a reason to block a legitimate customer without review.

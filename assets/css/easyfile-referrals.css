@@ -99,12 +99,87 @@
   background: var(--easyfile-surface, #fff);
   box-shadow: var(--easyfile-shadow, 0 12px 32px rgba(15, 23, 42, .08));
 }
+.easyfile-referral-share-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: .65rem;
+}
+.easyfile-referral-share-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  min-height: 3rem;
+  border: 1px solid var(--easyfile-border, #e2e8f0);
+  border-radius: .8rem;
+  padding: .7rem .75rem;
+  background: var(--easyfile-surface, #fff);
+  color: var(--easyfile-text, #0f172a);
+  font: inherit;
+  font-size: .825rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.easyfile-referral-share-option:hover {
+  border-color: var(--easyfile-blue, #2563eb);
+  box-shadow: 0 8px 22px rgba(37, 99, 235, .12);
+  transform: translateY(-1px);
+}
+.easyfile-referral-share-option:focus-visible {
+  outline: none;
+  box-shadow: var(--easyfile-focus, 0 0 0 4px rgba(37, 99, 235, .2));
+}
+.easyfile-referral-share-option[hidden] { display: none; }
+.easyfile-referral-invite {
+  border-top: 1px solid var(--easyfile-border, #e2e8f0);
+  padding-top: 1.25rem;
+}
+.easyfile-referral-invite-form {
+  display: flex;
+  gap: .65rem;
+}
+.easyfile-referral-invite-form input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--easyfile-border, #cbd5e1);
+  border-radius: .75rem;
+  padding: .78rem .9rem;
+  background: var(--easyfile-surface, #fff);
+  color: var(--easyfile-text, #0f172a);
+  font: inherit;
+}
+.easyfile-referral-qr {
+  display: grid;
+  place-items: center;
+  width: min(100%, 19rem);
+  min-height: 19rem;
+  margin: 1.25rem auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1rem;
+  background: #fff;
+}
+.easyfile-referral-qr canvas,
+.easyfile-referral-qr img {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 16rem;
+}
+.easyfile-referral-code-input {
+  text-align: center;
+  letter-spacing: .35em;
+  font-size: 1.25rem !important;
+  font-weight: 900;
+}
 @media (max-width: 640px) {
   .easyfile-referral-bar { margin-inline: .75rem; width: auto; }
   .easyfile-referral-actions,
   .easyfile-referral-share { width: 100%; }
   .easyfile-referral-button { flex: 1 1 100%; }
   .easyfile-referral-share { flex-direction: column; }
+  .easyfile-referral-share-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .easyfile-referral-invite-form { flex-direction: column; }
 }
 @media print {
   .easyfile-referral-bar,
