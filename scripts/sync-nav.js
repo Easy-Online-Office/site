@@ -233,6 +233,20 @@
     });
   }
 
+  function installPolicyLinks() {
+    const links = [["About", "about.html"], ["Privacy", "privacy.html"], ["Terms", "terms.html"], ["Contact", "contact.html"]];
+    const footer = document.querySelector("footer") || document.body.appendChild(document.createElement("footer"));
+    footer.classList.add("easyfile-footer", "no-print");
+    if (!footer.hasAttribute("aria-label")) footer.setAttribute("aria-label", "EasyFile site footer");
+    if (footer.querySelector("[data-easyfile-policy-links]")) return;
+    const nav = document.createElement("nav");
+    nav.dataset.easyfilePolicyLinks = "";
+    nav.setAttribute("aria-label", "Company and policy links");
+    nav.style.cssText = "display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem 1.25rem;padding:1rem 1.25rem;font-size:.875rem";
+    nav.innerHTML = links.map(([label, href]) => `<a href="${href}">${label}</a>`).join("");
+    footer.appendChild(nav);
+  }
+
   function installFavicons() {
     document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]').forEach((link) => link.remove());
     [
@@ -253,6 +267,7 @@
     applyTheme(initialTheme());
     applyLayoutHooks();
     installNavigation();
+    installPolicyLinks();
     installFavicons();
 
     if (MODULE_FILES.has(current)) ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
